@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"creeeeeeeeeeper.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="关于微信小程序字体更换问题在制作微信小程序换字体时，如果直接使用 1&lt;text decode class&#x3D;&quot;SwiperTitle&quot; style&#x3D;&quot;font-family:宋体 ;&quot;&gt;宋体宋体宋体&lt;&#x2F;text&gt;  在电脑预览时，字体确实会变成宋体（下图  但是当在手机上预览时，因为手机并没有“宋体”这个预制的字体，所以手机并不会将字体">
+<meta property="og:type" content="article">
+<meta property="og:title" content="wxxcxwlzt">
+<meta property="og:url" content="http://creeeeeeeeeeper.github.io/2024/07/05/wxxcxwlzt/index.html">
+<meta property="og:site_name" content="ZYG&#39;s Notes">
+<meta property="og:description" content="关于微信小程序字体更换问题在制作微信小程序换字体时，如果直接使用 1&lt;text decode class&#x3D;&quot;SwiperTitle&quot; style&#x3D;&quot;font-family:宋体 ;&quot;&gt;宋体宋体宋体&lt;&#x2F;text&gt;  在电脑预览时，字体确实会变成宋体（下图  但是当在手机上预览时，因为手机并没有“宋体”这个预制的字体，所以手机并不会将字体">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2024/07/05/wxxcxwlzt/image-20240705105411286.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2024/07/05/wxxcxwlzt/image-20240705105517167.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2024/07/05/wxxcxwlzt/image-20240705105630877.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2024/07/05/wxxcxwlzt/image-20240705105642530.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2024/07/05/wxxcxwlzt/image-20240705105659354.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2024/07/05/wxxcxwlzt/image-20240705105709932.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2024/07/05/wxxcxwlzt/image-20240705105725191.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2024/07/05/wxxcxwlzt/image-20240705105854907.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2024/07/05/wxxcxwlzt/image-20240705105943876.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2024/07/05/wxxcxwlzt/image-20240705105956298.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2024/07/05/wxxcxwlzt/image-20240705110007315.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2024/07/05/wxxcxwlzt/image-20240705110215808.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2024/07/05/wxxcxwlzt/image-20240705110236259.png">
+<meta property="article:published_time" content="2024-07-05T02:52:51.000Z">
+<meta property="article:modified_time" content="2024-07-05T04:03:05.154Z">
+<meta property="article:author" content="ZYG">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://creeeeeeeeeeper.github.io/2024/07/05/wxxcxwlzt/image-20240705105411286.png">
+
+<link rel="canonical" href="http://creeeeeeeeeeper.github.io/2024/07/05/wxxcxwlzt/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>wxxcxwlzt | ZYG's Notes</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">ZYG's Notes</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://creeeeeeeeeeper.github.io/2024/07/05/wxxcxwlzt/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ZYG">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ZYG's Notes">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          wxxcxwlzt
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-07-05 10:52:51 / 修改时间：12:03:05" itemprop="dateCreated datePublished" datetime="2024-07-05T10:52:51+08:00">2024-07-05</time>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>859</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="关于微信小程序字体更换问题"><a href="#关于微信小程序字体更换问题" class="headerlink" title="关于微信小程序字体更换问题"></a>关于微信小程序字体更换问题</h1><p>在制作微信小程序换字体时，如果直接使用</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">text</span> <span class="attr">decode</span> <span class="attr">class</span>=<span class="string">&quot;SwiperTitle&quot;</span> <span class="attr">style</span>=<span class="string">&quot;font-family:宋体 ;&quot;</span>&gt;</span>宋体宋体宋体<span class="tag">&lt;/<span class="name">text</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>在电脑预览时，字体确实会变成宋体（下图</p>
+<p><img src="/2024/07/05/wxxcxwlzt/image-20240705105411286.png" alt="image-20240705105411286"></p>
+<p>但是当在手机上预览时，因为手机并没有“宋体”这个预制的字体，所以手机并不会将字体改成宋体</p>
+<img src="/2024/07/05/wxxcxwlzt/image-20240705105517167.png" alt="image-20240705105517167" style="zoom: 50%;">
+
+<p>因此，采用网络字体的方式对字体进行更新</p>
+<span id="more"></span>
+
+<h1 id="解决思路"><a href="#解决思路" class="headerlink" title="解决思路"></a>解决思路</h1><p>一个字体文件起码好几兆，所以肯定不能放到本地然后编译进去，只能从网络获取</p>
+<p>首先获取一个字体的.ttf文件，然后将这个.ttf文件上传为网络直链地址，最后在小程序里调用这个网络直<br>链地址就完成了对字体的更改。</p>
+<h1 id="实现过程"><a href="#实现过程" class="headerlink" title="实现过程"></a>实现过程</h1><h2 id="1-获取一个字体-ttf文件"><a href="#1-获取一个字体-ttf文件" class="headerlink" title="1.获取一个字体.ttf文件"></a>1.获取一个字体.ttf文件</h2><p>这里使用.ttf .otf等字体文件都可以</p>
+<p>我采用的方法是从字体管家下载字体，因为比较靠谱</p>
+<p><img src="/2024/07/05/wxxcxwlzt/image-20240705105630877.png" alt="image-20240705105630877"></p>
+<p>打开之后是这样子的</p>
+<p><img src="/2024/07/05/wxxcxwlzt/image-20240705105642530.png" alt="image-20240705105642530"></p>
+<p>首先我下载了几个字体，大小最好是10M以内的。</p>
+<p><img src="/2024/07/05/wxxcxwlzt/image-20240705105659354.png" alt="image-20240705105659354"></p>
+<p>然后打开字体备份，对想要的字体进行备份</p>
+<p><img src="/2024/07/05/wxxcxwlzt/image-20240705105709932.png" alt="image-20240705105709932"></p>
+<p>然后打开备份文件夹，直接备份后在备份文件夹中就能直接找到下载的字体了（这种找.ttf文件的方法比<br>较方便）</p>
+<p><img src="/2024/07/05/wxxcxwlzt/image-20240705105725191.png" alt="image-20240705105725191"></p>
+<h2 id="2-将-ttf文件上传为网络直链地址"><a href="#2-将-ttf文件上传为网络直链地址" class="headerlink" title="2.将.ttf文件上传为网络直链地址"></a>2.将.ttf文件上传为网络直链地址</h2><p>如果我们有服务器的话可以直接上传到我们的服务器进行访问，但是没有服务器的话我们可以使用Gitee<br>个人仓库上传字体文件————<a target="_blank" rel="noopener" href="https://gitee.com/">Gitee</a> (因为Gitee访问起来比较快，所以没用github)</p>
+<p>刚登录进去应该就是创建一个仓库，如果没有的话就右上角有个加好，点击创建仓库就可以</p>
+<p><img src="/2024/07/05/wxxcxwlzt/image-20240705105854907.png" alt="image-20240705105854907"></p>
+<p>然后在仓库中上传字体文件，下载字体的时候别下超过10M的，因为传不上去</p>
+<p><img src="/2024/07/05/wxxcxwlzt/image-20240705105943876.png" alt="image-20240705105943876"></p>
+<p>点进这个文件，下面有个下载，这个下载就是一个直链的下载地址了</p>
+<p><img src="/2024/07/05/wxxcxwlzt/image-20240705105956298.png" alt="image-20240705105956298"></p>
+<p>右键下载，复制链接</p>
+<img src="/2024/07/05/wxxcxwlzt/image-20240705110007315.png" alt="image-20240705110007315" style="zoom:50%;">
+
+<h2 id="3-在微信开发者工具中添加网络字体"><a href="#3-在微信开发者工具中添加网络字体" class="headerlink" title="3.在微信开发者工具中添加网络字体"></a>3.在微信开发者工具中添加网络字体</h2><p>在要添加的页面的.js文件中的生命周期函数–监听页面加载onLoad函数中添加一个获取字体，页面加载<br>时就会获取这个.ttf文件</p>
+<p>在.js的onLoad函数中添加：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">wx.<span class="title function_">loadFontFace</span>(&#123;</span><br><span class="line">    <span class="attr">family</span>: <span class="string">&#x27;abcabcabc&#x27;</span>,</span><br><span class="line">    <span class="attr">source</span>: <span class="string">&#x27;url(&quot;url&quot;)&#x27;</span>,</span><br><span class="line">    <span class="attr">success</span>: <span class="keyword">function</span> (<span class="params">e</span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(e, <span class="string">&#x27;动态加载字体成功&#x27;</span>)</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">fail</span>: <span class="keyword">function</span> (<span class="params">e</span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(e, <span class="string">&#x27;动态加载字体失败&#x27;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>source字段后面的url填写上面获取的文件直链地址</p>
+<p>family中填写字体的名字，起个名就可以。</p>
+<p>在wxss中添加</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">@font-face</span> &#123;</span><br><span class="line">    <span class="attribute">font-family</span>:<span class="string">&#x27;abcabcabc&#x27;</span>;</span><br><span class="line">    <span class="attribute">src</span>:<span class="built_in">url</span>(<span class="string">&#x27;url&#x27;</span>) <span class="built_in">format</span>(<span class="string">&#x27;opentype&#x27;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>url同样填写字体文件直链地址</p>
+<p>此时，网络字体就添加好了，然后在我们需要修改字体的text上添加一个style</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">text</span> <span class="attr">style</span>=<span class="string">&quot;font-family: abcabcabc &quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">text</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/2024/07/05/wxxcxwlzt/image-20240705110215808.png" alt="image-20240705110215808"></p>
+<p>但这只是在电脑上显示出来了，还要在真机上显示出来，因此到手机上预览</p>
+<img src="/2024/07/05/wxxcxwlzt/image-20240705110236259.png" alt="image-20240705110236259" style="zoom:33%;">
+
+<p>这样第三方网络字库就加载完成了</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/07/05/notes-md/" rel="prev" title="notes.md">
+      <i class="fa fa-chevron-left"></i> notes.md
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%AD%97%E4%BD%93%E6%9B%B4%E6%8D%A2%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">关于微信小程序字体更换问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%80%9D%E8%B7%AF"><span class="nav-number">2.</span> <span class="nav-text">解决思路</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E8%BF%87%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">实现过程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E8%8E%B7%E5%8F%96%E4%B8%80%E4%B8%AA%E5%AD%97%E4%BD%93-ttf%E6%96%87%E4%BB%B6"><span class="nav-number">3.1.</span> <span class="nav-text">1.获取一个字体.ttf文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%B0%86-ttf%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E4%B8%BA%E7%BD%91%E7%BB%9C%E7%9B%B4%E9%93%BE%E5%9C%B0%E5%9D%80"><span class="nav-number">3.2.</span> <span class="nav-text">2.将.ttf文件上传为网络直链地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%9C%A8%E5%BE%AE%E4%BF%A1%E5%BC%80%E5%8F%91%E8%80%85%E5%B7%A5%E5%85%B7%E4%B8%AD%E6%B7%BB%E5%8A%A0%E7%BD%91%E7%BB%9C%E5%AD%97%E4%BD%93"><span class="nav-number">3.3.</span> <span class="nav-text">3.在微信开发者工具中添加网络字体</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">ZYG</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ZYG</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">42k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">2:33</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

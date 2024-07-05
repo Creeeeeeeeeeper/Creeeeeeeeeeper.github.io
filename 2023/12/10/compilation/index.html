@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"creeeeeeeeeeper.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="汇编汇编基础二进制与十六进制十六进制相当于二进制的简写，可以看成二进制的另一种形式    二进制 十六进制    0000 0   0001 1   0010 2   0011 3   0100 4   0101 5   0110 6   0111 7   1000 8   1001 9   1010 A   1011 B   1100 C   1101 D   1110 E   1111 F">
+<meta property="og:type" content="article">
+<meta property="og:title" content="汇编">
+<meta property="og:url" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/index.html">
+<meta property="og:site_name" content="ZYG&#39;s Notes">
+<meta property="og:description" content="汇编汇编基础二进制与十六进制十六进制相当于二进制的简写，可以看成二进制的另一种形式    二进制 十六进制    0000 0   0001 1   0010 2   0011 3   0100 4   0101 5   0110 6   0111 7   1000 8   1001 9   1010 A   1011 B   1100 C   1101 D   1110 E   1111 F">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231212151255758.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231212185902221.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231212191059169.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231212191212571.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231212191247696.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231212191318028.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231212191335820.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231212192419732.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231212192619129.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231212192939039.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231212193232979.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231212194824981.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231212210545890.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231212215444670.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231212221448664.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231212224535417.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231212230144179.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231212232344040.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231212232757738.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231213141111995.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231213142908404.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231213143809023.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231213143923697.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231213214453116.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/20231213215254-1702475722564-2.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231214001525192.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231214001641026.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231214002210231.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231214150746795.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231214155227379.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231214155540532.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231214200005208.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231214200601922.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231214203450368.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231214204753323.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231214210900748.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231215160655838.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231215164449175.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231215162924185.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231215163246352.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231215164021815.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231215164146109.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231215163246352.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231215171758535.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231215205900615.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231216230528497.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231216231259394.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231218140943554.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231218141423898.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231218141946019.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231218143744957.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231218145121846.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231218151101155.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231218193139403.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231218193607613.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231218195643211.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231218201054537.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231218205916589.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231218205936389.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231218210027620.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231218211305524.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231218220233910.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231218220029004.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231218222947497.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231218220731549.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231218223845586.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231218231619393.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231218235421168.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231219140855744.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231219141132169.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231219142642622.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231219142743116.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231219143038753.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231219143145855.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231219143700233.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231219144356636.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231220200534314.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231220201144745.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231220202709803.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231220203846632.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231220205507636.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231220205751946.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231220211810092.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231221212906571.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231221214114019.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231221214706745.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231222144942623.png">
+<meta property="article:published_time" content="2023-12-10T04:40:34.000Z">
+<meta property="article:modified_time" content="2024-07-05T04:53:59.180Z">
+<meta property="article:author" content="ZYG">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/image-20231212151255758.png">
+
+<link rel="canonical" href="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>汇编 | ZYG's Notes</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">ZYG's Notes</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://creeeeeeeeeeper.github.io/2023/12/10/compilation/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ZYG">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ZYG's Notes">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          汇编
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-12-10 12:40:34" itemprop="dateCreated datePublished" datetime="2023-12-10T12:40:34+08:00">2023-12-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-07-05 12:53:59" itemprop="dateModified" datetime="2024-07-05T12:53:59+08:00">2024-07-05</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>8.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>30 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="汇编"><a href="#汇编" class="headerlink" title="汇编"></a>汇编</h1><h2 id="汇编基础"><a href="#汇编基础" class="headerlink" title="汇编基础"></a>汇编基础</h2><h3 id="二进制与十六进制"><a href="#二进制与十六进制" class="headerlink" title="二进制与十六进制"></a>二进制与十六进制</h3><p>十六进制相当于二进制的简写，可以看成二进制的另一种形式</p>
+<table>
+<thead>
+<tr>
+<th>二进制</th>
+<th>十六进制</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0000</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0001</td>
+<td>1</td>
+</tr>
+<tr>
+<td>0010</td>
+<td>2</td>
+</tr>
+<tr>
+<td>0011</td>
+<td>3</td>
+</tr>
+<tr>
+<td>0100</td>
+<td>4</td>
+</tr>
+<tr>
+<td>0101</td>
+<td>5</td>
+</tr>
+<tr>
+<td>0110</td>
+<td>6</td>
+</tr>
+<tr>
+<td>0111</td>
+<td>7</td>
+</tr>
+<tr>
+<td>1000</td>
+<td>8</td>
+</tr>
+<tr>
+<td>1001</td>
+<td>9</td>
+</tr>
+<tr>
+<td>1010</td>
+<td>A</td>
+</tr>
+<tr>
+<td>1011</td>
+<td>B</td>
+</tr>
+<tr>
+<td>1100</td>
+<td>C</td>
+</tr>
+<tr>
+<td>1101</td>
+<td>D</td>
+</tr>
+<tr>
+<td>1110</td>
+<td>E</td>
+</tr>
+<tr>
+<td>1111</td>
+<td>F</td>
+</tr>
+</tbody></table>
+<h3 id="数据宽度"><a href="#数据宽度" class="headerlink" title="数据宽度"></a>数据宽度</h3><h4 id="数据宽度-1"><a href="#数据宽度-1" class="headerlink" title="数据宽度"></a>数据宽度</h4><span id="more"></span>
+
+<p>  数学上的数字，是没有大小限制的，可以无限的大。但在计算机中，由于受硬件的制约，数据都是有长度限制的（称为数据宽度），超过最多宽度的数据会被丢弃</p>
+<h4 id="计算机中常见的数据宽度"><a href="#计算机中常见的数据宽度" class="headerlink" title="计算机中常见的数据宽度"></a>计算机中常见的数据宽度</h4><p>(1)位(BIT) 在计算机中存储数据的最小单位 能存一个1或一个0</p>
+<p>(2)字节(Byte) 一个字节能存储8个0或1 范围从00000000<del>11111111 即0</del>0xFF</p>
+<p>(3)字(Word) 能存16个0或1 0~0xFFFF</p>
+<p>(4)双字(Doubleword) 存储32个0或1 0~0xFFFFFFFF</p>
+<p><strong>如果要存储的数据超过最大宽度，那么多余的数据将被丢弃</strong></p>
+<h3 id="无符号数"><a href="#无符号数" class="headerlink" title="无符号数"></a>无符号数</h3><p>无符号数的编码规则：数是多少就存多少</p>
+<p>1001 1010 &#x3D;&gt; 9A</p>
+<p>有符号数的编码规则：最高位是0，则该数为正数；最高位是1，则该数为负数</p>
+<p>当该数为正时，编码规则与无符号数相同</p>
+<!--more-->
+
+<h3 id="原码，反码，补码"><a href="#原码，反码，补码" class="headerlink" title="原码，反码，补码"></a>原码，反码，补码</h3><h4 id="正数："><a href="#正数：" class="headerlink" title="正数："></a>正数：</h4><p><strong>原码：</strong>最高位为0，其余位为数值本身</p>
+<p><strong>反码：</strong>正数的反码与原码相同</p>
+<p><strong>补码：</strong>正数的补码与原码相同</p>
+<p>6： 0000 0110</p>
+<h4 id="负数："><a href="#负数：" class="headerlink" title="负数："></a>负数：</h4><p><strong>原码：</strong>最高位是1，其余位为数值本身的绝对值<br>​	-7： 1000 0111<br><strong>反码：</strong>除最高位，其他位1变0,0变1（除最高位取反）<br>​	-7： 1111 1000<br><strong>补码：</strong>负数的补码为反码+1<br>​	-7： 1111 1001</p>
+<h4 id="假设数据宽度为1BYTE（8BIT）"><a href="#假设数据宽度为1BYTE（8BIT）" class="headerlink" title="假设数据宽度为1BYTE（8BIT）"></a>假设数据宽度为1BYTE（8BIT）</h4><p>无符号数：0 1 2 3 4   …………    FF（10进制255）</p>
+<p>有符号数：<br>​	正数：0  ……7F</p>
+<p>​	负数：FF……80</p>
+<h4 id="假设数据宽度为Doubleword（32BIT）"><a href="#假设数据宽度为Doubleword（32BIT）" class="headerlink" title="假设数据宽度为Doubleword（32BIT）"></a>假设数据宽度为Doubleword（32BIT）</h4><p>无符号数：0 1 2 3 4 …… FFFFFFFF</p>
+<p>有符号数：<br>​	正数：0 …… 7FFFFFFF</p>
+<p>​	负数：FFFFFFFF …… 80000000</p>
+<h3 id="计算机如何运算-位运算"><a href="#计算机如何运算-位运算" class="headerlink" title="计算机如何运算 &#x3D;&gt; 位运算"></a>计算机如何运算 &#x3D;&gt; 位运算</h3><p>计算机只认识0和1，计算机只能对0和1做运算（通常称为位运算）</p>
+<h4 id="1-与运算"><a href="#1-与运算" class="headerlink" title="1.与运算"></a>1.与运算</h4><p>当两个位都为1时，结果才为1	比如：</p>
+<p>​						1011 0001<br>​and(&amp;)		 	1101 1000<br>​———————————-<br>​						1001 0000</p>
+<h4 id="2-或运算"><a href="#2-或运算" class="headerlink" title="2.或运算"></a>2.或运算</h4><p>只要有一个为1就是1</p>
+<p>​						1011 0001<br>​or(|)			 	1101 1000<br>​———————————-<br>​						1111 1001</p>
+<h4 id="3-异或运算"><a href="#3-异或运算" class="headerlink" title="3.异或运算"></a>3.异或运算</h4><p>不一样的时候是1</p>
+<p>​						1011 0001<br>​xor(^)			   1101 1000<br>​———————————-<br>​						0110 1001</p>
+<h4 id="4-非运算"><a href="#4-非运算" class="headerlink" title="4.非运算"></a>4.非运算</h4><p>0就是1 1就是0</p>
+<p>not(~)			   1101 1000<br>​———————————-<br>​				 		0010 0111</p>
+<h4 id="5-左移"><a href="#5-左移" class="headerlink" title="5.左移"></a>5.左移</h4><p>各二进位全部左移若干位，高位丢弃，低位补0</p>
+<p>shl(&lt;&lt;)		1101 1000 左移2位为：0110 0000</p>
+<h4 id="6-右移"><a href="#6-右移" class="headerlink" title="6.右移"></a>6.右移</h4><p>各二进位全部右移若干位，低位丢弃，高位补0或者补符号位</p>
+<h5 id="shr"><a href="#shr" class="headerlink" title="shr"></a><strong>shr</strong></h5><p>1101 0101	&#x3D;右移2位&gt;	 0011 0101<br>对应C语言(&gt;&gt;)</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">unsigned</span> <span class="type">int</span> a = <span class="number">10</span>;</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, a&gt;&gt;<span class="number">2</span>);</span><br></pre></td></tr></table></figure>
+
+<h5 id="sar"><a href="#sar" class="headerlink" title="sar"></a><strong>sar</strong></h5><p>1101 0101	&#x3D;&gt; 	1111 0101<br>对应C语言(&gt;&gt;)</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> a = <span class="number">10</span>;</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, a&gt;&gt;<span class="number">2</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="通过位运算实现四则运算"><a href="#通过位运算实现四则运算" class="headerlink" title="通过位运算实现四则运算"></a>通过位运算实现四则运算</h3><h4 id="加"><a href="#加" class="headerlink" title="加"></a>加</h4><p>如：4+5的运算过程</p>
+<p><strong>1）异或</strong></p>
+<p>​				0000 0100<br>​				0000 0101<br>异或———————<br>​				0000 0001</p>
+<p><strong>2）判断是否有进位</strong></p>
+<p>​				0000 0100<br>​				0000 0101<br>与————————<br>​				0000 0100</p>
+<p><strong>3）进位不为零 &#x3D;&gt; 左移</strong></p>
+<p>​				0000 0100<br>左移———————-<br>​				0000 1000</p>
+<p><strong>4）异或 &#x3D;&gt; 将第一次异或的值与进位后得到的值再异或</strong></p>
+<p>​				0000 0001<br>​				0000 1000<br>异或———————-<br>​				0000 1001</p>
+<p><strong>5）判断是否有进位</strong></p>
+<p>​				0000 0001<br>​				0000 1000<br>与————————<br>​				0000 0000</p>
+<p><strong>没有进位，就是加的结果</strong></p>
+<h4 id="减"><a href="#减" class="headerlink" title="减"></a>减</h4><p>4-5的运算过程</p>
+<p>4-5即4+(-5)</p>
+<p><strong>1）异或</strong></p>
+<p>​				0000 0100<br>​				1111 1011<br>异或———————-<br>​				1111 1111</p>
+<p><strong>2）判断是否有进位</strong></p>
+<p>​				0000 0100<br>​				1111 1011<br>与————————<br>​				0000 0000</p>
+<p><strong>所以4-5的结果就为1111 1111 &#x3D; FF &#x3D; -1</strong></p>
+<h4 id="乘"><a href="#乘" class="headerlink" title="乘"></a>乘</h4><p>X * Y 即X个Y相加</p>
+<h4 id="除"><a href="#除" class="headerlink" title="除"></a>除</h4><p>X &#x2F; Y 本质为减法  X能减去多少个Y</p>
+<h2 id="汇编-1"><a href="#汇编-1" class="headerlink" title="汇编"></a>汇编</h2><p><img src="/2023/12/10/compilation/image-20231212151255758.png" alt="image-20231212151255758"></p>
+<h3 id="1-寄存器"><a href="#1-寄存器" class="headerlink" title="1.寄存器"></a>1.寄存器</h3><p>存储数据  CPU &gt; 内存 &gt; 硬盘</p>
+<p>32位CPU：8  16  32<br>64位CPU：8  16  32  64</p>
+<h3 id="2-通用寄存器"><a href="#2-通用寄存器" class="headerlink" title="2.通用寄存器"></a>2.通用寄存器</h3><p>32位寄存器：</p>
+<p>EAX</p>
+<p>ECX</p>
+<p>EDX</p>
+<p>EBX</p>
+<p>ESP</p>
+<p>EBP</p>
+<p>ESI</p>
+<p>EDI</p>
+<h3 id="3-MOV指令"><a href="#3-MOV指令" class="headerlink" title="3.MOV指令"></a>3.MOV指令</h3><p>（1）MOV立即数到寄存器</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mov eax, 1</span><br></pre></td></tr></table></figure>
+
+<p>MOV寄存器到寄存器（将eax存的值赋值到ebx）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mov ebx, eax </span><br></pre></td></tr></table></figure>
+
+<img src="/2023/12/10/compilation/image-20231212185902221.png" alt="image-20231212185902221" style="zoom:50%;">
+
+
+
+
+
+<h3 id="4-16位寄存器，8位寄存器"><a href="#4-16位寄存器，8位寄存器" class="headerlink" title="4.16位寄存器，8位寄存器"></a>4.16位寄存器，8位寄存器</h3><p><img src="/2023/12/10/compilation/image-20231212191059169.png" alt="image-20231212191059169"><br><img src="/2023/12/10/compilation/image-20231212191212571.png" alt="image-20231212191212571" style="zoom:100%;"><br><img src="/2023/12/10/compilation/image-20231212191247696.png" alt="image-20231212191247696"><br><img src="/2023/12/10/compilation/image-20231212191318028.png" alt="image-20231212191318028"><br><img src="/2023/12/10/compilation/image-20231212191335820.png" alt="image-20231212191335820"></p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th>通用寄存器</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>32位</td>
+<td>16位</td>
+<td>8位</td>
+</tr>
+<tr>
+<td>EAX</td>
+<td>AX</td>
+<td>AL</td>
+</tr>
+<tr>
+<td>ECX</td>
+<td>CX</td>
+<td>CL</td>
+</tr>
+<tr>
+<td>EDX</td>
+<td>DX</td>
+<td>DL</td>
+</tr>
+<tr>
+<td>EBX</td>
+<td>BX</td>
+<td>BL</td>
+</tr>
+<tr>
+<td>ESP</td>
+<td>SP</td>
+<td>AH</td>
+</tr>
+<tr>
+<td>EBP</td>
+<td>BP</td>
+<td>CH</td>
+</tr>
+<tr>
+<td>ESI</td>
+<td>SI</td>
+<td>DH</td>
+</tr>
+<tr>
+<td>EDI</td>
+<td>DI</td>
+<td>BH</td>
+</tr>
+</tbody></table>
+<p><img src="/2023/12/10/compilation/image-20231212192419732.png" alt="image-20231212192419732"></p>
+<p><img src="/2023/12/10/compilation/image-20231212192619129.png" alt="image-20231212192619129"></p>
+<p>8位寄存器</p>
+<img src="/2023/12/10/compilation/image-20231212192939039.png" alt="image-20231212192939039" style="zoom:50%;">
+
+<img src="/2023/12/10/compilation/image-20231212193232979.png" alt="image-20231212193232979" style="zoom:50%;">
+
+<h3 id="5-内存"><a href="#5-内存" class="headerlink" title="5.内存"></a>5.内存</h3><h4 id="1-每个应用层序都会有自己的独立的4GB内存空间"><a href="#1-每个应用层序都会有自己的独立的4GB内存空间" class="headerlink" title="1.每个应用层序都会有自己的独立的4GB内存空间"></a>1.每个应用层序都会有自己的独立的4GB内存空间</h4><img src="/2023/12/10/compilation/image-20231212194824981.png" alt="image-20231212194824981" style="zoom:50%;">
+
+<h4 id="2-内存地址"><a href="#2-内存地址" class="headerlink" title="2.内存地址"></a>2.内存地址</h4><p>(1)内存太大没法起名字，所以只能用编号。当我们想要向内存中存储数据，或者从内存读取数据时，必须用到这个编号。</p>
+<p>(2)这个编号又称为内存地址（32位，前面0可以省略）[0x00000000]</p>
+<h5 id="使用内存"><a href="#使用内存" class="headerlink" title="使用内存"></a>使用内存</h5><p><strong>1.存立即数到内存</strong></p>
+<p>ptr ds:[   ]   里面写地址编号</p>
+<p>地址和通用寄存器不一样，每个应用程序有4GB的内存，但是使用内存之前要先申请，不是可以随便用，</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mov byte ptr ds:[0xFFFFFFFF], 1</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/12/10/compilation/image-20231212210545890.png" alt="image-20231212210545890"></p>
+<p>指令中的byte是数据大小，byte只有1字节，如果要写满数据，需要使用双字宽度dword，占4字节</p>
+<p>使用word，可以存储2字节</p>
+<p><strong>2.将寄存器中的值到内存</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mov dword ptr ds:[0x012FB000], eax</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/12/10/compilation/image-20231212215444670.png" alt="image-20231212215444670"></p>
+<p><strong>3.将内存中的值存到寄存器</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mov eax, dword ptr ds:[0x012FAFFC]</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/12/10/compilation/image-20231212221448664.png" alt="image-20231212221448664"></p>
+<h4 id="3-内存地址的五种形式"><a href="#3-内存地址的五种形式" class="headerlink" title="3.内存地址的五种形式"></a>3.内存地址的五种形式</h4><h5 id="1-形式一：-立即数"><a href="#1-形式一：-立即数" class="headerlink" title="1.形式一：[立即数]"></a>1.形式一：[立即数]</h5><p>读取内存的值</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mov eax,dword pyr ds:[0x012FAFFC]</span><br></pre></td></tr></table></figure>
+
+<p>向内存中写入数据</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mov dword ptr ds:[0x012FAFFC]</span><br></pre></td></tr></table></figure>
+
+<h5 id="2-形式二：-reg-reg-寄存器"><a href="#2-形式二：-reg-reg-寄存器" class="headerlink" title="2.形式二：[reg] reg &#x3D;&gt; 寄存器"></a>2.形式二：[reg] reg &#x3D;&gt; 寄存器</h5><p>reg代表寄存器，可以是8个通用寄存器中的任意一个</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mov dword ptr ds:[eax],ebx</span><br></pre></td></tr></table></figure>
+
+<p>此处，EAX指向一个内存地址”0x012FFCF8”，EBX的值为FFFFFFFF</p>
+<p><img src="/2023/12/10/compilation/image-20231212224535417.png" alt="image-20231212224535417"></p>
+<h5 id="3-形式三：-reg-立即数"><a href="#3-形式三：-reg-立即数" class="headerlink" title="3.形式三：[reg+立即数]"></a>3.形式三：[reg+立即数]</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mov dword ptr ds:[ecx+4],eax</span><br></pre></td></tr></table></figure>
+
+<p>此处ECX指向内存地址DBB000，+4后，[ECX+4]指向DBB004，然后将EAX中的值传到DBB004内存地址</p>
+<p><img src="/2023/12/10/compilation/image-20231212230144179.png" alt="image-20231212230144179"></p>
+<h5 id="4-形式四：-reg-reg-1-2-4-8"><a href="#4-形式四：-reg-reg-1-2-4-8" class="headerlink" title="4.形式四：[reg + reg * {1,2,4,8} ]"></a>4.形式四：[reg + reg * {1,2,4,8} ]</h5><p>寄存器加寄存器乘1,2,4,8中的一个数，一般C语言中数组生成的汇编语言是这样的</p>
+<p>读取内存的值：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mov eax, 0x13FFc4</span><br><span class="line">mov ebx, 2</span><br><span class="line">mov edx, dword ptr ds:[eax+ebx*2]</span><br></pre></td></tr></table></figure>
+
+<p>向内存中写入数据：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mov eax, 0x137B000</span><br><span class="line">mov ecx, 2</span><br><span class="line">mov dword ptr ds:[eax+ecx*4], FFFF0001</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/12/10/compilation/image-20231212232344040.png" alt="image-20231212232344040"></p>
+<p><img src="/2023/12/10/compilation/image-20231212232757738.png" alt="image-20231212232757738"></p>
+<h5 id="5-形式五：-reg-reg-1-2-4-8-立即数"><a href="#5-形式五：-reg-reg-1-2-4-8-立即数" class="headerlink" title="5.形式五：[reg + reg * {1,2,4,8} + 立即数 ]"></a>5.形式五：[reg + reg * {1,2,4,8} + 立即数 ]</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mov eax, 0x13FFc4</span><br><span class="line">mov ebx, 2</span><br><span class="line">mov edx, dword ptr ds:[eax+ebx*2+4]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mov eax, 0x137B000</span><br><span class="line">mov ecx, 2</span><br><span class="line">mov dword ptr ds:[eax+ecx*4+4], FFFF0001</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/12/10/compilation/image-20231213141111995.png" alt="image-20231213141111995"></p>
+<h3 id="6-数据的存储模式"><a href="#6-数据的存储模式" class="headerlink" title="6.数据的存储模式"></a>6.数据的存储模式</h3><p>1.大端模式：数据高位在低位，数据低位在高位</p>
+<p>2.小端模式：数据低位在低位，数据高位在高位</p>
+<p><img src="/2023/12/10/compilation/image-20231213142908404.png" alt="image-20231213142908404"></p>
+<p>大端模式：1A	0x00000000</p>
+<p>​				  2C	0x00000001</p>
+<p><img src="/2023/12/10/compilation/image-20231213143809023.png" alt="image-20231213143809023"></p>
+<p><img src="/2023/12/10/compilation/image-20231213143923697.png" alt="image-20231213143923697"></p>
+<p>大端存储或小端存储受编译器影响，可以改成大端或小端</p>
+<h3 id="7-常用的汇编指令"><a href="#7-常用的汇编指令" class="headerlink" title="7.常用的汇编指令"></a>7.常用的汇编指令</h3><h4 id="1-MOV指令"><a href="#1-MOV指令" class="headerlink" title="1.MOV指令"></a>1.MOV指令</h4><p>指令格式：<br>1、MOV r&#x2F;m8,r8<br>2、MOV r&#x2F;m16,r16	将寄存器的值存到寄存器或内存<br>3、MOV r&#x2F;m32,r32<br>4、MOV r8,r&#x2F;m8<br>5、MOV r16,r&#x2F;m16<br>6、MOV r32,r&#x2F;m32<br>7、MOV r8,imm8<br>8、MOV r16,imm16<br>9、MOV r32,imm32</p>
+<p>r代表通用寄存器，r8代表8位寄存器<br>m代表内存，m8代表8位内存<br>imm代表立即数，imm8代表8位立即数</p>
+<h4 id="2-ADD指令（加法指令）"><a href="#2-ADD指令（加法指令）" class="headerlink" title="2.ADD指令（加法指令）"></a>2.ADD指令（加法指令）</h4><p>ADD r&#x2F;m8,imm8<br>ADD r&#x2F;m16,imm16<br>ADD r&#x2F;m32,imm32<br>ADD r&#x2F;m16,imm8<br>ADD r&#x2F;m32,imm8<br>ADD r&#x2F;m8,r8<br>ADD r&#x2F;m16,r16<br>ADD r&#x2F;m32,r32<br>ADD r8,r&#x2F;m8<br>ADD r16,r&#x2F;m16<br>ADD r32,r&#x2F;m32</p>
+<h4 id="3-SUB指令（减法指令）"><a href="#3-SUB指令（减法指令）" class="headerlink" title="3.SUB指令（减法指令）"></a>3.SUB指令（减法指令）</h4><p>SUB r&#x2F;m8,imm8<br>SUB r&#x2F;m16,imm16<br>SUB r&#x2F;m32,imm32<br>SUB r&#x2F;m16,imm8<br>SUB r&#x2F;m32,imm8<br>SUB r&#x2F;m8,r8<br>SUB r&#x2F;m16,r16<br>SUB r&#x2F;m32,r32<br>SUB r8,r&#x2F;m8<br>SUB r16,r&#x2F;m16<br>SUB r32,r&#x2F;m32</p>
+<h4 id="4-AND指令（与运算）"><a href="#4-AND指令（与运算）" class="headerlink" title="4.AND指令（与运算）"></a>4.AND指令（与运算）</h4><p>AND r&#x2F;m8,imm8<br>AND r&#x2F;m16,imm16<br>AND r&#x2F;m32.imm32<br>AND r&#x2F;m16,imm8<br>AND r&#x2F;m32.imm8<br>AND r&#x2F;m8,r8<br>AND r&#x2F;m16,r16<br>AND r&#x2F;m32.,r32<br>AND r8,r&#x2F;m8<br>AND r16,r&#x2F;m16<br>AND r32,r&#x2F;m32</p>
+<h4 id="5-XOR指令（异或运算）"><a href="#5-XOR指令（异或运算）" class="headerlink" title="5.XOR指令（异或运算）"></a>5.XOR指令（异或运算）</h4><p>XOR r&#x2F;m8,imm8<br>XOR r&#x2F;m16,imm16<br>XOR r&#x2F;m32.imm32<br>XOR r&#x2F;m16,imm8<br>XOR r&#x2F;m32,imm8<br>XOR r&#x2F;m8,r8<br>XOR r&#x2F;m16,r16<br>XOR r&#x2F;m32,r32<br>XOR r8,r&#x2F;m8<br>XOR r16.r&#x2F;m16<br>XOR r32,r&#x2F;m32</p>
+<h4 id="6-NOT指令（非运算）"><a href="#6-NOT指令（非运算）" class="headerlink" title="6.NOT指令（非运算）"></a>6.NOT指令（非运算）</h4><p>NOT r&#x2F;m8<br>NOT r&#x2F;m16<br>NOT r&#x2F;m32</p>
+<h4 id="7-MOVS指令-移动数据从内存到内存"><a href="#7-MOVS指令-移动数据从内存到内存" class="headerlink" title="7.MOVS指令 移动数据从内存到内存"></a>7.MOVS指令 移动数据从内存到内存</h4><p>MOVS BYTE PTR ES:[EDI],BYTE PTR DS:[ESI]	简写为：MOVSB<br>MOVS WORD PTR ES:[EDI],BYTE PTR DS:[ESI]	简写为：MOVSW<br>MOVS DWORD PTR ES:[EDI],BYTE PTR DS:[ESI]	简写为：MOVSD</p>
+<p>ESI存储的是一个地址，是一个内存编号，就是要复制的数据在哪里</p>
+<p>EDI存储的是一个地址，是要把数据复制到哪里去</p>
+<p><strong>标志寄存器 EFL</strong></p>
+<p>00000204</p>
+<img src="/2023/12/10/compilation/image-20231213214453116.png" alt="image-20231213214453116" style="zoom: 67%;">
+
+<p>第十位为DF位，当DF位为0时，使用MOVS等指令，MOVS完之后，地址会自动递增（从低地址向高地址处理串）</p>
+<p>​						当DF位为1时，使用MOVS等指令，MOVS完之后，地址会自动递减（从高地址向低地址处理串）</p>
+<img src="/2023/12/10/compilation/20231213215254-1702475722564-2.png" alt="20231213215254" style="zoom:150%;">
+
+<p>地址自动递增（递减）时，移动的长度取决于移动了一个字节、两个字节还是四个字节。</p>
+<h4 id="8-STOS指令"><a href="#8-STOS指令" class="headerlink" title="8.STOS指令"></a>8.STOS指令</h4><p>将<strong>al&#x2F;ax&#x2F;eax</strong>的值存储到[EDI]指定的内存单元</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">STOS BYTE PTR ES:[EDI]	每次存一个字节</span><br><span class="line">STOS WORD PTR ES:[EDI]	每次存两个字节</span><br><span class="line">STOS DWORD PTR ES:[EDI]	每次存四个字节</span><br></pre></td></tr></table></figure>
+
+<h4 id="9-REP指令"><a href="#9-REP指令" class="headerlink" title="9.REP指令"></a>9.REP指令</h4><p>按照计数寄存器（ECX）中指定的次数重复执行字符串指令</p>
+<p>计数寄存器是ECX，不是别的</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">MOV ECX,10</span><br><span class="line">REP MOVSD</span><br><span class="line"></span><br><span class="line">MOV STOSD</span><br></pre></td></tr></table></figure>
+
+<p>首先在ECX中存一个数，这个数是十六进制的，如果ECX中存10，则执行16次，每执行一次减一</p>
+<h3 id="8-堆栈相关的指令"><a href="#8-堆栈相关的指令" class="headerlink" title="8.堆栈相关的指令"></a>8.堆栈相关的指令</h3><h4 id="1-堆栈"><a href="#1-堆栈" class="headerlink" title="1.堆栈"></a>1.堆栈</h4><p>1）就是一块内存，操作系统在程序启动时已经分配好的，供程序执行时使用。<br>2）和数据结构的堆栈无关<br>3）查看堆栈</p>
+<h3 id="2-ESP寄存器（栈指针寄存器）"><a href="#2-ESP寄存器（栈指针寄存器）" class="headerlink" title="2.ESP寄存器（栈指针寄存器）"></a>2.ESP寄存器（栈指针寄存器）</h3><h3 id="3-PUSH指令"><a href="#3-PUSH指令" class="headerlink" title="3.PUSH指令"></a>3.PUSH指令</h3><p>功能： &lt; 1 &gt; 向堆栈中压入数据<br>            &lt; 2 &gt;修改栈顶指针ESP寄存器</p>
+<p><img src="/2023/12/10/compilation/image-20231214001525192.png" alt="image-20231214001525192"></p>
+<p>执行PUSH指令后：</p>
+<p><img src="/2023/12/10/compilation/image-20231214001641026.png" alt="image-20231214001641026"></p>
+<p>4被存储在了0x0053FF14中，并且ESP指向了当前的地址，因此PUSH指令是将MOV DWORD PTR DS:[]指令和SUB ESP,0x4简化了</p>
+<p>除了PUSH立即数，还能PUSH寄存器</p>
+<p><img src="/2023/12/10/compilation/image-20231214002210231.png" alt="image-20231214002210231"></p>
+<h3 id="9-EIP寄存器"><a href="#9-EIP寄存器" class="headerlink" title="9.EIP寄存器"></a>9.EIP寄存器</h3><h4 id="JMP"><a href="#JMP" class="headerlink" title="JMP"></a>JMP</h4><p>EIP寄存器不能使用MOV进行修改</p>
+<p>使用JMP指令修改EIP寄存器，EIP寄存器存储的是CPU下一次要执行的地址</p>
+<p><img src="/2023/12/10/compilation/image-20231214150746795.png" alt="image-20231214150746795"></p>
+<p>JUM指令可以跟立即数，也可以跟其他寄存器或内存</p>
+<h4 id="CALL"><a href="#CALL" class="headerlink" title="CALL"></a>CALL</h4><p>1.将CALL后面的值存到EIP里<br>2.将CALL的下一行地址存到了堆栈中<br>3.ESP中的地址减0x4</p>
+<p><img src="/2023/12/10/compilation/image-20231214155227379.png" alt="image-20231214155227379"></p>
+<p><img src="/2023/12/10/compilation/image-20231214155540532.png" alt="image-20231214155540532"></p>
+<h4 id="RET（return）"><a href="#RET（return）" class="headerlink" title="RET（return）"></a>RET（return）</h4><p>1.将当前栈顶指针ESP的值放到EIP里<br>2.将ESP加0x4</p>
+<p>相当于：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ADD ESP,4</span><br><span class="line">MOV EIP, [ESP-4]</span><br></pre></td></tr></table></figure>
+
+<h3 id="10-函数"><a href="#10-函数" class="headerlink" title="10.函数"></a>10.函数</h3><h4 id="1-函数的执行与调用"><a href="#1-函数的执行与调用" class="headerlink" title="1.函数的执行与调用"></a>1.函数的执行与调用</h4><p><strong>调用函数时一般使用CALL指令：</strong>因为通过CALL指令，会把CALL的下一行地址压到堆栈中，此时执行完函数之后只需要使用RET指令，即可返回到CALL指令的下一行</p>
+<p><img src="/2023/12/10/compilation/image-20231214200005208.png" alt="image-20231214200005208"></p>
+<p>执行函数后：</p>
+<p><img src="/2023/12/10/compilation/image-20231214200601922.png" alt="image-20231214200601922"></p>
+<p><strong>在调用函数传参时，如果有10个参数怎么办，</strong>如果使用通用寄存器只有8个，则使用<strong>堆栈传参</strong></p>
+<p>用过PUSH指令，向堆栈中压入参数，需要调用的时候，在函数中使用ESP寻找参数</p>
+<p><img src="/2023/12/10/compilation/image-20231214203450368.png" alt="image-20231214203450368"></p>
+<p><img src="/2023/12/10/compilation/image-20231214204753323.png" alt="image-20231214204753323"></p>
+<p>因为CALL函数后，ESP会-4操作并寄存CALL的下一行的地址，所以使用ADD EAX, DWORD PTR DS:[ESP+立即数] 即可找到之前PUSH的参数</p>
+<h4 id="2-堆栈平衡"><a href="#2-堆栈平衡" class="headerlink" title="2.堆栈平衡"></a>2.堆栈平衡</h4><p>在函数调用的时候，执行完CALL指令，会将下一行地址压入堆栈，此时进入了函数体，当函数在执行时，可能会PUSH一些值到堆栈中，此时ESP指向的地址就不是CALL的下一行地址，如果此时使用了RET指令，那么返回的地址错误，程序就会出错，也就是堆栈不平衡。</p>
+<p>所以在函数执行完毕执行RET指令时，要保证ESP指向的地址是之前CALL指令执行后的下一行地址。</p>
+<p><img src="/2023/12/10/compilation/image-20231214210900748.png" alt="image-20231214210900748"></p>
+<h3 id="11-寻址"><a href="#11-寻址" class="headerlink" title="11.寻址"></a>11.寻址</h3><h4 id="1-ESP寻址"><a href="#1-ESP寻址" class="headerlink" title="1.ESP寻址"></a>1.ESP寻址</h4><p>当使用ESP寻址之前在函数体中又向堆栈中PUSH了值，就会使ESP寻址更加困难，而且在堆栈中暂存寄存器的值还需要POP，所以使用ESP寻址较繁琐。</p>
+<p><img src="/2023/12/10/compilation/image-20231215160655838.png" alt="image-20231215160655838"></p>
+<p><img src="/2023/12/10/compilation/image-20231215164449175.png" alt="image-20231215164449175"></p>
+<h4 id="2-EBP寻址"><a href="#2-EBP寻址" class="headerlink" title="2.EBP寻址"></a>2.EBP寻址</h4><p>先将EBP保存起来，然后让EBP指向ESP的位置，将现在的ESP提升一块，也就划分出了一块新的堆栈，供当前程序(函数)使用。</p>
+<p>当CALL函数时，继续向堆栈中压入数据，ESP会上下浮动，但是不会影响从EBP到ESP提升后的位置。从EBP到ESP提升的这一段空间就可以放置参数，那么参数就可以使用EBP来寻址。</p>
+<h5 id="1-保存EBP"><a href="#1-保存EBP" class="headerlink" title="1.保存EBP"></a>1.保存EBP</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">call 0x000000AA</span><br><span class="line"></span><br><span class="line">000000AA:  PUSH EBP // 将EBP之前的值存储起来</span><br></pre></td></tr></table></figure>
+
+<p>此时，堆栈就会变成这样</p>
+<img src="/2023/12/10/compilation/image-20231215162924185.png" alt="image-20231215162924185" style="zoom:67%;">
+
+<h5 id="2-将EBP提升到ESP"><a href="#2-将EBP提升到ESP" class="headerlink" title="2.将EBP提升到ESP"></a>2.将EBP提升到ESP</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mov ebp, esp</span><br></pre></td></tr></table></figure>
+
+<p>此时堆栈和栈指针变成这样：</p>
+<img src="/2023/12/10/compilation/image-20231215163246352.png" alt="image-20231215163246352" style="zoom:67%;">
+
+<h5 id="3-提升ESP栈顶指针"><a href="#3-提升ESP栈顶指针" class="headerlink" title="3.提升ESP栈顶指针"></a>3.提升ESP栈顶指针</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sub esp 4*0x4</span><br></pre></td></tr></table></figure>
+
+<p>使用sub就是将ESP指针向上移，使EBP向上到ESP腾出了一部分空间</p>
+<p><img src="/2023/12/10/compilation/image-20231215164021815.png" alt="image-20231215164021815" style="zoom:67%;"><img src="/2023/12/10/compilation/image-20231215164146109.png" alt="image-20231215164146109"></p>
+<h5 id="4-使用内存"><a href="#4-使用内存" class="headerlink" title="4.使用内存"></a>4.使用内存</h5><p>可以使用EBP栈指针寻找参数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mov eax dword ptr ss:[ebp+0x8]</span><br><span class="line">add eax dword ptr ss:[ebp+0xC]</span><br></pre></td></tr></table></figure>
+
+<h5 id="5-恢复内存"><a href="#5-恢复内存" class="headerlink" title="5.恢复内存"></a>5.恢复内存</h5><p>将ESP返回到EBP的位置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MOV ESP, EBP</span><br></pre></td></tr></table></figure>
+
+<img src="/2023/12/10/compilation/image-20231215163246352.png" alt="image-20231215163246352" style="zoom:67%;">
+
+<p>此时EBP不用了，就把EBP取回</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">POP EBP</span><br></pre></td></tr></table></figure>
+
+<p>弹出后EBP后ESP会指向之前存EBP的内存地址</p>
+<p>此时堆栈就恢复到了EBP寻址前的样子</p>
+<h5 id="6-RET-立即数"><a href="#6-RET-立即数" class="headerlink" title="6.RET 立即数"></a>6.RET 立即数</h5><p>因为CALL之前压入了参数，所以用RET 立即数  进行堆栈平衡</p>
+<p><strong>EBP寻址总过程：</strong></p>
+<p><img src="/2023/12/10/compilation/image-20231215171758535.png" alt="image-20231215171758535"></p>
+<h3 id="12-JCC"><a href="#12-JCC" class="headerlink" title="12.JCC"></a>12.JCC</h3><h4 id="1-标志寄存器EFLAGS"><a href="#1-标志寄存器EFLAGS" class="headerlink" title="1.标志寄存器EFLAGS"></a>1.标志寄存器EFLAGS</h4><p> <img src="/2023/12/10/compilation/image-20231215205900615.png" alt="image-20231215205900615"></p>
+<h3 id="13-硬编码"><a href="#13-硬编码" class="headerlink" title="13.硬编码"></a>13.硬编码</h3><h4 id="1-指令编码（硬编码）的结构"><a href="#1-指令编码（硬编码）的结构" class="headerlink" title="1.指令编码（硬编码）的结构"></a>1.指令编码（硬编码）的结构</h4><p><img src="/2023/12/10/compilation/image-20231216230528497.png" alt="image-20231216230528497"> </p>
+<h4 id="2-反汇编引擎（x32dbg-DTDebug"><a href="#2-反汇编引擎（x32dbg-DTDebug" class="headerlink" title="2.反汇编引擎（x32dbg , DTDebug"></a>2.反汇编引擎（x32dbg , DTDebug</h4><p>将硬编码转换成汇编语言，或将汇编语言转换成硬编码</p>
+<p><img src="/2023/12/10/compilation/image-20231216231259394.png" alt="image-20231216231259394"></p>
+<h4 id="3-前缀指令"><a href="#3-前缀指令" class="headerlink" title="3.前缀指令"></a>3.前缀指令</h4><img src="/2023/12/10/compilation/image-20231218140943554.png" alt="image-20231218140943554" style="zoom:50%;">
+
+<p>看上面的结构图，最后面有一个(optional)，说明指令前缀是可选的。CPU判断一个指令是前缀还是OPcode，通过值来判断。</p>
+<p>反汇编引擎会在前缀指令后面加一个冒号来区分。但是，实际上在exe中并没有这个冒号</p>
+<p><img src="/2023/12/10/compilation/image-20231218141423898.png" alt="image-20231218141423898"></p>
+<p>前缀指令是分组的，前缀指令最多四个，每组最多一个</p>
+<img src="/2023/12/10/compilation/image-20231218141946019.png" alt="image-20231218141946019" style="zoom:50%;">
+
+<h5 id="（1）LOCK和REPEAT前缀指令"><a href="#（1）LOCK和REPEAT前缀指令" class="headerlink" title="（1）LOCK和REPEAT前缀指令"></a>（1）LOCK和REPEAT前缀指令</h5><p><strong>LOCK</strong>					F0，用来锁地址总线，如果在一个地址上加上LOCK，如果在同一时刻有多个CPU核执行这条指令，只能有一个核可以读取这个地址，其他核不能读取这个地址。这条指令在多核下才有用，单核没有什么作用</p>
+<p><strong>REPNE&#x2F;REPNZ</strong>	F2<br>                                   这两个指令，当EFLAGS寄存器的ZF位为0的时候执行上面的ZF位为1时执行下面的<br><strong>REP&#x2F;REPZ</strong>			F3</p>
+<h5 id="（2）段（段寄存器）前缀指令-操作系统、内核程序"><a href="#（2）段（段寄存器）前缀指令-操作系统、内核程序" class="headerlink" title="（2）段（段寄存器）前缀指令  &#x3D;&gt; 操作系统、内核程序"></a>（2）段（段寄存器）前缀指令  &#x3D;&gt; 操作系统、内核程序</h5><p>CS(2E)、SS(36)、DS(3E)、ES(26)、FS(64)、GS(65)</p>
+<p>如果不指定哪个段寄存器，则使用DS段寄存器；当寻址时出现了EBP、ESP时，默认使用的段寄存器是SS段寄存器</p>
+<p>段寄存器就是指定寻址时，使用的段寄存器是谁</p>
+<p>比如，当加上了前缀指令65，那么后面就会使用GS段寄存器</p>
+<p><img src="/2023/12/10/compilation/image-20231218143744957.png" alt="image-20231218143744957"></p>
+<h5 id="操作数宽度前缀指令-66"><a href="#操作数宽度前缀指令-66" class="headerlink" title="操作数宽度前缀指令 66"></a>操作数宽度前缀指令 66</h5><p>66</p>
+<p>比如，当硬编码55 PUSH EBP 时，默认的是32位的EBP寄存器，如果想用16位的BP寄存器，则在前面加上前缀指令 66，用来改变操作数宽度。而如果当前CPU默认处于16位状态下，如果加上66前缀，那么操作数就会变成32位的EBP寄存器</p>
+<p><img src="/2023/12/10/compilation/image-20231218145121846.png" alt="image-20231218145121846"></p>
+<h5 id="地址宽度前缀指令-67"><a href="#地址宽度前缀指令-67" class="headerlink" title="地址宽度前缀指令 67"></a>地址宽度前缀指令 67</h5><p>当当前的寻址方式是32位的，当加上地址宽度前缀时，32位的寻址方式会变成16位寻址方式</p>
+<p><img src="/2023/12/10/compilation/image-20231218151101155.png" alt="image-20231218151101155"></p>
+<p><strong>总结：</strong>前缀指令最多四个，每组一个，一行指令可以添加多个前缀指令，前缀指令的顺序没有要求。</p>
+<h4 id="4-定长指令与变长指令"><a href="#4-定长指令与变长指令" class="headerlink" title="4.定长指令与变长指令"></a>4.定长指令与变长指令</h4><p>Opcode：在硬编码结构中，其他的结构可以没有，但是opcode必须要有，opcode 可以是1byte 2byte 3byte<br>Opcode是一条指令中最重要的组成部分，后面的ModR&#x2F;M有没有由Opcode决定，SIB有没有由ModR&#x2F;M决定。</p>
+<p>定长指令：当Opcode确定了，指令长度就确定了</p>
+<p>变长指令：仅仅通过Opcode是无法确定长度的</p>
+<h5 id="定长指令"><a href="#定长指令" class="headerlink" title="定长指令"></a>定长指令</h5><p><strong>经典定长指令：修改ERX（通用寄存器）</strong></p>
+<p>1.PUSH&#x2F;POP  50<del>57,58</del>5F</p>
+<img src="/2023/12/10/compilation/image-20231218193139403.png" alt="image-20231218193139403" style="zoom:67%;">
+
+<p>2.INC&#x2F;DEC  40<del>47,48</del>4F</p>
+<p>INC加一，DEC减一</p>
+<img src="/2023/12/10/compilation/image-20231218193607613.png" alt="image-20231218193607613" style="zoom: 67%;">
+
+<p>3.mov 寄存器, 立即数</p>
+<img src="/2023/12/10/compilation/image-20231218195643211.png" alt="image-20231218195643211" style="zoom:67%;">
+
+<p>4.XCHG 两个寄存器的值交换</p>
+<img src="/2023/12/10/compilation/image-20231218201054537.png" alt="image-20231218201054537" style="zoom:67%;">
+
+<p><strong>经典定长指令：修改EIP（CPU执行地址）</strong></p>
+<p><img src="/2023/12/10/compilation/image-20231218205916589.png" alt="image-20231218205916589"></p>
+<p><img src="/2023/12/10/compilation/image-20231218205936389.png" alt="image-20231218205936389"></p>
+<p><img src="/2023/12/10/compilation/image-20231218210027620.png" alt="image-20231218210027620"></p>
+<p><img src="/2023/12/10/compilation/image-20231218211305524.png" alt="image-20231218211305524"></p>
+<h5 id="变长指令"><a href="#变长指令" class="headerlink" title="变长指令"></a>变长指令</h5><p>当opcode 后面有ModR&#x2F;M结构时，就是变长指令<br>重要的变长指令</p>
+<p><img src="/2023/12/10/compilation/image-20231218220233910.png" alt="image-20231218220233910"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">0x88  MOV Eb, Gb</span><br><span class="line">0x89  MOV Ev, Gv</span><br><span class="line">0x8A  MOV Gb, Eb</span><br><span class="line">0x8B  MOV Gv, Ev</span><br><span class="line"></span><br><span class="line">G:通用寄存器 E:寄存器/内存</span><br><span class="line">b:字节	  v:Word, doubleword or quaword</span><br></pre></td></tr></table></figure>
+
+
+<p>ModR&#x2F;M占一个字节，该字节的8个位被分成了三部分使用</p>
+<p><img src="/2023/12/10/compilation/image-20231218220029004.png" alt="image-20231218220029004"></p>
+<p>Mod(6,7位)和R&#x2F;M(0、1、2位) 共同描述指令中的E部分即寄存器或内存</p>
+<p><img src="/2023/12/10/compilation/image-20231218222947497.png" alt="image-20231218222947497"></p>
+<p>ModR&#x2F;M中间部分第3、4、5位，用来描述Reg&#x2F;Opcode也就是指令中的G部分，即寄存器</p>
+<p><img src="/2023/12/10/compilation/image-20231218220731549.png" alt="image-20231218220731549"></p>
+<p>比如一个硬编码 <strong>88 01</strong></p>
+<p>88：MOV Eb, Gb</p>
+<p>01：00 000 001 第3、4、5位是000，查表能得到EAX&#x2F;AL。因为G后面跟的b，所以是8位的AL。		现在的指令就是MOV Eb, AL</p>
+<p>再查表，Mod：00，R&#x2F;M：001，对应的寄存器是ECX						所以，指令就变成了	<strong>MOV BYTE PTR DS:[ECX], AL</strong></p>
+<h5 id="ModR-M结构"><a href="#ModR-M结构" class="headerlink" title="ModR&#x2F;M结构"></a>ModR&#x2F;M结构</h5><p><img src="/2023/12/10/compilation/image-20231218223845586.png" alt="image-20231218223845586"></p>
+<p>1.Mod与R&#x2F;M共同描述E的意义（内存或者通用寄存器）</p>
+<p>2、Reg&#x2F;Opcode描述了G的意义（通用寄存器）。但3-5字段，并不仅仅用来标识寄存器，有些时候，用来标识Opcode。</p>
+<p>拆一个编码 80 65</p>
+<p>65：   01   					100 					  101<br>       Mod:01		Reg&#x2F;Opencode			R&#x2F;M:101</p>
+<p>根据Mod R&#x2F;M查出byte ptr ds:[ebp+dis8], Ib</p>
+<p>当查表时看到Grp，就要去查Table A-6</p>
+<p><img src="/2023/12/10/compilation/image-20231218231619393.png" alt="image-20231218231619393"></p>
+<p>Table A-6：</p>
+<p><img src="/2023/12/10/compilation/image-20231218235421168.png" alt="image-20231218235421168"></p>
+<p>查表A-2能得到100对应的是AND指令，所以，80 65对应的汇编就是AND byte ptr ds:[ebp+dis8], Ib</p>
+<p>但是发现这条指令里面还有一个8位的地址偏移DIS8，一个立即数Ib，所以后面还应该有两个值。</p>
+<p><img src="/2023/12/10/compilation/image-20231219140855744.png" alt="image-20231219140855744"></p>
+<h5 id="定长指令-SIB"><a href="#定长指令-SIB" class="headerlink" title="定长指令 SIB"></a>定长指令 SIB</h5><img src="/2023/12/10/compilation/image-20231219141132169.png" alt="image-20231219141132169" style="zoom:67%;">
+
+<p>如一个指令 88 84 48</p>
+<p>通过查表，88是MOV Eb, Gb		那么84就是ModR&#x2F;M。10      000       100<br>                                                                                        Mod     Reg      R&#x2F;M</p>
+<p>Reg：AL		查表得Mod为00，01，10时，R&#x2F;M对应的是 [ – ] [ – ] 或 [ – ] [ – ] +disp8 或 [ – ] [ – ] +disp32</p>
+<p>那么这里的[ – ] [ – ]就是由SIB决定的，因此48就是SIB。</p>
+<p><strong>SIB的指令结构：</strong><br><img src="/2023/12/10/compilation/image-20231219142642622.png" alt="image-20231219142642622"></p>
+<p><img src="/2023/12/10/compilation/image-20231219142743116.png" alt="image-20231219142743116"></p>
+<p>48： 01         001       000			&#x3D;&gt; 	<strong>查Table2-3</strong><br>       scale	 index	 base</p>
+<p><img src="/2023/12/10/compilation/image-20231219143038753.png" alt="image-20231219143038753"></p>
+<p><img src="/2023/12/10/compilation/image-20231219143145855.png" alt="image-20231219143145855"></p>
+<p>查base是000，所以是[EAX]</p>
+<p>再找scale 和 index ，是[ECX * 2]</p>
+<img src="/2023/12/10/compilation/image-20231219143700233.png" alt="image-20231219143700233" style="zoom:50%;">
+
+<p>所以48对应的SIB就是[ EAX + ECX * 2 ]</p>
+<p>因此，88 84 48对应的汇编代码就是MOV BYTE PTR DS:[ EAX + ECX * 2 + DIS32], AL</p>
+<p>因为还有一个32位的地址偏移，所以88 84 48后面还会跟着四个字节</p>
+<p><img src="/2023/12/10/compilation/image-20231219144356636.png" alt="image-20231219144356636"></p>
+<h3 id="堆栈"><a href="#堆栈" class="headerlink" title="堆栈"></a>堆栈</h3><p>堆栈的本质就是一块内存，在程序启动之初就分配好了，给程序执行的之后使用。任何一个程序用到的关键数据都存在堆栈里。</p>
+<p>栈是一种<strong>后进先出</strong>的数据结构</p>
+<h4 id="1-ESP和EBP"><a href="#1-ESP和EBP" class="headerlink" title="1.ESP和EBP"></a>1.ESP和EBP</h4><p>ESP栈顶指针，它表示当前这块堆栈用到哪里了。ESP上面的堆栈是还未使用的堆栈。</p>
+<p>EBP是栈底指针，这个栈底指针不是指堆栈的最底部，而是当前这一段代码(函数)的栈底（本层call的栈底）</p>
+<h4 id="2-PUSH、POP-堆栈操作指令"><a href="#2-PUSH、POP-堆栈操作指令" class="headerlink" title="2.PUSH、POP  堆栈操作指令"></a>2.PUSH、POP  堆栈操作指令</h4><p>PUSH就是把数据传入到堆栈，POP就是把数据从堆栈中取出来</p>
+<p>PUSH是压栈，POP是从栈顶取出一个值</p>
+<h4 id="3-PUSHAD和POPAD"><a href="#3-PUSHAD和POPAD" class="headerlink" title="3.PUSHAD和POPAD"></a>3.PUSHAD和POPAD</h4><p>PUSHAD：将所有寄存器压入堆栈<br>POPAD：将所有寄存器从堆栈中还原</p>
+<h4 id="4-堆栈平衡"><a href="#4-堆栈平衡" class="headerlink" title="4.堆栈平衡"></a>4.堆栈平衡</h4><p>  在函数调用的时候，执行完CALL指令，会将下一行地址压入堆栈，此时进入了函数体，当函数在执行时，可能会PUSH一些值到堆栈中，此时ESP指向的地址就不是CALL的下一行地址，如果此时使用了RET指令，那么返回的地址错误，程序就会出错，也就是堆栈不平衡。</p>
+<p>  所以在函数执行完毕执行RET指令时，要保证ESP指向的地址是之前CALL指令执行后的下一行地址。</p>
+<p>  还有一种情况就是当在函数调用中向堆栈中PUSH了数据（如：PUSH 1，PUSH 2），但是调用完函数之后，0x00000001和0x00000002没有用了，占了两个堆栈空间，这也是堆栈不平衡。</p>
+<p>  在CALL函数之后，内平栈或外平栈</p>
+<h3 id="调用约定"><a href="#调用约定" class="headerlink" title="调用约定"></a>调用约定</h3><p>调用约定规定了两个东西：</p>
+<ol>
+<li>函数的参数入栈顺序(从左到右还是从右到左)</li>
+<li>参数平栈的方式(内平栈外平栈)</li>
+</ol>
+<h2 id="汇编指令"><a href="#汇编指令" class="headerlink" title="汇编指令"></a>汇编指令</h2><h3 id="1-MOV指令-1"><a href="#1-MOV指令-1" class="headerlink" title="1.MOV指令"></a>1.MOV指令</h3><p>MOV 寄存器, 寄存器<br>MOV 寄存器, 内存<br>MOV [内存地址], 寄存器<br>MOV [内存地址], 立即数<br>MOV 寄存器, 立即数</p>
+<h3 id="2-MOVZX指令"><a href="#2-MOVZX指令" class="headerlink" title="2.MOVZX指令"></a>2.MOVZX指令</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">MOV EAX, 0xFFFFFFFF</span><br><span class="line">MOV AL, 0x11</span><br><span class="line">MOVZX EAX, AL</span><br></pre></td></tr></table></figure>
+
+<p>1.将AL赋值给EAX，EAX的值就等于FFFFFF11<br>2.零扩展，其他位清零</p>
+<p>所以EAX最后等于 0x00000011</p>
+<h3 id="3-LEA指令"><a href="#3-LEA指令" class="headerlink" title="3.LEA指令"></a>3.LEA指令</h3><p>取地址		LEA 寄存器, [内存地址]</p>
+<p><img src="/2023/12/10/compilation/image-20231220200534314.png" alt="image-20231220200534314"></p>
+<h3 id="4-XCHG指令-交换指令"><a href="#4-XCHG指令-交换指令" class="headerlink" title="4.XCHG指令  交换指令"></a>4.XCHG指令  交换指令</h3><p>交换两个数据</p>
+<p>XCHG EAX, EBX	&#x3D;&gt;	交换EAX和EBX中的值</p>
+<p><img src="/2023/12/10/compilation/image-20231220201144745.png" alt="image-20231220201144745"></p>
+<h3 id="5-运算指令"><a href="#5-运算指令" class="headerlink" title="5.运算指令"></a>5.运算指令</h3><h4 id="1-ADD指令-加法指令"><a href="#1-ADD指令-加法指令" class="headerlink" title="1.ADD指令  加法指令"></a>1.ADD指令  加法指令</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ADD 操作数1, 操作数2</span><br><span class="line">操作数1 += 操作数2</span><br></pre></td></tr></table></figure>
+
+<p>将操作数2加到操作数1</p>
+<p>ADD指令不能使用 内存+内存；ADD会影响到进位标志位CF位：无符号整数发生溢出时被置1</p>
+<p><img src="/2023/12/10/compilation/image-20231220202709803.png" alt="image-20231220202709803"></p>
+<h4 id="2-ADC指令-进位加指令"><a href="#2-ADC指令-进位加指令" class="headerlink" title="2.ADC指令  进位加指令"></a>2.ADC指令  进位加指令</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ADC 操作数1, 操作数2</span><br></pre></td></tr></table></figure>
+
+<p>将操作数2加到操作数1，再加上进位标志位</p>
+<p><img src="/2023/12/10/compilation/image-20231220203846632.png" alt="image-20231220203846632"></p>
+<h4 id="3-SUB指令-减法指令"><a href="#3-SUB指令-减法指令" class="headerlink" title="3.SUB指令  减法指令"></a>3.SUB指令  减法指令</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SUB 操作数1, 操作数2</span><br><span class="line">操作数1 -= 操作数2</span><br></pre></td></tr></table></figure>
+
+<p>SUB指令也会影响到CF进位标志位，当SUB借位时，CF位也会被置1</p>
+<h4 id="4-SBB指令-进位减指令"><a href="#4-SBB指令-进位减指令" class="headerlink" title="4.SBB指令  进位减指令"></a>4.SBB指令  进位减指令</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SBB 操作数1, 操作数2</span><br></pre></td></tr></table></figure>
+
+<p>将操作数1减去操作数2，再减去CF进位标志位</p>
+<h4 id="5-INC指令-自增指令"><a href="#5-INC指令-自增指令" class="headerlink" title="5.INC指令  自增指令"></a>5.INC指令  自增指令</h4><p>自增指令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">MOV EAX, 0x0</span><br><span class="line">INC EAX ----------&gt; EAX=0x1</span><br></pre></td></tr></table></figure>
+
+<h4 id="6-DEC指令-自减指令"><a href="#6-DEC指令-自减指令" class="headerlink" title="6.DEC指令  自减指令"></a>6.DEC指令  自减指令</h4><p>自减指令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">MOV EAX, 0x1</span><br><span class="line">DEC EAX ----------&gt; EAX=0x0</span><br></pre></td></tr></table></figure>
+
+<h4 id="7-MUL指令-无符号乘法指令"><a href="#7-MUL指令-无符号乘法指令" class="headerlink" title="7.MUL指令  无符号乘法指令"></a>7.MUL指令  无符号乘法指令</h4><p>MUL是单操作数指令	隐藏乘数时EAX</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">MOV EAX, 0x1234</span><br><span class="line">MOV EBX, 0x10</span><br><span class="line">MUL EBX ----------&gt; EAX = 0x12340</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/12/10/compilation/image-20231220205507636.png" alt="image-20231220205507636"></p>
+<h4 id="8-IMUL指令-有符号乘法指令"><a href="#8-IMUL指令-有符号乘法指令" class="headerlink" title="8.IMUL指令  有符号乘法指令"></a>8.IMUL指令  有符号乘法指令</h4><p>IMUL是双操作数指令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">MOV EAX, 0x20</span><br><span class="line">MOB EBX, 0x2</span><br><span class="line">IMUL EAX, EBX ----------&gt; EAX = 0x40</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/12/10/compilation/image-20231220205751946.png" alt="image-20231220205751946"></p>
+<p>会影响到OF溢出标志位：有符号数产生溢出时，OF位被置1</p>
+<h4 id="9-DIV指令-无符号除法指令"><a href="#9-DIV指令-无符号除法指令" class="headerlink" title="9.DIV指令  无符号除法指令"></a>9.DIV指令  无符号除法指令</h4><p>除法的概念</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">5 / 3 = 1 ... 2</span><br></pre></td></tr></table></figure>
+
+<p>5是被除数，3是除数，1是商，2是余数</p>
+<p><img src="/2023/12/10/compilation/image-20231220211810092.png" alt="image-20231220211810092"></p>
+<h4 id="10-IDIV指令-有符号除法指令"><a href="#10-IDIV指令-有符号除法指令" class="headerlink" title="10.IDIV指令  有符号除法指令"></a>10.IDIV指令  有符号除法指令</h4><p>与无符号除法基本一样</p>
+<h3 id="6-位运算"><a href="#6-位运算" class="headerlink" title="6.位运算"></a>6.位运算</h3><h4 id="1-AND指令-与运算指令"><a href="#1-AND指令-与运算指令" class="headerlink" title="1.AND指令  与运算指令"></a>1.AND指令  与运算指令</h4><p>操作数1,：reg&#x2F;mem<br>操作数2：reg&#x2F;mem&#x2F;imm</p>
+<p>操作：将操作数1与操作数2进行按位与运算，结果存到操作数1中</p>
+<h4 id="2-OR指令-或运算指令"><a href="#2-OR指令-或运算指令" class="headerlink" title="2.OR指令 或运算指令"></a>2.OR指令 或运算指令</h4><p>操作数1,：reg&#x2F;mem<br>操作数2：reg&#x2F;mem&#x2F;imm</p>
+<p>操作：将操作数1与操作数2进行按位或运算，结果存到操作数1中</p>
+<h4 id="3-XOR指令-异或运算指令"><a href="#3-XOR指令-异或运算指令" class="headerlink" title="3.XOR指令  异或运算指令"></a>3.XOR指令  异或运算指令</h4><p>操作数1,：reg&#x2F;mem<br>操作数2：reg&#x2F;mem&#x2F;imm</p>
+<p>操作：将操作数1与操作数2进行按位异或运算，结果存到操作数1中</p>
+<h4 id="4-NOT指令-非运算指令"><a href="#4-NOT指令-非运算指令" class="headerlink" title="4.NOT指令  非运算指令"></a>4.NOT指令  非运算指令</h4><p>操作数1,：reg&#x2F;mem<br>操作数2：reg&#x2F;mem&#x2F;imm</p>
+<p>操作：将操作数1与操作数2进行按位非运算，结果存到操作数1中</p>
+<h4 id="5-SHL指令-左移-LEFT-指令"><a href="#5-SHL指令-左移-LEFT-指令" class="headerlink" title="5.SHL指令  左移(LEFT)指令"></a>5.SHL指令  左移(LEFT)指令</h4><p>操作数1：reg<br>操作数2：imm&#x2F;CL</p>
+<p>操作：左移 （乘2^n）</p>
+<h4 id="6-SHR指令-右移-RIGHT-指令"><a href="#6-SHR指令-右移-RIGHT-指令" class="headerlink" title="6.SHR指令  右移(RIGHT)指令"></a>6.SHR指令  右移(RIGHT)指令</h4><p>操作数1：reg<br>操作数2：imm&#x2F;CL</p>
+<p>操作：右移（除以2^n）</p>
+<h3 id="7-比较指令"><a href="#7-比较指令" class="headerlink" title="7.比较指令"></a>7.比较指令</h3><p>逻辑运算都不会得到运算结果，仅仅设置标志寄存器中的相应标志位，同行&#x3D;&#x3D;通常都是配合跳转指令，实现汇编中的选择或者循环结构</p>
+<h4 id="1-CMP指令"><a href="#1-CMP指令" class="headerlink" title="1.CMP指令"></a>1.CMP指令</h4><p>CMP用于比较两个数的大小</p>
+<p>操作数1：reg<br>操作数2：reg&#x2F;mem&#x2F;imm<br>指令结构：CMP 操作数1，操作数2<br>执行操作：用操作数1减去操作数2，并根据结果设置EFLAGS寄存器中的状态标志<br>                  不会设置结果，只会根据结果设置标志寄存器中的值</p>
+<p>SF符号位（第七位）：设置成结果的最高位，也就是带符号位中的符号位（0表示正数，1表示负数）</p>
+<p>ZF零标志位（第六位）：当运算结果为0时，该标志位被置1</p>
+<p>PF奇偶标志位（第二位）：当结果的最低字节中1的个数为偶数（最后的运算结果为偶数）时置1，否则置0</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">MOV EAX, 0x1</span><br><span class="line">CMP EAX, 0x1</span><br></pre></td></tr></table></figure>
+
+<p>执行CMP指令，EAX会被减1，但是运算后的值不会赋值给EAX<br>执行后，EAX运算的值是0，因此，ZF位被置1</p>
+<p>当两数相等时，CMP两个数，ZF位和PF位都会被置1。<br>当EAX中的值小于后面的数时，EAX-IMM为负数，所以SF符号位会被置1</p>
+<h4 id="2-TEXT指令"><a href="#2-TEXT指令" class="headerlink" title="2.TEXT指令"></a>2.TEXT指令</h4><p>最常用的功能就是测试某个寄存器的值是不是0</p>
+<p>操作数1：reg<br>操作数2：reg&#x2F;mem&#x2F;imm<br>指令结构 TEST 操作数1，操作数2<br>执行操作：将操作数1和操作数2进行按位与运算，并根据结果设置SF ZF PF状态标志，然后丢弃结果</p>
+<p>一般会写：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">TEST EDX, EDX</span><br><span class="line">TEST EAX, EAX</span><br><span class="line">TEST ECX, ECX</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+
+<p>用来判断某个寄存器中的值是否为0。当某个寄存器中的值为0时，ZF位会被置1</p>
+<h3 id="8-串操作指令"><a href="#8-串操作指令" class="headerlink" title="8.串操作指令"></a>8.串操作指令</h3><h4 id="1-MOVS指令-将ESI地址指向的内存复制到EDI指向的内存中"><a href="#1-MOVS指令-将ESI地址指向的内存复制到EDI指向的内存中" class="headerlink" title="1.MOVS指令  将ESI地址指向的内存复制到EDI指向的内存中"></a>1.MOVS指令  将ESI地址指向的内存复制到EDI指向的内存中</h4><p>之前的MOV指令不允许MOV内存到内存；MOVS指令可以从一个内存地址移动到另一个内存地址</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">MOVS BYTE PTR ES:[EDI], BYTE PTR DS:[ESI] ----------&gt; 简写:MOVSB</span><br><span class="line">MOVS WORD PTR ES:[EDI], WORD PTR DS:[ESI] ----------&gt; 简写:MOVSW</span><br><span class="line">MOVS DWORD PTR ES:[EDI], DWPRD PTR DS:[ESI] ----------&gt; 简写:MOVSD</span><br></pre></td></tr></table></figure>
+
+<p>前面是目的操作数dest（ [EDI] ），后面是源操作数src（ [ESI] ）</p>
+<p>当DF位方向标志位置1时，执行完串操作指令，串操作指令地址会自动自减（高地址向低地址）<br>当DF位方向标志位置0时，执行完串操作指令，串操作指令地址会自动自增（低地址向高地址）<br>当MOVSB时，EDI ESI自减(增)一个字节；MOVSW时自减(增)两个字节；MOVSD时自减(增)四个字节</p>
+<p>串操作指令用到的寄存器都是EDI和ESI，不能用其他的寄存器。</p>
+<p>以C语言为例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">strcpy</span>(dest, src, size)</span><br></pre></td></tr></table></figure>
+
+<p>EDI就相当于dest，ESI就相当于src，BYTE&#x2F;WORD&#x2F;DWORD就相当于size</p>
+<h4 id="2-STOS指令-将EAX的值复制到EDI指向的内存地址中"><a href="#2-STOS指令-将EAX的值复制到EDI指向的内存地址中" class="headerlink" title="2.STOS指令  将EAX的值复制到EDI指向的内存地址中"></a>2.STOS指令  将EAX的值复制到EDI指向的内存地址中</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">STOS BYTE PTR ES:[EDI] ----------&gt; 简写为STOSB</span><br><span class="line">STOS WORD PTR ES:[EDI] ----------&gt; 简写为STOSW</span><br><span class="line">STOS DWORD PTR ES:[EDI] ---------&gt; 简写为SWOSD</span><br></pre></td></tr></table></figure>
+
+<p>STOS指令是将AL&#x2F;AX&#x2F;EAX中的值存储到EDI里。<br>执行完之后，EDI的值也会自增(减)，也取决于DF标志位和操作数宽度</p>
+<p><img src="/2023/12/10/compilation/image-20231221212906571.png" alt="image-20231221212906571"></p>
+<h4 id="3-REP重复执行指令"><a href="#3-REP重复执行指令" class="headerlink" title="3.REP重复执行指令"></a>3.REP重复执行指令</h4><p>按ECX寄存器中指定的次数重复执行字符串指令，并且每执行一次ECX中的数值就会减一。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">MOV ECX, 0x10</span><br><span class="line">REP MOVSD</span><br><span class="line">REP STOSD</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/12/10/compilation/image-20231221214114019.png" alt="image-20231221214114019"></p>
+<p><img src="/2023/12/10/compilation/image-20231221214706745.png" alt="image-20231221214706745"></p>
+<h3 id="9-修改EIP指令"><a href="#9-修改EIP指令" class="headerlink" title="9.修改EIP指令"></a>9.修改EIP指令</h3><h4 id="1-JMP指令"><a href="#1-JMP指令" class="headerlink" title="1.JMP指令"></a>1.JMP指令</h4><p>当要修改EIP指针时，不能使用mov eip, 0xFFFFFFFF直接修改EIP的值</p>
+<p>但是可以通过JMP指令间接修改EIP。JMP指令表示需要跳转到哪个内存地址</p>
+<p>JMP可以直接跟地址，或者跟一个寄存器</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">JMP 0x00000000</span><br><span class="line">		|</span><br><span class="line">		|</span><br><span class="line">		v</span><br><span class="line">MOV EAX, 0x00000000</span><br><span class="line">JMP EAX</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-CALL指令"><a href="#2-CALL指令" class="headerlink" title="2.CALL指令"></a>2.CALL指令</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">CALL 0x00000000</span><br><span class="line">		|</span><br><span class="line">		|</span><br><span class="line">		v</span><br><span class="line">PUSH 0x00000004</span><br><span class="line">JMP 0x00000000</span><br></pre></td></tr></table></figure>
+
+<h3 id="10-EFLAGS寄存器"><a href="#10-EFLAGS寄存器" class="headerlink" title="10.EFLAGS寄存器"></a>10.EFLAGS寄存器</h3><h4 id="1、进位标志CF-Carry-Flag"><a href="#1、进位标志CF-Carry-Flag" class="headerlink" title="1、进位标志CF(Carry Flag)"></a>1、进位标志CF(Carry Flag)</h4><p>进位标志CF主要用来反映运算是否产生进位或借位。如果运算结果的最高位产生了一个进位或借位，那么，其值为1，否则其值为0。</p>
+<p>使用该标志位的情况有：多字(字节)数的加减运算，无符号数的大小比较运算，移位操作，字(字节)之间移位，专门改变CF值的指令等。</p>
+<h4 id="2、奇偶标志PF-Parity-Flag"><a href="#2、奇偶标志PF-Parity-Flag" class="headerlink" title="2、奇偶标志PF(Parity Flag)"></a>2、奇偶标志PF(Parity Flag)</h4><p>奇偶标志PF用于反映运算结果中“1”的个数的奇偶性。如果“1”的个数为偶数，则PF的值为1，否则其值为0。</p>
+<p>利用PF可进行奇偶校验检查，或产生奇偶校验位。在数据传送过程中，为了提供传送的可靠性，如果采用奇偶校验的方法，就可使用该标志位。</p>
+<h4 id="3、辅助进位标志AF-Auxiliary-Carry-Flag"><a href="#3、辅助进位标志AF-Auxiliary-Carry-Flag" class="headerlink" title="3、辅助进位标志AF(Auxiliary Carry Flag)"></a>3、辅助进位标志AF(Auxiliary Carry Flag)</h4><p>在发生下列情况时，辅助进位标志AF的值被置为1，否则其值为0：<br>(1)、在字操作时，发生低字节向高字节进位或借位时；<br>(2)、在字节操作时，发生低4位向高4位进位或借位时。</p>
+<p>对以上6个运算结果标志位，在一般编程情况下，标志位CF、ZF、SF和OF的使用频率较高，而标志位PF和AF的使用频率较低。</p>
+<h4 id="4、零标志ZF-Zero-Flag"><a href="#4、零标志ZF-Zero-Flag" class="headerlink" title="4、零标志ZF(Zero Flag)"></a>4、零标志ZF(Zero Flag)</h4><p>零标志ZF用来反映运算结果是否为0。如果运算结果为0，则其值为1，否则其值为0。在判断运算结果是否为0时，可使用此标志位。</p>
+<h4 id="5、符号标志SF-Sign-Flag"><a href="#5、符号标志SF-Sign-Flag" class="headerlink" title="5、符号标志SF(Sign Flag)"></a>5、符号标志SF(Sign Flag)</h4><p>符号标志SF用来反映运算结果的符号位，它与运算结果的最高位相同。在微机系统中，有符号数采用补码表示法，所以，SF也就反映运算结果的正负号。运算结果为正数时，SF的值为0，否则其值为1。</p>
+<h4 id="6、溢出标志OF-Overflow-Flag"><a href="#6、溢出标志OF-Overflow-Flag" class="headerlink" title="6、溢出标志OF(Overflow Flag)"></a>6、溢出标志OF(Overflow Flag)</h4><p>溢出标志OF用于反映有符号数加减运算所得结果是否溢出。如果运算结果超过当前运算位数所能表示的范围，则称为溢出，OF的值被置为1，否则，OF的值被清为0。</p>
+<h4 id="7、追踪标志TF-Trap-Flag"><a href="#7、追踪标志TF-Trap-Flag" class="headerlink" title="7、追踪标志TF(Trap Flag)"></a>7、追踪标志TF(Trap Flag)</h4><p>当追踪标志TF被置为1时，CPU进入单步执行方式，即每执行一条指令，产生一个单步中断请求。这种方式主要用于程序的调试。</p>
+<p>指令系统中没有专门的指令来改变标志位TF的值，但程序员可用其它办法来改变其值。</p>
+<h4 id="8、中断允许标志IF-Interrupt-enable-Flag"><a href="#8、中断允许标志IF-Interrupt-enable-Flag" class="headerlink" title="8、中断允许标志IF(Interrupt-enable Flag)"></a>8、中断允许标志IF(Interrupt-enable Flag)</h4><p>中断允许标志IF是用来决定CPU是否响应CPU外部的可屏蔽中断发出的中断请求。但不管该标志为何值，CPU都必须响应CPU外部的不可屏蔽中断所发出的中断请求，以及CPU内部产生的中断请求。具体规定如下：</p>
+<ul>
+<li>(1)、当IF&#x3D;1时，CPU可以响应CPU外部的可屏蔽中断发出的中断请求；</li>
+<li>(2)、当IF&#x3D;0时，CPU不响应CPU外部的可屏蔽中断发出的中断请求。</li>
+</ul>
+<p>CPU的指令系统中也有专门的指令来改变标志位IF的值。</p>
+<h4 id="9、方向标志DF-Direction-Flag"><a href="#9、方向标志DF-Direction-Flag" class="headerlink" title="9、方向标志DF(Direction Flag)"></a>9、方向标志DF(Direction Flag)</h4><p>方向标志DF用来决定在串操作指令执行时有关指针寄存器发生调整的方向。在微机的指令系统中，还提供了专门的指令来改变标志位DF的值。</p>
+<h3 id="11-JCC指令"><a href="#11-JCC指令" class="headerlink" title="11.JCC指令"></a>11.JCC指令</h3><img src="/2023/12/10/compilation/image-20231222144942623.png" alt="image-20231222144942623" style="zoom:67%;">
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/11/26/wxxcxwlzt/" rel="prev" title="微信小程序加载网络字体">
+      <i class="fa fa-chevron-left"></i> 微信小程序加载网络字体
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/12/15/c/" rel="next" title="c">
+      c <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B1%87%E7%BC%96"><span class="nav-number">1.</span> <span class="nav-text">汇编</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B1%87%E7%BC%96%E5%9F%BA%E7%A1%80"><span class="nav-number">1.1.</span> <span class="nav-text">汇编基础</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E8%BF%9B%E5%88%B6%E4%B8%8E%E5%8D%81%E5%85%AD%E8%BF%9B%E5%88%B6"><span class="nav-number">1.1.1.</span> <span class="nav-text">二进制与十六进制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%AE%BD%E5%BA%A6"><span class="nav-number">1.1.2.</span> <span class="nav-text">数据宽度</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%AE%BD%E5%BA%A6-1"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">数据宽度</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%B8%AD%E5%B8%B8%E8%A7%81%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AE%BD%E5%BA%A6"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">计算机中常见的数据宽度</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B0"><span class="nav-number">1.1.3.</span> <span class="nav-text">无符号数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E7%A0%81%EF%BC%8C%E5%8F%8D%E7%A0%81%EF%BC%8C%E8%A1%A5%E7%A0%81"><span class="nav-number">1.1.4.</span> <span class="nav-text">原码，反码，补码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AD%A3%E6%95%B0%EF%BC%9A"><span class="nav-number">1.1.4.1.</span> <span class="nav-text">正数：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B4%9F%E6%95%B0%EF%BC%9A"><span class="nav-number">1.1.4.2.</span> <span class="nav-text">负数：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%81%87%E8%AE%BE%E6%95%B0%E6%8D%AE%E5%AE%BD%E5%BA%A6%E4%B8%BA1BYTE%EF%BC%888BIT%EF%BC%89"><span class="nav-number">1.1.4.3.</span> <span class="nav-text">假设数据宽度为1BYTE（8BIT）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%81%87%E8%AE%BE%E6%95%B0%E6%8D%AE%E5%AE%BD%E5%BA%A6%E4%B8%BADoubleword%EF%BC%8832BIT%EF%BC%89"><span class="nav-number">1.1.4.4.</span> <span class="nav-text">假设数据宽度为Doubleword（32BIT）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%A6%82%E4%BD%95%E8%BF%90%E7%AE%97-%E4%BD%8D%E8%BF%90%E7%AE%97"><span class="nav-number">1.1.5.</span> <span class="nav-text">计算机如何运算 &#x3D;&gt; 位运算</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E4%B8%8E%E8%BF%90%E7%AE%97"><span class="nav-number">1.1.5.1.</span> <span class="nav-text">1.与运算</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E6%88%96%E8%BF%90%E7%AE%97"><span class="nav-number">1.1.5.2.</span> <span class="nav-text">2.或运算</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E5%BC%82%E6%88%96%E8%BF%90%E7%AE%97"><span class="nav-number">1.1.5.3.</span> <span class="nav-text">3.异或运算</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E9%9D%9E%E8%BF%90%E7%AE%97"><span class="nav-number">1.1.5.4.</span> <span class="nav-text">4.非运算</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-%E5%B7%A6%E7%A7%BB"><span class="nav-number">1.1.5.5.</span> <span class="nav-text">5.左移</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-%E5%8F%B3%E7%A7%BB"><span class="nav-number">1.1.5.6.</span> <span class="nav-text">6.右移</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#shr"><span class="nav-number">1.1.5.6.1.</span> <span class="nav-text">shr</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#sar"><span class="nav-number">1.1.5.6.2.</span> <span class="nav-text">sar</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E8%BF%87%E4%BD%8D%E8%BF%90%E7%AE%97%E5%AE%9E%E7%8E%B0%E5%9B%9B%E5%88%99%E8%BF%90%E7%AE%97"><span class="nav-number">1.1.6.</span> <span class="nav-text">通过位运算实现四则运算</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8A%A0"><span class="nav-number">1.1.6.1.</span> <span class="nav-text">加</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%87%8F"><span class="nav-number">1.1.6.2.</span> <span class="nav-text">减</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B9%98"><span class="nav-number">1.1.6.3.</span> <span class="nav-text">乘</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%99%A4"><span class="nav-number">1.1.6.4.</span> <span class="nav-text">除</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B1%87%E7%BC%96-1"><span class="nav-number">1.2.</span> <span class="nav-text">汇编</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">1.2.1.</span> <span class="nav-text">1.寄存器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E9%80%9A%E7%94%A8%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.通用寄存器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-MOV%E6%8C%87%E4%BB%A4"><span class="nav-number">1.2.3.</span> <span class="nav-text">3.MOV指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-16%E4%BD%8D%E5%AF%84%E5%AD%98%E5%99%A8%EF%BC%8C8%E4%BD%8D%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">1.2.4.</span> <span class="nav-text">4.16位寄存器，8位寄存器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E5%86%85%E5%AD%98"><span class="nav-number">1.2.5.</span> <span class="nav-text">5.内存</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E6%AF%8F%E4%B8%AA%E5%BA%94%E7%94%A8%E5%B1%82%E5%BA%8F%E9%83%BD%E4%BC%9A%E6%9C%89%E8%87%AA%E5%B7%B1%E7%9A%84%E7%8B%AC%E7%AB%8B%E7%9A%844GB%E5%86%85%E5%AD%98%E7%A9%BA%E9%97%B4"><span class="nav-number">1.2.5.1.</span> <span class="nav-text">1.每个应用层序都会有自己的独立的4GB内存空间</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E5%86%85%E5%AD%98%E5%9C%B0%E5%9D%80"><span class="nav-number">1.2.5.2.</span> <span class="nav-text">2.内存地址</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%86%85%E5%AD%98"><span class="nav-number">1.2.5.2.1.</span> <span class="nav-text">使用内存</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E5%86%85%E5%AD%98%E5%9C%B0%E5%9D%80%E7%9A%84%E4%BA%94%E7%A7%8D%E5%BD%A2%E5%BC%8F"><span class="nav-number">1.2.5.3.</span> <span class="nav-text">3.内存地址的五种形式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E5%BD%A2%E5%BC%8F%E4%B8%80%EF%BC%9A-%E7%AB%8B%E5%8D%B3%E6%95%B0"><span class="nav-number">1.2.5.3.1.</span> <span class="nav-text">1.形式一：[立即数]</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E5%BD%A2%E5%BC%8F%E4%BA%8C%EF%BC%9A-reg-reg-%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">1.2.5.3.2.</span> <span class="nav-text">2.形式二：[reg] reg &#x3D;&gt; 寄存器</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E5%BD%A2%E5%BC%8F%E4%B8%89%EF%BC%9A-reg-%E7%AB%8B%E5%8D%B3%E6%95%B0"><span class="nav-number">1.2.5.3.3.</span> <span class="nav-text">3.形式三：[reg+立即数]</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-%E5%BD%A2%E5%BC%8F%E5%9B%9B%EF%BC%9A-reg-reg-1-2-4-8"><span class="nav-number">1.2.5.3.4.</span> <span class="nav-text">4.形式四：[reg + reg * {1,2,4,8} ]</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-%E5%BD%A2%E5%BC%8F%E4%BA%94%EF%BC%9A-reg-reg-1-2-4-8-%E7%AB%8B%E5%8D%B3%E6%95%B0"><span class="nav-number">1.2.5.3.5.</span> <span class="nav-text">5.形式五：[reg + reg * {1,2,4,8} + 立即数 ]</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E6%95%B0%E6%8D%AE%E7%9A%84%E5%AD%98%E5%82%A8%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.2.6.</span> <span class="nav-text">6.数据的存储模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E5%B8%B8%E7%94%A8%E7%9A%84%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4"><span class="nav-number">1.2.7.</span> <span class="nav-text">7.常用的汇编指令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-MOV%E6%8C%87%E4%BB%A4"><span class="nav-number">1.2.7.1.</span> <span class="nav-text">1.MOV指令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-ADD%E6%8C%87%E4%BB%A4%EF%BC%88%E5%8A%A0%E6%B3%95%E6%8C%87%E4%BB%A4%EF%BC%89"><span class="nav-number">1.2.7.2.</span> <span class="nav-text">2.ADD指令（加法指令）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-SUB%E6%8C%87%E4%BB%A4%EF%BC%88%E5%87%8F%E6%B3%95%E6%8C%87%E4%BB%A4%EF%BC%89"><span class="nav-number">1.2.7.3.</span> <span class="nav-text">3.SUB指令（减法指令）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-AND%E6%8C%87%E4%BB%A4%EF%BC%88%E4%B8%8E%E8%BF%90%E7%AE%97%EF%BC%89"><span class="nav-number">1.2.7.4.</span> <span class="nav-text">4.AND指令（与运算）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-XOR%E6%8C%87%E4%BB%A4%EF%BC%88%E5%BC%82%E6%88%96%E8%BF%90%E7%AE%97%EF%BC%89"><span class="nav-number">1.2.7.5.</span> <span class="nav-text">5.XOR指令（异或运算）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-NOT%E6%8C%87%E4%BB%A4%EF%BC%88%E9%9D%9E%E8%BF%90%E7%AE%97%EF%BC%89"><span class="nav-number">1.2.7.6.</span> <span class="nav-text">6.NOT指令（非运算）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-MOVS%E6%8C%87%E4%BB%A4-%E7%A7%BB%E5%8A%A8%E6%95%B0%E6%8D%AE%E4%BB%8E%E5%86%85%E5%AD%98%E5%88%B0%E5%86%85%E5%AD%98"><span class="nav-number">1.2.7.7.</span> <span class="nav-text">7.MOVS指令 移动数据从内存到内存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-STOS%E6%8C%87%E4%BB%A4"><span class="nav-number">1.2.7.8.</span> <span class="nav-text">8.STOS指令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#9-REP%E6%8C%87%E4%BB%A4"><span class="nav-number">1.2.7.9.</span> <span class="nav-text">9.REP指令</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-%E5%A0%86%E6%A0%88%E7%9B%B8%E5%85%B3%E7%9A%84%E6%8C%87%E4%BB%A4"><span class="nav-number">1.2.8.</span> <span class="nav-text">8.堆栈相关的指令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E5%A0%86%E6%A0%88"><span class="nav-number">1.2.8.1.</span> <span class="nav-text">1.堆栈</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-ESP%E5%AF%84%E5%AD%98%E5%99%A8%EF%BC%88%E6%A0%88%E6%8C%87%E9%92%88%E5%AF%84%E5%AD%98%E5%99%A8%EF%BC%89"><span class="nav-number">1.2.9.</span> <span class="nav-text">2.ESP寄存器（栈指针寄存器）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-PUSH%E6%8C%87%E4%BB%A4"><span class="nav-number">1.2.10.</span> <span class="nav-text">3.PUSH指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-EIP%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">1.2.11.</span> <span class="nav-text">9.EIP寄存器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#JMP"><span class="nav-number">1.2.11.1.</span> <span class="nav-text">JMP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CALL"><span class="nav-number">1.2.11.2.</span> <span class="nav-text">CALL</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RET%EF%BC%88return%EF%BC%89"><span class="nav-number">1.2.11.3.</span> <span class="nav-text">RET（return）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-%E5%87%BD%E6%95%B0"><span class="nav-number">1.2.12.</span> <span class="nav-text">10.函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E5%87%BD%E6%95%B0%E7%9A%84%E6%89%A7%E8%A1%8C%E4%B8%8E%E8%B0%83%E7%94%A8"><span class="nav-number">1.2.12.1.</span> <span class="nav-text">1.函数的执行与调用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E5%A0%86%E6%A0%88%E5%B9%B3%E8%A1%A1"><span class="nav-number">1.2.12.2.</span> <span class="nav-text">2.堆栈平衡</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#11-%E5%AF%BB%E5%9D%80"><span class="nav-number">1.2.13.</span> <span class="nav-text">11.寻址</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-ESP%E5%AF%BB%E5%9D%80"><span class="nav-number">1.2.13.1.</span> <span class="nav-text">1.ESP寻址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-EBP%E5%AF%BB%E5%9D%80"><span class="nav-number">1.2.13.2.</span> <span class="nav-text">2.EBP寻址</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E4%BF%9D%E5%AD%98EBP"><span class="nav-number">1.2.13.2.1.</span> <span class="nav-text">1.保存EBP</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E5%B0%86EBP%E6%8F%90%E5%8D%87%E5%88%B0ESP"><span class="nav-number">1.2.13.2.2.</span> <span class="nav-text">2.将EBP提升到ESP</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E6%8F%90%E5%8D%87ESP%E6%A0%88%E9%A1%B6%E6%8C%87%E9%92%88"><span class="nav-number">1.2.13.2.3.</span> <span class="nav-text">3.提升ESP栈顶指针</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-%E4%BD%BF%E7%94%A8%E5%86%85%E5%AD%98"><span class="nav-number">1.2.13.2.4.</span> <span class="nav-text">4.使用内存</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-%E6%81%A2%E5%A4%8D%E5%86%85%E5%AD%98"><span class="nav-number">1.2.13.2.5.</span> <span class="nav-text">5.恢复内存</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-RET-%E7%AB%8B%E5%8D%B3%E6%95%B0"><span class="nav-number">1.2.13.2.6.</span> <span class="nav-text">6.RET 立即数</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-JCC"><span class="nav-number">1.2.14.</span> <span class="nav-text">12.JCC</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E6%A0%87%E5%BF%97%E5%AF%84%E5%AD%98%E5%99%A8EFLAGS"><span class="nav-number">1.2.14.1.</span> <span class="nav-text">1.标志寄存器EFLAGS</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#13-%E7%A1%AC%E7%BC%96%E7%A0%81"><span class="nav-number">1.2.15.</span> <span class="nav-text">13.硬编码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E6%8C%87%E4%BB%A4%E7%BC%96%E7%A0%81%EF%BC%88%E7%A1%AC%E7%BC%96%E7%A0%81%EF%BC%89%E7%9A%84%E7%BB%93%E6%9E%84"><span class="nav-number">1.2.15.1.</span> <span class="nav-text">1.指令编码（硬编码）的结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E5%8F%8D%E6%B1%87%E7%BC%96%E5%BC%95%E6%93%8E%EF%BC%88x32dbg-DTDebug"><span class="nav-number">1.2.15.2.</span> <span class="nav-text">2.反汇编引擎（x32dbg , DTDebug</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E5%89%8D%E7%BC%80%E6%8C%87%E4%BB%A4"><span class="nav-number">1.2.15.3.</span> <span class="nav-text">3.前缀指令</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%EF%BC%881%EF%BC%89LOCK%E5%92%8CREPEAT%E5%89%8D%E7%BC%80%E6%8C%87%E4%BB%A4"><span class="nav-number">1.2.15.3.1.</span> <span class="nav-text">（1）LOCK和REPEAT前缀指令</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%EF%BC%882%EF%BC%89%E6%AE%B5%EF%BC%88%E6%AE%B5%E5%AF%84%E5%AD%98%E5%99%A8%EF%BC%89%E5%89%8D%E7%BC%80%E6%8C%87%E4%BB%A4-%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%81%E5%86%85%E6%A0%B8%E7%A8%8B%E5%BA%8F"><span class="nav-number">1.2.15.3.2.</span> <span class="nav-text">（2）段（段寄存器）前缀指令  &#x3D;&gt; 操作系统、内核程序</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E6%95%B0%E5%AE%BD%E5%BA%A6%E5%89%8D%E7%BC%80%E6%8C%87%E4%BB%A4-66"><span class="nav-number">1.2.15.3.3.</span> <span class="nav-text">操作数宽度前缀指令 66</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%9C%B0%E5%9D%80%E5%AE%BD%E5%BA%A6%E5%89%8D%E7%BC%80%E6%8C%87%E4%BB%A4-67"><span class="nav-number">1.2.15.3.4.</span> <span class="nav-text">地址宽度前缀指令 67</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E5%AE%9A%E9%95%BF%E6%8C%87%E4%BB%A4%E4%B8%8E%E5%8F%98%E9%95%BF%E6%8C%87%E4%BB%A4"><span class="nav-number">1.2.15.4.</span> <span class="nav-text">4.定长指令与变长指令</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%9A%E9%95%BF%E6%8C%87%E4%BB%A4"><span class="nav-number">1.2.15.4.1.</span> <span class="nav-text">定长指令</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%8F%98%E9%95%BF%E6%8C%87%E4%BB%A4"><span class="nav-number">1.2.15.4.2.</span> <span class="nav-text">变长指令</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ModR-M%E7%BB%93%E6%9E%84"><span class="nav-number">1.2.15.4.3.</span> <span class="nav-text">ModR&#x2F;M结构</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%9A%E9%95%BF%E6%8C%87%E4%BB%A4-SIB"><span class="nav-number">1.2.15.4.4.</span> <span class="nav-text">定长指令 SIB</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A0%86%E6%A0%88"><span class="nav-number">1.2.16.</span> <span class="nav-text">堆栈</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-ESP%E5%92%8CEBP"><span class="nav-number">1.2.16.1.</span> <span class="nav-text">1.ESP和EBP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-PUSH%E3%80%81POP-%E5%A0%86%E6%A0%88%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4"><span class="nav-number">1.2.16.2.</span> <span class="nav-text">2.PUSH、POP  堆栈操作指令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-PUSHAD%E5%92%8CPOPAD"><span class="nav-number">1.2.16.3.</span> <span class="nav-text">3.PUSHAD和POPAD</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E5%A0%86%E6%A0%88%E5%B9%B3%E8%A1%A1"><span class="nav-number">1.2.16.4.</span> <span class="nav-text">4.堆栈平衡</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B0%83%E7%94%A8%E7%BA%A6%E5%AE%9A"><span class="nav-number">1.2.17.</span> <span class="nav-text">调用约定</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4"><span class="nav-number">1.3.</span> <span class="nav-text">汇编指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-MOV%E6%8C%87%E4%BB%A4-1"><span class="nav-number">1.3.1.</span> <span class="nav-text">1.MOV指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-MOVZX%E6%8C%87%E4%BB%A4"><span class="nav-number">1.3.2.</span> <span class="nav-text">2.MOVZX指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-LEA%E6%8C%87%E4%BB%A4"><span class="nav-number">1.3.3.</span> <span class="nav-text">3.LEA指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-XCHG%E6%8C%87%E4%BB%A4-%E4%BA%A4%E6%8D%A2%E6%8C%87%E4%BB%A4"><span class="nav-number">1.3.4.</span> <span class="nav-text">4.XCHG指令  交换指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E8%BF%90%E7%AE%97%E6%8C%87%E4%BB%A4"><span class="nav-number">1.3.5.</span> <span class="nav-text">5.运算指令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-ADD%E6%8C%87%E4%BB%A4-%E5%8A%A0%E6%B3%95%E6%8C%87%E4%BB%A4"><span class="nav-number">1.3.5.1.</span> <span class="nav-text">1.ADD指令  加法指令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-ADC%E6%8C%87%E4%BB%A4-%E8%BF%9B%E4%BD%8D%E5%8A%A0%E6%8C%87%E4%BB%A4"><span class="nav-number">1.3.5.2.</span> <span class="nav-text">2.ADC指令  进位加指令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-SUB%E6%8C%87%E4%BB%A4-%E5%87%8F%E6%B3%95%E6%8C%87%E4%BB%A4"><span class="nav-number">1.3.5.3.</span> <span class="nav-text">3.SUB指令  减法指令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-SBB%E6%8C%87%E4%BB%A4-%E8%BF%9B%E4%BD%8D%E5%87%8F%E6%8C%87%E4%BB%A4"><span class="nav-number">1.3.5.4.</span> <span class="nav-text">4.SBB指令  进位减指令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-INC%E6%8C%87%E4%BB%A4-%E8%87%AA%E5%A2%9E%E6%8C%87%E4%BB%A4"><span class="nav-number">1.3.5.5.</span> <span class="nav-text">5.INC指令  自增指令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-DEC%E6%8C%87%E4%BB%A4-%E8%87%AA%E5%87%8F%E6%8C%87%E4%BB%A4"><span class="nav-number">1.3.5.6.</span> <span class="nav-text">6.DEC指令  自减指令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-MUL%E6%8C%87%E4%BB%A4-%E6%97%A0%E7%AC%A6%E5%8F%B7%E4%B9%98%E6%B3%95%E6%8C%87%E4%BB%A4"><span class="nav-number">1.3.5.7.</span> <span class="nav-text">7.MUL指令  无符号乘法指令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-IMUL%E6%8C%87%E4%BB%A4-%E6%9C%89%E7%AC%A6%E5%8F%B7%E4%B9%98%E6%B3%95%E6%8C%87%E4%BB%A4"><span class="nav-number">1.3.5.8.</span> <span class="nav-text">8.IMUL指令  有符号乘法指令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#9-DIV%E6%8C%87%E4%BB%A4-%E6%97%A0%E7%AC%A6%E5%8F%B7%E9%99%A4%E6%B3%95%E6%8C%87%E4%BB%A4"><span class="nav-number">1.3.5.9.</span> <span class="nav-text">9.DIV指令  无符号除法指令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#10-IDIV%E6%8C%87%E4%BB%A4-%E6%9C%89%E7%AC%A6%E5%8F%B7%E9%99%A4%E6%B3%95%E6%8C%87%E4%BB%A4"><span class="nav-number">1.3.5.10.</span> <span class="nav-text">10.IDIV指令  有符号除法指令</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E4%BD%8D%E8%BF%90%E7%AE%97"><span class="nav-number">1.3.6.</span> <span class="nav-text">6.位运算</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-AND%E6%8C%87%E4%BB%A4-%E4%B8%8E%E8%BF%90%E7%AE%97%E6%8C%87%E4%BB%A4"><span class="nav-number">1.3.6.1.</span> <span class="nav-text">1.AND指令  与运算指令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-OR%E6%8C%87%E4%BB%A4-%E6%88%96%E8%BF%90%E7%AE%97%E6%8C%87%E4%BB%A4"><span class="nav-number">1.3.6.2.</span> <span class="nav-text">2.OR指令 或运算指令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-XOR%E6%8C%87%E4%BB%A4-%E5%BC%82%E6%88%96%E8%BF%90%E7%AE%97%E6%8C%87%E4%BB%A4"><span class="nav-number">1.3.6.3.</span> <span class="nav-text">3.XOR指令  异或运算指令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-NOT%E6%8C%87%E4%BB%A4-%E9%9D%9E%E8%BF%90%E7%AE%97%E6%8C%87%E4%BB%A4"><span class="nav-number">1.3.6.4.</span> <span class="nav-text">4.NOT指令  非运算指令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-SHL%E6%8C%87%E4%BB%A4-%E5%B7%A6%E7%A7%BB-LEFT-%E6%8C%87%E4%BB%A4"><span class="nav-number">1.3.6.5.</span> <span class="nav-text">5.SHL指令  左移(LEFT)指令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-SHR%E6%8C%87%E4%BB%A4-%E5%8F%B3%E7%A7%BB-RIGHT-%E6%8C%87%E4%BB%A4"><span class="nav-number">1.3.6.6.</span> <span class="nav-text">6.SHR指令  右移(RIGHT)指令</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E6%AF%94%E8%BE%83%E6%8C%87%E4%BB%A4"><span class="nav-number">1.3.7.</span> <span class="nav-text">7.比较指令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-CMP%E6%8C%87%E4%BB%A4"><span class="nav-number">1.3.7.1.</span> <span class="nav-text">1.CMP指令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-TEXT%E6%8C%87%E4%BB%A4"><span class="nav-number">1.3.7.2.</span> <span class="nav-text">2.TEXT指令</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-%E4%B8%B2%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4"><span class="nav-number">1.3.8.</span> <span class="nav-text">8.串操作指令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-MOVS%E6%8C%87%E4%BB%A4-%E5%B0%86ESI%E5%9C%B0%E5%9D%80%E6%8C%87%E5%90%91%E7%9A%84%E5%86%85%E5%AD%98%E5%A4%8D%E5%88%B6%E5%88%B0EDI%E6%8C%87%E5%90%91%E7%9A%84%E5%86%85%E5%AD%98%E4%B8%AD"><span class="nav-number">1.3.8.1.</span> <span class="nav-text">1.MOVS指令  将ESI地址指向的内存复制到EDI指向的内存中</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-STOS%E6%8C%87%E4%BB%A4-%E5%B0%86EAX%E7%9A%84%E5%80%BC%E5%A4%8D%E5%88%B6%E5%88%B0EDI%E6%8C%87%E5%90%91%E7%9A%84%E5%86%85%E5%AD%98%E5%9C%B0%E5%9D%80%E4%B8%AD"><span class="nav-number">1.3.8.2.</span> <span class="nav-text">2.STOS指令  将EAX的值复制到EDI指向的内存地址中</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-REP%E9%87%8D%E5%A4%8D%E6%89%A7%E8%A1%8C%E6%8C%87%E4%BB%A4"><span class="nav-number">1.3.8.3.</span> <span class="nav-text">3.REP重复执行指令</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-%E4%BF%AE%E6%94%B9EIP%E6%8C%87%E4%BB%A4"><span class="nav-number">1.3.9.</span> <span class="nav-text">9.修改EIP指令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-JMP%E6%8C%87%E4%BB%A4"><span class="nav-number">1.3.9.1.</span> <span class="nav-text">1.JMP指令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-CALL%E6%8C%87%E4%BB%A4"><span class="nav-number">1.3.9.2.</span> <span class="nav-text">2.CALL指令</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-EFLAGS%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">1.3.10.</span> <span class="nav-text">10.EFLAGS寄存器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1%E3%80%81%E8%BF%9B%E4%BD%8D%E6%A0%87%E5%BF%97CF-Carry-Flag"><span class="nav-number">1.3.10.1.</span> <span class="nav-text">1、进位标志CF(Carry Flag)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2%E3%80%81%E5%A5%87%E5%81%B6%E6%A0%87%E5%BF%97PF-Parity-Flag"><span class="nav-number">1.3.10.2.</span> <span class="nav-text">2、奇偶标志PF(Parity Flag)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3%E3%80%81%E8%BE%85%E5%8A%A9%E8%BF%9B%E4%BD%8D%E6%A0%87%E5%BF%97AF-Auxiliary-Carry-Flag"><span class="nav-number">1.3.10.3.</span> <span class="nav-text">3、辅助进位标志AF(Auxiliary Carry Flag)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4%E3%80%81%E9%9B%B6%E6%A0%87%E5%BF%97ZF-Zero-Flag"><span class="nav-number">1.3.10.4.</span> <span class="nav-text">4、零标志ZF(Zero Flag)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5%E3%80%81%E7%AC%A6%E5%8F%B7%E6%A0%87%E5%BF%97SF-Sign-Flag"><span class="nav-number">1.3.10.5.</span> <span class="nav-text">5、符号标志SF(Sign Flag)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6%E3%80%81%E6%BA%A2%E5%87%BA%E6%A0%87%E5%BF%97OF-Overflow-Flag"><span class="nav-number">1.3.10.6.</span> <span class="nav-text">6、溢出标志OF(Overflow Flag)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7%E3%80%81%E8%BF%BD%E8%B8%AA%E6%A0%87%E5%BF%97TF-Trap-Flag"><span class="nav-number">1.3.10.7.</span> <span class="nav-text">7、追踪标志TF(Trap Flag)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8%E3%80%81%E4%B8%AD%E6%96%AD%E5%85%81%E8%AE%B8%E6%A0%87%E5%BF%97IF-Interrupt-enable-Flag"><span class="nav-number">1.3.10.8.</span> <span class="nav-text">8、中断允许标志IF(Interrupt-enable Flag)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#9%E3%80%81%E6%96%B9%E5%90%91%E6%A0%87%E5%BF%97DF-Direction-Flag"><span class="nav-number">1.3.10.9.</span> <span class="nav-text">9、方向标志DF(Direction Flag)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#11-JCC%E6%8C%87%E4%BB%A4"><span class="nav-number">1.3.11.</span> <span class="nav-text">11.JCC指令</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">ZYG</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ZYG</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">42k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">2:33</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

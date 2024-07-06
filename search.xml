@@ -2153,7 +2153,9 @@
   <entry>
     <title>Win32API</title>
     <url>/2024/07/05/Win32API/</url>
-    <content><![CDATA[<h1 id="Win32API"><a href="#Win32API" class="headerlink" title="Win32API"></a>Win32API</h1><h2 id="字符编码"><a href="#字符编码" class="headerlink" title="字符编码"></a>字符编码</h2><h3 id="ASCII-码表"><a href="#ASCII-码表" class="headerlink" title="ASCII 码表"></a>ASCII 码表</h3><table>
+    <content><![CDATA[<h1 id="Win32API"><a href="#Win32API" class="headerlink" title="Win32API"></a>Win32API</h1><span id="more"></span>
+
+<h2 id="字符编码"><a href="#字符编码" class="headerlink" title="字符编码"></a>字符编码</h2><h3 id="ASCII-码表"><a href="#ASCII-码表" class="headerlink" title="ASCII 码表"></a>ASCII 码表</h3><table>
 <thead>
 <tr>
 <th><strong>ASCII值</strong></th>
@@ -2487,8 +2489,6 @@
 <td>DEL</td>
 </tr>
 </tbody></table>
-<span id="more"></span>
-
 <h3 id="ASCII扩展码表"><a href="#ASCII扩展码表" class="headerlink" title="ASCII扩展码表"></a>ASCII扩展码表</h3><table>
 <thead>
 <tr>

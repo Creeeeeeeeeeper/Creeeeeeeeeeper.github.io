@@ -294,7 +294,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2024-07-07 01:30:45 / 修改时间：01:45:26" itemprop="dateCreated datePublished" datetime="2024-07-07T01:30:45+08:00">2024-07-07</time>
+              <time title="创建时间：2024-07-07 01:30:45 / 修改时间：01:46:13" itemprop="dateCreated datePublished" datetime="2024-07-07T01:30:45+08:00">2024-07-07</time>
             </span>
 
           <br>
@@ -303,7 +303,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>876</span>
+              <span>877</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -331,108 +331,14 @@
 </div>
 
 </p><h1 id="Vnev-Python虚拟环境"><a href="#Vnev-Python虚拟环境" class="headerlink" title="Vnev Python虚拟环境"></a>Vnev Python虚拟环境</h1><p>Venv，Python虚拟环境管理工具，可以创建独立的Python环境</p>
-<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>1.创建虚拟环境</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -m venv 虚拟环境名</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2024/07/07/live/image-20240706203514916.png" alt="image-20240706203514916"></p>
-<p>2.进入目录</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> 虚拟环境名/Scripts</span><br><span class="line">activate.bat</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2024/07/07/live/image-20240706204112177.png" alt="image-20240706204112177"></p>
-<p>3.激活虚拟环境后，可以在这个虚拟环境中使用<code>pip install xxx</code>安装某个项目用到的包，如果不同项目使用不同包版本，则创建多个环境，再在环境中安装不同的包。</p>
-<p>电脑环境中的包：</p>
-<p><img src="/2024/07/07/live/image-20240706204350565.png" alt="image-20240706204350565"> </p>
-<p>虚拟环境中的包：安了一个numpy</p>
-<img src="/2024/07/07/live/image-20240706204529228.png" alt="image-20240706204529228" style="zoom:67%;"> 
-
-
-
-<h1 id="PYENV"><a href="#PYENV" class="headerlink" title="PYENV"></a>PYENV</h1><h2 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h2><p>[下载地址](<a target="_blank" rel="noopener" href="https://github.com/pyenv-win/pyenv-win#readme">pyenv-win&#x2F;pyenv-win: pyenv for Windows. pyenv is a simple python version management tool. It lets you easily switch between multiple versions of Python. It’s simple, unobtrusive, and follows the UNIX tradition of single-purpose tools that do one thing well. (github.com)</a>):Github</p>
-<p>下载解压到一个没有中文的文件夹中，将文件夹重命名为pyenv。</p>
-<img src="/2024/07/07/live/image-20240706205420323.png" alt="image-20240706205420323" style="zoom:67%;">
-
-<h2 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h2><h3 id="配置-1"><a href="#配置-1" class="headerlink" title="配置"></a>配置</h3><p>复制这个路径：</p>
-<p><img src="/2024/07/07/live/image-20240706205518328.png" alt="image-20240706205518328"></p>
-<p>配置系统环境变量：</p>
-<p><img src="/2024/07/07/live/image-20240706205707273.png" alt="image-20240706205707273"></p>
-<p>在系统环境变量的Path中添加：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">%PYENV%\bin </span><br><span class="line">%PYENV%\shims</span><br></pre></td></tr></table></figure>
-
-<h3 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h3><p>打开cmd，直接输入pyenv</p>
-<img src="/2024/07/07/live/image-20240706205935953.png" alt="image-20240706205935953" style="zoom:67%;">
-
-<h2 id="pyenv命令"><a href="#pyenv命令" class="headerlink" title="pyenv命令"></a>pyenv命令</h2><p>查看pyenv-win支持的python版本列表：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyenv install --list</span><br></pre></td></tr></table></figure>
-<p>查看当前python对应版本：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyenv version</span><br></pre></td></tr></table></figure>
-<p>查看电脑安装的所有python版本：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyenv versions</span><br></pre></td></tr></table></figure>
-<p>安装指定版本 || 也可以在一个命令中安装多个版本：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyenv install &lt;version&gt; || pyenv install &lt;version&gt; &lt;version&gt;</span><br></pre></td></tr></table></figure>
-<p>卸载指定版本：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyenv uninstall &lt;version&gt;</span><br></pre></td></tr></table></figure>
-<p>将python版本设置为全局版本(默认使用的python版本) 注意：必须先安装该版本。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyenv global &lt;version&gt;</span><br></pre></td></tr></table></figure>
-<p>设置本地版本(当在此文件夹中调用python时，都会使用给定的版本。) 注意：必须先安装该版本。</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyenv <span class="built_in">local</span> &lt;version&gt;</span><br></pre></td></tr></table></figure>
-<p>查看python版本来核对：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -V</span><br></pre></td></tr></table></figure>
-
-<h2 id="pyenv安装python环境"><a href="#pyenv安装python环境" class="headerlink" title="pyenv安装python环境"></a>pyenv安装python环境</h2><p>1.查看可以安装的版本</p>
-<p><img src="/2024/07/07/live/image-20240706210402179.png" alt="image-20240706210402179"></p>
-<p>2.安装需要的Python版本</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyenv install &lt;version&gt;</span><br></pre></td></tr></table></figure>
-
-<p>解决安装慢、安装超时问题：</p>
-<p>打开<code>pyenv/pyenv-win/.versions_cache.xml</code>，将其中的下载地址改成华为云的。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://mirrors.huaweicloud.com/python/</span><br></pre></td></tr></table></figure>
-
-
-
-<p><img src="/2024/07/07/live/image-20240706221134067.png" alt="image-20240706221134067"></p>
-<p>接着就下好了：</p>
-<p><img src="/2024/07/07/live/image-20240706221302932.png" alt="image-20240706221302932"></p>
-<p>4.设置Python版本</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyenv global &lt;version&gt;</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2024/07/07/live/image-20240706224136656.png" alt="image-20240706224136656"></p>
-<h1 id="update-alternatives"><a href="#update-alternatives" class="headerlink" title="update-alternatives"></a>update-alternatives</h1><h2 id="Python"><a href="#Python" class="headerlink" title="Python"></a>Python</h2><h2 id="1-查看Python版本"><a href="#1-查看Python版本" class="headerlink" title="1.查看Python版本"></a>1.查看Python版本</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">ls</span> /usr/bin/python*</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2024/07/07/live/image-20240707003021725.png" alt="image-20240707003021725"></p>
-<p>有2.7和3.11两个版本</p>
-<h2 id="2-当前版本"><a href="#2-当前版本" class="headerlink" title="2.当前版本"></a>2.当前版本</h2><img src="/2024/07/07/live/image-20240707003246279.png" alt="image-20240707003246279" style="zoom:80%;">
-
-<h2 id="3-设置默认版本（设置优先级）"><a href="#3-设置默认版本（设置优先级）" class="headerlink" title="3.设置默认版本（设置优先级）"></a>3.设置默认版本（设置优先级）</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">update-alternatives --install /usr/bin/python python /usr/bin/python2 100</span><br><span class="line">update-alternatives --install /usr/bin/python python /usr/bin/python3 150</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2024/07/07/live/image-20240707003543304.png" alt="image-20240707003543304"></p>
-<h2 id="4-切换版本"><a href="#4-切换版本" class="headerlink" title="4.切换版本"></a>4.切换版本</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">update-alternatives --config python</span><br></pre></td></tr></table></figure>
-
-<img src="/2024/07/07/live/image-20240707003630386.png" alt="image-20240707003630386" style="zoom:67%;">
-
-<p>输入编号开启手动模式即可</p>
-<p><img src="/2024/07/07/live/image-20240707003713895.png" alt="image-20240707003713895"></p>
-<p>这样Python版本就换成了2.7</p>
-<h2 id="Java"><a href="#Java" class="headerlink" title="Java"></a>Java</h2><p>首先查看一下已安装的Java版本：</p>
-<p><img src="/2024/07/07/live/image-20240707005540546.png" alt="image-20240707005540546"></p>
-<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>先来安装一个Java1.8 [下载地址](<a target="_blank" rel="noopener" href="https://www.oracle.com/java/technologies/javase/javase8-archive-downloads.html">Java Archive Downloads - Java SE 8 (oracle.com)</a>)</p>
-<img src="/2024/07/07/live/image-20240707011244573.png" alt="image-20240707011244573" style="zoom:67%;">
-
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> -p /usr/local/java</span><br><span class="line"><span class="built_in">cp</span> jdk-8u251-linux-x64.tar.gz  /usr/local/java</span><br><span class="line">tar -zxvf jdk-8u251-linux-x64.tar.gz</span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="配置环境变量"><a href="#配置环境变量" class="headerlink" title="配置环境变量"></a>配置环境变量</h3><p>将解压的jdk放到&#x2F;usr&#x2F;local中：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mv</span> jdk1.8.0_202 /usr/local</span><br></pre></td></tr></table></figure>
-
-
-
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/profile</span><br><span class="line"></span><br><span class="line"><span class="comment"># 进入环境变量 复制到最下面</span></span><br><span class="line">JAVA_HOME=/usr/local/java/jdk1.8.0_251 </span><br><span class="line">PATH=<span class="variable">$PATH</span>:<span class="variable">$HOME</span>/bin:<span class="variable">$JAVA_HOME</span>/bin</span><br><span class="line"><span class="built_in">export</span> JAVA_HOME</span><br><span class="line"><span class="built_in">export</span> PATH</span><br><span class="line"></span><br><span class="line"><span class="comment"># 通知Java目录</span></span><br><span class="line">update-alternatives --install <span class="string">&quot;/usr/bin/java&quot;</span> <span class="string">&quot;java&quot;</span> <span class="string">&quot;/usr/local/jdk1.8.0_202/bin/java&quot;</span> 1</span><br><span class="line">update-alternatives --install <span class="string">&quot;/usr/bin/javac&quot;</span> <span class="string">&quot;javac&quot;</span> <span class="string">&quot;/usr/local/jdk1.8.0_202/bin/javac&quot;</span> 1</span><br><span class="line">update-alternatives --install <span class="string">&quot;/usr/bin/javaws&quot;</span> <span class="string">&quot;javaws&quot;</span> <span class="string">&quot;/usr/local/jdk1.8.0_202/bin/javaws&quot;</span> 1</span><br><span class="line">update-alternatives --install <span class="string">&quot;/usr/bin/javaws&quot;</span> <span class="string">&quot;javaws&quot;</span> <span class="string">&quot;/usr/local/jdk1.8.0_202/bin/javaws&quot;</span> 1</span><br></pre></td></tr></table></figure>
-
-<img src="/2024/07/07/live/image-20240707012540159.png" alt="image-20240707012540159" style="zoom:50%;">
-
-<p><img src="/2024/07/07/live/image-20240707012757430.png" alt="image-20240707012757430"></p>
-<h3 id="切换版本"><a href="#切换版本" class="headerlink" title="切换版本"></a>切换版本</h3><p><img src="/2024/07/07/live/image-20240707013016446.png" alt="image-20240707013016446"></p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/07/07/live/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 

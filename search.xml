@@ -1327,7 +1327,7 @@
 </div>
 
 
-</p><h1 id="Vnev-Python虚拟环境"><a href="#Vnev-Python虚拟环境" class="headerlink" title="Vnev Python虚拟环境"></a>Vnev Python虚拟环境</h1><p>Venv，Python虚拟环境管理工具，可以创建独立的Python环境</p>
+</p><h1 id="Venv-Python虚拟环境"><a href="#Venv-Python虚拟环境" class="headerlink" title="Venv Python虚拟环境"></a>Venv Python虚拟环境</h1><p>Venv，Python虚拟环境管理工具，可以创建独立的Python环境</p>
 <span id="more"></span>
 
 <h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>1.创建虚拟环境</p>

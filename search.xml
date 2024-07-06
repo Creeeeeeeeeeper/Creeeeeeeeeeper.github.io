@@ -1344,7 +1344,7 @@
 
 
 
-<h1 id="PYENV"><a href="#PYENV" class="headerlink" title="PYENV"></a>PYENV</h1><h2 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h2><p>[下载地址](<a href="https://github.com/pyenv-win/pyenv-win#readme">pyenv-win&#x2F;pyenv-win: pyenv for Windows. pyenv is a simple python version management tool. It lets you easily switch between multiple versions of Python. It’s simple, unobtrusive, and follows the UNIX tradition of single-purpose tools that do one thing well. (github.com)</a>):Github</p>
+<h1 id="PYENV"><a href="#PYENV" class="headerlink" title="PYENV"></a>PYENV</h1><h2 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h2><p><a href="https://github.com/pyenv-win/pyenv-win#readme">下载地址</a>:Github</p>
 <p>下载解压到一个没有中文的文件夹中，将文件夹重命名为pyenv。</p>
 <img src="/2024/07/07/live/image-20240706205420323.png" alt="image-20240706205420323" style="zoom:67%;">
 

@@ -27,10 +27,13 @@
 <meta property="og:site_name" content="ZYG&#39;s Notes">
 <meta property="og:description" content="网络编程网络基础知识网络OSI模型网络OSI7层模型（Open Systems Interconnection）即开放系统互联。它是由ISO（Internet Organization for Standardization）制定 OSI时网络通讯的一种通用框架，它分为七层    序号 层    7 应用层（Application）   6 表示层（Presentation）   5 会话层（Se">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2024/07/05/CInternet/image-20240708231715068.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2024/07/05/CInternet/image-20240709130551236.png">
 <meta property="article:published_time" content="2024-07-05T04:41:43.000Z">
-<meta property="article:modified_time" content="2024-07-05T04:50:13.060Z">
+<meta property="article:modified_time" content="2024-07-09T05:08:25.466Z">
 <meta property="article:author" content="ZYG">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://creeeeeeeeeeper.github.io/2024/07/05/CInternet/image-20240708231715068.png">
 
 <link rel="canonical" href="http://creeeeeeeeeeper.github.io/2024/07/05/CInternet/">
 
@@ -200,10 +203,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2024-07-05 12:41:43 / 修改时间：12:50:13" itemprop="dateCreated datePublished" datetime="2024-07-05T12:41:43+08:00">2024-07-05</time>
+              <time title="创建时间：2024-07-05 12:41:43" itemprop="dateCreated datePublished" datetime="2024-07-05T12:41:43+08:00">2024-07-05</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-07-09 13:08:25" itemprop="dateModified" datetime="2024-07-09T13:08:25+08:00">2024-07-09</time>
+              </span>
 
           
             <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
@@ -218,14 +227,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>170</span>
+              <span>1.1k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
+              <span>4 分钟</span>
             </span>
 
         </div>
@@ -279,7 +288,31 @@
 <p>网络上最重要的就是IP，IP就在网络层。</p>
 <span id="more"></span>
 
+<h2 id="Windows-Socket"><a href="#Windows-Socket" class="headerlink" title="Windows Socket"></a>Windows Socket</h2><h3 id="什么是套接字（Socket）"><a href="#什么是套接字（Socket）" class="headerlink" title="什么是套接字（Socket）"></a>什么是套接字（Socket）</h3><p>Socket又称套接字，它是TCP&#x2F;IP网络环境下应用程序与底层通信驱动程序之间运行的开发接口.它可以将应用程序与具体的TCP&#x2F;IP隔离开.使得应用程序不需要了解TCP&#x2F;IP的细节，就能够实现传输。</p>
+<h3 id="套接字的服务方式和类型"><a href="#套接字的服务方式和类型" class="headerlink" title="套接字的服务方式和类型"></a>套接字的服务方式和类型</h3><p>根据底层协议的不同，Socket开发接口可以提供面向连接和无连接二种服务方式。</p>
+<p>在Socketi通信中，套接字分为3种类型。</p>
+<p>1.流式套接字.SOCK_STREAM</p>
+<p>流式套接字是面向连接的、提供双向、有序、无重复且无记录边界的数据流服务，适用于处理大量数据，可靠性高，但开销也大。</p>
+<p>2.数据报式套接字SOCK_DGRAM</p>
+<p>UDP，一般应用在传输音视频文件，容许少量丢包</p>
+<p>3.原始套接字</p>
+<p>其中SOCK_STREAM、SOCK_DGRAM工作在传输层，SOCK_RAW工作在网络层。</p>
+<h3 id="构建WinSock应用程序框架"><a href="#构建WinSock应用程序框架" class="headerlink" title="构建WinSock应用程序框架"></a>构建WinSock应用程序框架</h3><p>WinSock包含了两个主要的版本，即Socket1和winsock2，我们一般使用2<br>在使用时，需要包含如下头文件和lib文件<br>#include &lt;WinSock2.h&gt;<br>#pragma comment(lib,”ws2_32.lib”)</p>
+<p>还需要初始化WinSocket<br>Int WSAAPI WSAStartup(WORD wVersionRequested &#x2F;&#x2F;版本号,LPWSADATA IpWSAData);		WSAData结构用于存放返回的Socket数据</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;WinSock2.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> comment(lib,<span class="string">&quot;ws2_32.lib&quot;</span>)</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    WORD wVersion = MAKEWORD(<span class="number">2</span>, <span class="number">2</span>);	 <span class="comment">//版本号</span></span><br><span class="line">    WSADATA wsaData;				<span class="comment">// 一个结构体，用来返回数据</span></span><br><span class="line">    <span class="keyword">if</span> (WSAStartup(wVersion, &amp;wsaData))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;WSAStartup failed&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">3</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;WSAStartup successed&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">2</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
+<p>WSAData，存放Winsock返回的初始化信息：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">WSAData</span> &#123;</span></span><br><span class="line">    WORD wVersion;	<span class="comment">// Socket DLL期望用户使用的规范版本</span></span><br><span class="line">    WORD wHighVersion;	<span class="comment">// 可以支持的最高版本</span></span><br><span class="line">    <span class="type">char</span> szDescription[WSADESCRIPTION_LEN+<span class="number">1</span>];	<span class="comment">// 描述字符串</span></span><br><span class="line">    <span class="type">char</span> szSystemStatus[WSASYSSTATUS_LEN+<span class="number">1</span>];	<span class="comment">// 状态字符串</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">short</span> iMaxSockets;	<span class="comment">// 套接字的最大编号（WinSock2或稍后的版本忽略了该字段）</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">short</span> iMaxUdpDg; <span class="comment">// 忽略</span></span><br><span class="line">    <span class="type">char</span> FAR * lpVendorInfo;	<span class="comment">// 废弃</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2024/07/05/CInternet/image-20240708231715068.png" alt="image-20240708231715068"></p>
+<h3 id="IP地址的表现形式"><a href="#IP地址的表现形式" class="headerlink" title="IP地址的表现形式"></a>IP地址的表现形式</h3><p>IP地址常用点分法来表示比如192.168.0.1，即4个0-255的整数表示</p>
+<p>但是在计算机中不使用点分法来保存IP地址.这样会浪费存诸空间.而且不便于根据IP地址和子网掩码来计算子网信息<br>所以在计算机中使用无符号长整形数来存诸表示IP地址<br>1.网络字节顺序(NetWork Byte Order,NBO)<br>在网络传送中，IP地址被保存为32位的二进制数在低位存储地址中保存数据的高位字节这种存储顺序格式被称为网络字节顺序.数据按照32位的二进制数为一组进行传输。因为采用网络字节顺序，所以数据的传输顺序是由高到低的。<br>在VC中使用In_addr来保存IP地址。 inet_addr和 inet_ntoa</p>
+<p>in_addr：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">in_addr</span> &#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">union</span> &#123;</span></span><br><span class="line">        <span class="class"><span class="keyword">struct</span> &#123;</span> UCHAR s_b1,s_b2,s_b3,s_b4; &#125; S_un_b;	<span class="comment">//点分法保存</span></span><br><span class="line">        <span class="class"><span class="keyword">struct</span> &#123;</span> USHORT s_w1,s_w2; &#125; S_un_w;			<span class="comment">//分两部分保存</span></span><br><span class="line">        ULONG S_addr;								<span class="comment">//保存为32位</span></span><br><span class="line">    &#125; S_un;</span><br><span class="line">    <span class="meta">#<span class="keyword">define</span> s_addr  S_un.S_addr <span class="comment">/* can be used for most tcp &amp; ip code */</span></span></span><br><span class="line">    <span class="meta">#<span class="keyword">define</span> s_host  S_un.S_un_b.s_b2    <span class="comment">// host on imp</span></span></span><br><span class="line">    <span class="meta">#<span class="keyword">define</span> s_net   S_un.S_un_b.s_b1    <span class="comment">// network</span></span></span><br><span class="line">    <span class="meta">#<span class="keyword">define</span> s_imp   S_un.S_un_w.s_w2    <span class="comment">// imp</span></span></span><br><span class="line">    <span class="meta">#<span class="keyword">define</span> s_impno S_un.S_un_b.s_b4    <span class="comment">// imp #</span></span></span><br><span class="line">    <span class="meta">#<span class="keyword">define</span> s_lh    S_un.S_un_b.s_b3    <span class="comment">// logical host</span></span></span><br><span class="line">&#125; IN_ADDR, *PIN_ADDR, FAR *LPIN_ADDR;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2024/07/05/CInternet/image-20240709130551236.png" alt="image-20240709130551236"></p>
+<p>2.主机字节顺序(Host Byte Order，HBO)两种格式<br>不同的主机在对IP地址进行存储时使用的格式也不同，所以需要通过下列四个函数<br>来实现主机和网络字节顺序的互转<br>Htonl() 将主机字节顺序格式P地址转换成为TCP&#x2F;IP网络字节顺序<br>htons主机转网络u_short型<br>Ntohl网络转主机 long<br>Ntohs网络转主机 short</p>
+<h3 id="编写TCP-IP模型"><a href="#编写TCP-IP模型" class="headerlink" title="编写TCP&#x2F;IP模型"></a>编写TCP&#x2F;IP模型</h3>
     </div>
 
     
@@ -359,7 +392,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">网络编程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="nav-number">1.1.</span> <span class="nav-text">网络基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9COSI%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.1.1.</span> <span class="nav-text">网络OSI模型</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">网络编程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="nav-number">1.1.</span> <span class="nav-text">网络基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9COSI%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.1.1.</span> <span class="nav-text">网络OSI模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Windows-Socket"><span class="nav-number">1.2.</span> <span class="nav-text">Windows Socket</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%A5%97%E6%8E%A5%E5%AD%97%EF%BC%88Socket%EF%BC%89"><span class="nav-number">1.2.1.</span> <span class="nav-text">什么是套接字（Socket）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A5%97%E6%8E%A5%E5%AD%97%E7%9A%84%E6%9C%8D%E5%8A%A1%E6%96%B9%E5%BC%8F%E5%92%8C%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.2.2.</span> <span class="nav-text">套接字的服务方式和类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E5%BB%BAWinSock%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6"><span class="nav-number">1.2.3.</span> <span class="nav-text">构建WinSock应用程序框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IP%E5%9C%B0%E5%9D%80%E7%9A%84%E8%A1%A8%E7%8E%B0%E5%BD%A2%E5%BC%8F"><span class="nav-number">1.2.4.</span> <span class="nav-text">IP地址的表现形式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E5%86%99TCP-IP%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.2.5.</span> <span class="nav-text">编写TCP&#x2F;IP模型</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -411,13 +444,13 @@
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">43k</span>
+    <span title="站点总字数">44k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">2:38</span>
+    <span title="站点阅读时长">2:41</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>

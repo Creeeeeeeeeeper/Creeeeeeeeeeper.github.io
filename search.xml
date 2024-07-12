@@ -43,7 +43,9 @@
   <entry>
     <title>区块链、虚拟币</title>
     <url>/2024/07/12/BlockChain/</url>
-    <content><![CDATA[<h1 id="区块链"><a href="#区块链" class="headerlink" title="区块链"></a>区块链</h1><h2 id="区块链基础"><a href="#区块链基础" class="headerlink" title="区块链基础"></a>区块链基础</h2><p><img src="/2024/07/12/BlockChain/image-20240712154703734.png" alt="image-20240712154703734"></p>
+    <content><![CDATA[<h1 id="区块链"><a href="#区块链" class="headerlink" title="区块链"></a>区块链</h1><h2 id="区块链基础"><a href="#区块链基础" class="headerlink" title="区块链基础"></a>区块链基础</h2><span id="more"></span>
+
+<p><img src="/2024/07/12/BlockChain/image-20240712154703734.png" alt="image-20240712154703734"></p>
 <h3 id="什么是区块链"><a href="#什么是区块链" class="headerlink" title="什么是区块链"></a>什么是区块链</h3><p>区块链是一种<strong>分布式</strong>、<strong>去中心化</strong>的网络数据系统，可看做是一本公开的<strong>总账</strong>，网络上每一个<strong>节点</strong><br>都可以<strong>同步</strong>这本<strong>“总账”的副本</strong>，总账的<strong>每一页</strong>都是一个<strong>区块</strong>，存储着一段时间内系统内所有数<br>据的加密信息，<strong>单一节点无法对历史交易进行篡改</strong>。它用公开来代替“中心”，建立信任，避免<br>“作弊”风险。</p>
 <h3 id="区块链的主要应用领域"><a href="#区块链的主要应用领域" class="headerlink" title="区块链的主要应用领域"></a>区块链的主要应用领域</h3><p>金融领域：支付结算、借贷<br>物联网领域：设备管理、数据跟踪（追溯物品的生产和运送过程）<br>版权保护领域：数字签名、版权证明<br>医疗政务领域：信息共享、防篡改</p>
 <h3 id="区块链类型"><a href="#区块链类型" class="headerlink" title="区块链类型"></a>区块链类型</h3><p><img src="/2024/07/12/BlockChain/image-20240712155353904.png" alt="image-20240712155353904"></p>

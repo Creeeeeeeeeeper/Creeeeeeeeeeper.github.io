@@ -80,7 +80,7 @@
 
 
 <p>打开<strong>主题配置文件</strong>发现里面将近1000行，说明提供的选项还是非常多的</p>
-<h2 id="NexT使用"><a href="#NexT使用" class="headerlink" title="NexT使用"></a>NexT使用</h2><p>先扔出一个<a href="https://theme-next.iissnan.com/getting-started.html">使用文档</a>，所有的使用方法基本上都在这里面</p>
+<h2 id="NexT使用"><a href="#NexT使用" class="headerlink" title="NexT使用"></a>NexT使用</h2><p>先扔出一个<a href="https://theme-next.iissnan.com/getting-started.html">使用文档</a>，所有的使用方法基本上都在这里面，这里只教出现在我的博客里的，我这里没有的去前面的文档搜或者搜一下“hexo next 某某功能即可”</p>
 <h3 id="4个主题"><a href="#4个主题" class="headerlink" title="4个主题"></a>4个主题</h3><p>首先确定一个主题：<br><img src="/2024/07/13/PolishMyBlog/image-20240713220816585.png" alt="image-20240713220816585"></p>
 <p><a href="https://cn.bing.com/">看看四个主题有哪些不同</a>(自己搜一下)，想用哪个主题就把前面的注释删掉，留下一个就可以</p>
 <h3 id="菜单"><a href="#菜单" class="headerlink" title="菜单"></a>菜单</h3><img src="/2024/07/13/PolishMyBlog/image-20240713221145429.png" alt="image-20240713221145429" style="zoom:67%;">

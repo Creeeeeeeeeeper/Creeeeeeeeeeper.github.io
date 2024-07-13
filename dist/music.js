@@ -10,7 +10,7 @@ const ap = new APlayer({
         {
             name: 'Without You (Explicit)',
             artist: 'Avicii/Sadro Cavazza',
-            url: 'https://gitee.com/zzzzzyg/sources/raw/master/WithotYou(Explicit).mp3',
+            url: 'https://creeeeeeeeeeper.github.io/2024/07/05/top/WithoutYou(Explicit).mp3',
             cover: '//y.qq.com/music/photo_new/T002R300x300M000003KjODP2FwTHe_2.jpg?max_age=2592000',
         }
     ]

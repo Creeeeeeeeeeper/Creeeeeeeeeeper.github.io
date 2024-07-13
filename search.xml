@@ -43,7 +43,129 @@
   <entry>
     <title>PolishMyBlog</title>
     <url>/2024/07/13/PolishMyBlog/</url>
-    <content><![CDATA[]]></content>
+    <content><![CDATA[<p>
+    <div style="font-size: 70px; font-weight: bold; font-family: 'Times New Roman', serif; color: #5a5a5a">
+        hexo × NexT
+</div>
+<br>
+<div style="font-size: 25px; font-weight: bold; font-family: 'Times New Roman', serif; color: #7f7f7f">
+    如何修改一个这样↓↓↓的主题
+</div>
+</p>
+
+
+
+<p><img src="/2024/07/13/PolishMyBlog/image-20240713214740457.png" alt="image-20240713214740457"></p>
+<span id="more"></span>
+
+<h1 id="NexT"><a href="#NexT" class="headerlink" title="NexT"></a>NexT</h1><p>NexT是hexo的主题插件，首先要安装了hexo</p>
+<h2 id="NexT安装和概况"><a href="#NexT安装和概况" class="headerlink" title="NexT安装和概况"></a>NexT安装和概况</h2><p>进入博客的路径，执行一下命令</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/theme-next/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2024/07/13/PolishMyBlog/image-20240713215651747.png" alt="image-20240713215651747"></p>
+<p>找到博客目录下面的config文件</p>
+<img src="/2024/07/13/PolishMyBlog/image-20240713215758194.png" alt="image-20240713215758194" style="zoom:67%;">
+
+<p>这里推荐用VS Code直接把整个博客文件夹打开，方便后面直接操作</p>
+<img src="/2024/07/13/PolishMyBlog/image-20240713215953724.png" alt="image-20240713215953724" style="zoom:67%;">
+
+<p>这里本来是landscape，改成next即可</p>
+<p><img src="/2024/07/13/PolishMyBlog/image-20240713220125493.png" alt="image-20240713220125493"></p>
+<p>确保theme文件夹下面有next文件夹</p>
+<img src="/2024/07/13/PolishMyBlog/image-20240713220210340.png" alt="image-20240713220210340" style="zoom:50%;">
+
+<p>注意区分<strong>主题配置文件</strong>和<strong>站点配置文件</strong></p>
+<img src="/2024/07/13/PolishMyBlog/image-20240713220338496.png" alt="image-20240713220338496" style="zoom:50%;">
+
+
+
+<p>打开<strong>主题配置文件</strong>发现里面将近1000行，说明提供的选项还是非常多的</p>
+<h2 id="NexT使用"><a href="#NexT使用" class="headerlink" title="NexT使用"></a>NexT使用</h2><p>先扔出一个<a href="https://theme-next.iissnan.com/getting-started.html">使用文档</a>，所有的使用方法基本上都在这里面</p>
+<h3 id="4个主题"><a href="#4个主题" class="headerlink" title="4个主题"></a>4个主题</h3><p>首先确定一个主题：<br><img src="/2024/07/13/PolishMyBlog/image-20240713220816585.png" alt="image-20240713220816585"></p>
+<p><a href="https://cn.bing.com/">看看四个主题有哪些不同</a>(自己搜一下)，想用哪个主题就把前面的注释删掉，留下一个就可以</p>
+<h3 id="菜单"><a href="#菜单" class="headerlink" title="菜单"></a>菜单</h3><img src="/2024/07/13/PolishMyBlog/image-20240713221145429.png" alt="image-20240713221145429" style="zoom:67%;">
+
+<p>在<strong>主题配置文件</strong>中搜索<strong>menu</strong>字段</p>
+<img src="/2024/07/13/PolishMyBlog/image-20240713221242044.png" alt="image-20240713221242044" style="zoom:80%;">
+
+<p>需要哪些就打开哪些</p>
+<h3 id="头像栏"><a href="#头像栏" class="headerlink" title="头像栏"></a>头像栏</h3><p><img src="/2024/07/13/PolishMyBlog/image-20240713221355666.png" alt="image-20240713221355666"></p>
+<p>搜索<strong>avatar</strong>字段</p>
+<p><img src="/2024/07/13/PolishMyBlog/image-20240713221436424.png" alt="image-20240713221436424"></p>
+<p>URL填一个链接，rounded就是圆形，rotated是旋转</p>
+<h3 id="我的NOTICE"><a href="#我的NOTICE" class="headerlink" title="我的NOTICE"></a>我的NOTICE</h3><img src="/2024/07/13/PolishMyBlog/image-20240713221532135.png" alt="image-20240713221532135" style="zoom:67%;">
+
+<p>这个NOTICE其实也是一篇笔记，把它置顶就变成了一个NOTICE或者自己编写的目录</p>
+<p>如何置顶：top写大点，<strong>如果置顶多篇</strong>，也可以通过<strong>设置top的大小</strong>决定哪一篇置顶在最上面，哪一篇置顶在第二个</p>
+<p><img src="/2024/07/13/PolishMyBlog/image-20240713222515503.png" alt="image-20240713222515503"></p>
+<p>这一篇是直接用html写的</p>
+<p><img src="/2024/07/13/PolishMyBlog/image-20240713221731239.png" alt="image-20240713221731239"></p>
+<p>最下面的图片也是svg图标，这个图标想弄的话直接<strong>去iconfont抢</strong>就完了，找到喜欢的图标，调好颜色，打开开发者工具，找到这个图标的svg标签，复制下来就完了</p>
+<p><img src="/2024/07/13/PolishMyBlog/image-20240713221918223.png" alt="image-20240713221918223"></p>
+<h3 id="阅读时长统计"><a href="#阅读时长统计" class="headerlink" title="阅读时长统计"></a>阅读时长统计</h3><p>搜索<strong>symbols_count_time</strong>字段</p>
+<img src="/2024/07/13/PolishMyBlog/image-20240713222307119.png" alt="image-20240713222307119" style="zoom:67%;">
+
+<p>NexT好像已经直接支持了这个插件，如果不支持的话就下一个</p>
+<h3 id="访客量统计"><a href="#访客量统计" class="headerlink" title="访客量统计"></a>访客量统计</h3><p>搜索<strong>busuanzi</strong>字段（不蒜子）</p>
+<p><img src="/2024/07/13/PolishMyBlog/image-20240713222424045.png" alt="image-20240713222424045"></p>
+<p>这几个都改成true即可</p>
+<h3 id="阅读更多按钮"><a href="#阅读更多按钮" class="headerlink" title="阅读更多按钮"></a>阅读更多按钮</h3><p>在想要在主页上折叠的位置，在md中添加这么一个东西就行</p>
+<p><img src="/2024/07/13/PolishMyBlog/image-20240713230143130.png" alt="image-20240713230143130"></p>
+<h3 id="圆角"><a href="#圆角" class="headerlink" title="圆角"></a>圆角</h3><img src="/2024/07/13/PolishMyBlog/image-20240713222720381.png" alt="image-20240713222720381" style="zoom:67%;">
+
+<p><strong>Gemini主题</strong>默认是没有圆角的，上网搜也没搜到，通过自己摸索得出了一个方法</p>
+<img src="/2024/07/13/PolishMyBlog/image-20240713222919893.png" alt="image-20240713222919893" style="zoom:67%;">
+
+<p>找到这个文件，打开它</p>
+<p><img src="/2024/07/13/PolishMyBlog/7d8690bb39833ee325fc75634bd90c8.png" alt="7d8690bb39833ee325fc75634bd90c8"></p>
+<p>打开网页看一下，这个东西叫post-block，所以直接在这个文件末尾添加</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.post-block</span> &#123;</span><br><span class="line">  <span class="attribute">border-radius</span> = <span class="number">15px</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>就搞定了</p>
+<p><img src="/2024/07/13/PolishMyBlog/image-20240713223143014.png" alt="image-20240713223143014"></p>
+<h3 id="关于Mist主题分界线"><a href="#关于Mist主题分界线" class="headerlink" title="关于Mist主题分界线"></a>关于Mist主题分界线</h3><p>Mist主题分界线好像没有，这导致上一篇和下一篇看起来没有分隔，不好看</p>
+<p><img src="/2024/07/13/PolishMyBlog/image-20240713223334965.png" alt="image-20240713223334965"></p>
+<p>找到这个文件：<img src="/2024/07/13/PolishMyBlog/image-20240713223438190.png" alt="image-20240713223438190" style="zoom:67%;"></p>
+<p>在最后添加这一段：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.post</span> &#123;</span><br><span class="line">   <span class="attribute">margin-top</span>: <span class="number">60px</span>;</span><br><span class="line">   <span class="attribute">margin-bottom</span>: <span class="number">60px</span>;</span><br><span class="line">   <span class="attribute">padding</span>: <span class="number">25px</span>;</span><br><span class="line">   -webkit-<span class="attribute">box-shadow</span>: <span class="number">0</span> <span class="number">0</span> <span class="number">5px</span> <span class="built_in">rgba</span>(<span class="number">202</span>, <span class="number">203</span>, <span class="number">203</span>, .<span class="number">5</span>);</span><br><span class="line">   -moz-<span class="attribute">box-shadow</span>: <span class="number">0</span> <span class="number">0</span> <span class="number">5px</span> <span class="built_in">rgba</span>(<span class="number">202</span>, <span class="number">203</span>, <span class="number">204</span>, .<span class="number">5</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<img src="/2024/07/13/PolishMyBlog/4af430ae6918c0c6c0387454921d91b.png" alt="4af430ae6918c0c6c0387454921d91b" style="zoom:50%;">
+
+<p>这样就有边框了，边框颜色太浅不够宽就再调就可以了，学过css的都知道继续怎么折腾</p>
+<p>但是发现两篇之间间隔貌似有点大，直接该上面.post中的margin是不行的</p>
+<p>找到：<img src="/2024/07/13/PolishMyBlog/4a1c8635858e49dce80ff90580e7bda.png" alt="4a1c8635858e49dce80ff90580e7bda">这个地方（直接搜索就行)</p>
+<p>这里本来应该是120px，该小一点间隔就变小了</p>
+<img src="/2024/07/13/PolishMyBlog/4af7e4ebdc3f95f47ee6bdc1a1b9cb5.png" alt="4af7e4ebdc3f95f47ee6bdc1a1b9cb5" style="zoom: 50%;">
+
+<h2 id="图片问题"><a href="#图片问题" class="headerlink" title="图片问题"></a>图片问题</h2><p>解决方法很多，这里讲一下我用的<strong>hexo-asset-image</strong>方法</p>
+<h3 id="安装hexo-asset-image"><a href="#安装hexo-asset-image" class="headerlink" title="安装hexo-asset-image"></a>安装hexo-asset-image</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">npm install hexo-asset-image --save</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>然后修改站点配置文件</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">post_asset_folder: true</span><br></pre></td></tr></table></figure>
+
+<p>打开<code>node_modules/hexo-asset-image/index.js</code>，将这一大部分复制到这个位置</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">$(<span class="string">&#x27;img&#x27;</span>).<span class="title function_">each</span>(<span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> ($(<span class="variable language_">this</span>).<span class="title function_">attr</span>(<span class="string">&#x27;src&#x27;</span>)) &#123;</span><br><span class="line">          <span class="comment">// For windows style path, we replace &#x27;\&#x27; to &#x27;/&#x27;.</span></span><br><span class="line">          <span class="keyword">var</span> src = $(<span class="variable language_">this</span>).<span class="title function_">attr</span>(<span class="string">&#x27;src&#x27;</span>).<span class="title function_">replace</span>(<span class="string">&#x27;\\&#x27;</span>, <span class="string">&#x27;/&#x27;</span>);</span><br><span class="line">          <span class="keyword">if</span> (!(<span class="regexp">/http[s]*.*|\/\/.*/</span>.<span class="title function_">test</span>(src)</span><br><span class="line">            || <span class="regexp">/^\s+\//</span>.<span class="title function_">test</span>(src)</span><br><span class="line">            || <span class="regexp">/^\s*\/uploads|images\//</span>.<span class="title function_">test</span>(src))) &#123;</span><br><span class="line">            <span class="comment">// For &quot;about&quot; page, the first part of &quot;src&quot; can&#x27;t be removed.</span></span><br><span class="line">            <span class="comment">// In addition, to support multi-level local directory.</span></span><br><span class="line">            <span class="keyword">var</span> linkArray = link.<span class="title function_">split</span>(<span class="string">&#x27;/&#x27;</span>).<span class="title function_">filter</span>(<span class="keyword">function</span> (<span class="params">elem</span>) &#123;</span><br><span class="line">              <span class="keyword">return</span> elem != <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">            &#125;);</span><br><span class="line">            <span class="keyword">var</span> srcArray = src.<span class="title function_">split</span>(<span class="string">&#x27;/&#x27;</span>).<span class="title function_">filter</span>(<span class="keyword">function</span> (<span class="params">elem</span>) &#123;</span><br><span class="line">              <span class="keyword">return</span> elem != <span class="string">&#x27;&#x27;</span> &amp;&amp; elem != <span class="string">&#x27;.&#x27;</span>;</span><br><span class="line">            &#125;);</span><br><span class="line">            <span class="keyword">if</span> (srcArray.<span class="property">length</span> &gt; <span class="number">1</span>)</span><br><span class="line">              srcArray.<span class="title function_">shift</span>();</span><br><span class="line">            src = srcArray.<span class="title function_">join</span>(<span class="string">&#x27;/&#x27;</span>);</span><br><span class="line"></span><br><span class="line">            $(<span class="variable language_">this</span>).<span class="title function_">attr</span>(<span class="string">&#x27;src&#x27;</span>, config.<span class="property">root</span> + link + src);</span><br><span class="line">            <span class="variable language_">console</span>.<span class="property">info</span>&amp;&amp;<span class="variable language_">console</span>.<span class="title function_">info</span>(<span class="string">&quot;update link as:--&gt;&quot;</span>+config.<span class="property">root</span> + link + src);</span><br><span class="line">            <span class="comment">// $(this).attr(&#x27;src&#x27;, src);</span></span><br><span class="line">            <span class="comment">// console.info &amp;&amp; console.info(&quot;update link as:--&gt;&quot; + src);</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          <span class="variable language_">console</span>.<span class="property">info</span> &amp;&amp; <span class="variable language_">console</span>.<span class="title function_">info</span>(<span class="string">&quot;no src attr, skipped...&quot;</span>);</span><br><span class="line">          <span class="variable language_">console</span>.<span class="property">info</span> &amp;&amp; <span class="variable language_">console</span>.<span class="title function_">info</span>($(<span class="variable language_">this</span>));</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;);</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="/2024/07/13/PolishMyBlog/image-20240713224430913.png" alt="image-20240713224430913"></p>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><h4 id="配置Typora"><a href="#配置Typora" class="headerlink" title="配置Typora"></a>配置Typora</h4><p>这里改成同目录下与本文件同名文件夹</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">./$&#123;filename&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="/2024/07/13/PolishMyBlog/image-20240713224604996.png" alt="image-20240713224604996"></p>
+<h4 id="创建新文章"><a href="#创建新文章" class="headerlink" title="创建新文章"></a>创建新文章</h4><p>使用以下命令创建一篇文章（其实跟自己创一个文件夹再创一个md文件一样，不过这样方便）</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo n 名字(不要加.md)</span><br><span class="line">如 hexo n notice</span><br></pre></td></tr></table></figure>
+
+<p>那么在_posts文件夹下面会创建一个名叫notice的文件夹和一个notice.md，这样直接复制图片到md文件中就会在同名的这个文件夹中显示</p>
+<p><img src="/2024/07/13/PolishMyBlog/image-20240713224906374.png" alt="image-20240713224906374"></p>
+<h4 id="发布"><a href="#发布" class="headerlink" title="发布"></a>发布</h4><p>每次发布前都要执行一下</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo clean</span><br></pre></td></tr></table></figure>
+
+<p>清除一下缓存，不然使用hexo-asset-image上传的图片链接会出bug，如果上传的链接出了bug，那就hexo clean一下，然后hexo g，hexo d发布就可以了</p>
+<p><img src="/2024/07/13/PolishMyBlog/gifgif.gif" alt="gifgif"></p>
+]]></content>
   </entry>
   <entry>
     <title>检测虚拟机环境</title>

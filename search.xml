@@ -109,8 +109,9 @@
 <h3 id="访客量统计"><a href="#访客量统计" class="headerlink" title="访客量统计"></a>访客量统计</h3><p>搜索<strong>busuanzi</strong>字段（不蒜子）</p>
 <p><img src="/2024/07/13/PolishMyBlog/image-20240713222424045.png" alt="image-20240713222424045"></p>
 <p>这几个都改成true即可</p>
-<h3 id="阅读更多按钮"><a href="#阅读更多按钮" class="headerlink" title="阅读更多按钮"></a>阅读更多按钮</h3><p>在想要在主页上折叠的位置，在md中添加这么一个东西就行</p>
+<h3 id="阅读更多按钮"><a href="#阅读更多按钮" class="headerlink" title="阅读更多按钮"></a>阅读更多按钮</h3><p>在想要在主页上折叠的位置，在md中添加这么一个东西就行，不加这个的话，主页上会显示所有的文章，加载起来也非常慢</p>
 <p><img src="/2024/07/13/PolishMyBlog/image-20240713230143130.png" alt="image-20240713230143130"></p>
+<p><img src="/2024/07/13/PolishMyBlog/image-20240713230336767.png" alt="image-20240713230336767"></p>
 <h3 id="圆角"><a href="#圆角" class="headerlink" title="圆角"></a>圆角</h3><img src="/2024/07/13/PolishMyBlog/image-20240713222720381.png" alt="image-20240713222720381" style="zoom:67%;">
 
 <p><strong>Gemini主题</strong>默认是没有圆角的，上网搜也没搜到，通过自己摸索得出了一个方法</p>
@@ -165,6 +166,7 @@
 
 <p>清除一下缓存，不然使用hexo-asset-image上传的图片链接会出bug，如果上传的链接出了bug，那就hexo clean一下，然后hexo g，hexo d发布就可以了</p>
 <p><img src="/2024/07/13/PolishMyBlog/gifgif.gif" alt="gifgif"></p>
+<p>如果不发布图片，只修改文档内容，可以不hexo clean，但是如果图片链接出错了的话，就clean一下再g &amp; d</p>
 ]]></content>
   </entry>
   <entry>

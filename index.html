@@ -77,6 +77,92 @@
       .use-motion .logo-line-after i {
         right: initial;
       }
+
+
+      .container {
+            display: flex;
+            width: 220px;
+            max-width: 220px;
+            margin: 0 auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 20px;
+            margin-top: 10px;
+        }
+
+        .image-container {
+            flex: 1;
+            padding-right: 20px;
+            margin-left: 3px;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+
+        .info-container {
+            margin-top: 10px;
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .info-container .song-title {
+            font-size: 0.7em;
+            font-weight: bold;
+            color: #6d6d6d;
+        }
+
+        .info-container .artist-name {
+            font-size: 0.5em;
+            color: #7f7f7f;
+        }
+
+        .info-container .song-i {
+            font-size: 0.5em;
+            font-weight: bold;
+            color: #575757;
+            margin-left: -75px;
+            margin-top: -25px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 5px;
+        }
+
+        .controls img {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 5px;
+            background-color: #ddd;
+            position: relative;
+            margin-bottom: 5px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: #828282;
+            width: 0%;
+            /* 初始进度 */
+        }
+
+        .time-display {
+            font-size: 0.6em;
+            color: #666;
+            text-align: right;
+        }
     </style>
   </noscript>
 
@@ -1371,9 +1457,81 @@
 
               <!--  -->
 
-<div>123</div>
-
-
+              <div>
+                <div class="container">
+                    
+                    <div class="image-container">
+                        <img src="https://y.qq.com/music/photo_new/T002R300x300M000003KjODP2FwTHe_2.jpg?max_age=2592000" alt="">
+                    </div>
+                    <div class="info-container">
+                        <div class="song-i" style="position: relative; background-color: white; position: absolute">&nbsp;&nbsp;请你听音乐&nbsp;&nbsp;</div>
+                        <div class="song-title">Without You(Explicit)</div>
+                        <div class="artist-name">Avicii / Sandra Cavazza</div>
+                        <div class="controls">
+                            <img id="rewindBtn" src="https://gitee.com/zzzzzyg/sources/raw/master/%E5%BF%AB%E9%80%80.png"
+                                alt="">
+                            <img id="playPauseBtn" src="https://gitee.com/zzzzzyg/sources/raw/master/%E6%9A%82%E5%81%9C.png"
+                                alt="">
+                            <img id="forwardBtn" src="https://gitee.com/zzzzzyg/sources/raw/master/%E5%BF%AB%E8%BF%9B.png"
+                                alt="">
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar"></div>
+                        </div>
+                        <div class="time-display">00:00 / 00:00</div>
+                    </div>
+                </div>
+            </div>
+            <audio id="audioPlayer" src="https://gitee.com/zzzzzyg/sources/raw/master/Withot%20You%20(Explicit).mp3"></audio>
+            <script>
+              const audioPlayer = document.getElementById('audioPlayer');
+              const playPauseBtn = document.getElementById('playPauseBtn');
+              const rewindBtn = document.getElementById('rewindBtn');
+              const forwardBtn = document.getElementById('forwardBtn');
+              const progressBar = document.querySelector('.progress-bar');
+              const timeDisplay = document.querySelector('.time-display');
+              const progressContainer = document.querySelector('.progress-container');
+      
+              playPauseBtn.addEventListener('click', () => {
+                  if (audioPlayer.paused) {
+                      audioPlayer.play();
+                      playPauseBtn.src = "https://gitee.com/zzzzzyg/sources/raw/master/%E6%92%AD%E6%94%BE.png"; // 切换到暂停图标
+                  } else {
+                      audioPlayer.pause();
+                      playPauseBtn.src = "https://gitee.com/zzzzzyg/sources/raw/master/%E6%9A%82%E5%81%9C.png"; // 切换到播放图标
+                  }
+              });
+      
+              rewindBtn.addEventListener('click', () => {
+                  audioPlayer.currentTime -= 10;
+              });
+      
+              forwardBtn.addEventListener('click', () => {
+                  audioPlayer.currentTime += 10;
+              });
+      
+              audioPlayer.addEventListener('timeupdate', () => {
+                  const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+                  progressBar.style.width = `${progress}%`;
+      
+                  const currentMinutes = Math.floor(audioPlayer.currentTime / 60);
+                  const currentSeconds = Math.floor(audioPlayer.currentTime % 60);
+                  const durationMinutes = Math.floor(audioPlayer.duration / 60);
+                  const durationSeconds = Math.floor(audioPlayer.duration % 60);
+      
+                  timeDisplay.textContent = `${currentMinutes.toString().padStart(2, '0')}:${currentSeconds.toString().padStart(2, '0')} / ${durationMinutes.toString().padStart(2, '0')}:${durationSeconds.toString().padStart(2, '0')}`;
+              });
+      
+              progressContainer.addEventListener('click', (event) => {
+                  const rect = progressContainer.getBoundingClientRect();
+                  const offsetX = event.clientX - rect.left;
+                  const percentage = offsetX / rect.width;
+      
+                  if (isFinite(audioPlayer.duration)) {
+                      audioPlayer.currentTime = percentage * audioPlayer.duration;
+                  }
+              });
+          </script>
               <!--  -->
             </div>
 

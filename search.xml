@@ -1,50 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>NOTICE</title>
-    <url>/2024/07/05/top/</url>
-    <content><![CDATA[<p>
-    <div style="font-size: 70px; font-weight: bold; font-family: 'Times New Roman', serif; color: black">
-        Welcom To My Blog!
-</div>
-
-<div style="font-size: 40px; font-weight: bold; font-family: 'Times New Roman', serif; color: black">
-    This site is my study notes.
-</div>
-
-
-</p><p>
-    <div style="font-size: 50px; font-weight: bold; font-family: 'Times New Roman', serif; color: rgb(150,150,150)">
-        Quick preview
-</div>
-</p>
-
-<ul>
-<li>07-13 	<a href="https://creeeeeeeeeeper.github.io/2024/07/13/PolishMyBlog/">PolishMyBlog</a></li>
-<li>07-11	 <a href="https://creeeeeeeeeeper.github.io/2024/07/11/DetectVM/">检测虚拟机环境</a></li>
-<li>07-07 	<a href="https://creeeeeeeeeeper.github.io/2024/07/07/live/">Venv pyenv update-alternatives</a></li>
-<li>07-05 	<a href="https://creeeeeeeeeeper.github.io/2024/07/05/top/">NOTICE</a></li>
-<li>07-05 	<a href="https://creeeeeeeeeeper.github.io/2024/07/05/CInternet/">网络编程</a></li>
-<li>07-05 	<a href="https://creeeeeeeeeeper.github.io/2024/07/05/Win32API/">Win32API</a>	</li>
-<li>03-20 	<a href="https://creeeeeeeeeeper.github.io/2024/03/20/PE/">PE</a></li>
-<li>02-28 	<a href="https://creeeeeeeeeeper.github.io/2024/02/28/c-1/">c++</a></li>
-<li>12-15 	<a href="https://creeeeeeeeeeper.github.io/2023/12/15/c/">c</a></li>
-<li>12-10 <a href="https://creeeeeeeeeeper.github.io/2023/12/10/compilation/">汇编</a></li>
-<li>11-26  <a href="https://creeeeeeeeeeper.github.io/2023/11/26/wxxcxwlzt/">微信小程序加载网络字体</a></li>
-</ul>
-<div align="center">
-    <svg t="1720193444813" class="icon" style="width: 3.3em;height: 3.3em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewbox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="9740"><path d="M896 195.8V96a32 32 0 0 0-32-32H160a32 32 0 0 0-32 32v256a32 32 0 0 0 32 32h229.39L148.33 759A127.75 127.75 0 0 0 128 828.2V928a32 32 0 0 0 32 32h704a32 32 0 0 0 32-32V672a32 32 0 0 0-32-32H634.61l241.06-375A127.75 127.75 0 0 0 896 195.8zM832 128v64H192v-64zM192 896v-67.8a63.78 63.78 0 0 1 10.17-34.61L465.47 384h83.92L293.08 782.7A32 32 0 0 0 320 832h512v64z m640-128H378.61l41.15-64H832zM460.9 640l174-270.7A32 32 0 0 0 608 320H192v-64h613.39L558.53 640z" fill="#7dc5eb" p-id="9741"/></svg><svg t="1720193489011" class="icon" style="width: 3.3em;height: 3.3em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewbox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="9926"><path d="M956.84 82.14A32 32 0 0 0 928 64H638.76a95.51 95.51 0 0 0-75 36l-53.19 66.48-50-65A96.6 96.6 0 0 0 384.49 64H96a32 32 0 0 0-25.36 51.51L384 522.88V928a32 32 0 0 0 32 32h256a32 32 0 0 0 32-32V427.23L953 116a32 32 0 0 0 3.84-33.86zM384.49 128a32.21 32.21 0 0 1 25.36 12.49l59.6 77.51L429 268.47 321 128z m-144.25 0l162.61 211.39a32 32 0 0 0 50.69 0.91l81.53-101.91 0.38-0.48L613.77 140a31.87 31.87 0 0 1 25-12h62.66L425.91 472.39 161 128zM640 896h-64V587.23l64-80zM519 556a31.87 31.87 0 0 0-7 20v320h-64V547.22L783.38 128h78z" fill="#7dc5eb" p-id="9927"/></svg><svg t="1720193517590" class="icon" style="width: 3.3em;height: 3.3em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewbox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="10112"><path d="M864 64H576a447.66 447.66 0 0 0-448 448v64a383.71 383.71 0 0 0 384 384h352a32 32 0 0 0 32-32V544a32 32 0 0 0-32-32H608a32 32 0 0 0-32 32v96h-64a64.07 64.07 0 0 1-64-64c0-105.87 86.13-192 192-192h224a32 32 0 0 0 32-32V96a32 32 0 0 0-32-32z m-288 64h256v64H512a382.86 382.86 0 0 0-237 81.8C345.41 185 454.17 128 576 128z m64 448h64v64h-64z m96 128a32 32 0 0 0 32-32v-96h64v192H624a175.75 175.75 0 0 1-137.77-66.61A128.06 128.06 0 0 0 512 704zM384 576v16a240 240 0 0 0 240 240h208v64H608c-158.8 0-288-129.2-288-288 0-89.79 53.12-167.4 129.57-203.09A254.12 254.12 0 0 0 384 576z m160-256a288 288 0 0 0-288 288 350.95 350.95 0 0 0 103.1 248.9l0.34 0.33C259.78 803 192 697.24 192 576c0-176.45 143.55-320 320-320h320v64z" fill="#7dc5eb" p-id="10113"/></svg>
-    <br><sub>Site is maintained by ZYG</sub>
-</div>
-
-
-]]></content>
-  </entry>
-  <entry>
     <title>PolishMyBlog</title>
     <url>/2024/07/13/PolishMyBlog/</url>
     <content><![CDATA[<p>
-    <div style="font-size: 70px; font-weight: bold; font-family: 'Times New Roman', serif; color: #5a5a5a">
+    <div style="font-size: 55px; font-weight: bold; font-family: 'Times New Roman', serif; color: #5a5a5a">
         hexo × NexT
 </div>
 <br>
@@ -52,6 +12,7 @@
     如何修改一个这样↓↓↓的主题
 </div>
 </p>
+
 
 
 
@@ -168,6 +129,12 @@
 <p><img src="/2024/07/13/PolishMyBlog/gifgif.gif" alt="gifgif"></p>
 <p>如果不发布图片，只修改文档内容，可以不hexo clean，但是如果图片链接出错了的话，就clean一下再g &amp; d</p>
 ]]></content>
+      <categories>
+        <category>Study Essay</category>
+      </categories>
+      <tags>
+        <tag>Hexo NexT</tag>
+      </tags>
   </entry>
   <entry>
     <title>检测虚拟机环境</title>
@@ -205,6 +172,13 @@
 <p><img src="/2024/07/11/DetectVM/image-20240711131135615.png" alt="image-20240711131135615"></p>
 <p>这也只是一种现在比较可行的简单的检测方法，不保证可能厂商以后把这个特征也抹除</p>
 ]]></content>
+      <categories>
+        <category>Study Essay</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Virtual Environment</tag>
+      </tags>
   </entry>
   <entry>
     <title>Venv pyenv update-alternatives</title>
@@ -323,6 +297,13 @@
 <p><img src="/2024/07/07/live/image-20240707012757430.png" alt="image-20240707012757430"></p>
 <h3 id="切换版本"><a href="#切换版本" class="headerlink" title="切换版本"></a>切换版本</h3><p><img src="/2024/07/07/live/image-20240707013016446.png" alt="image-20240707013016446"></p>
 ]]></content>
+      <categories>
+        <category>Study Essay</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>Java</tag>
+      </tags>
   </entry>
   <entry>
     <title>网络编程</title>
@@ -446,6 +427,13 @@
 
 
 ]]></content>
+      <categories>
+        <category>C/C++</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Internet Programming</tag>
+      </tags>
   </entry>
   <entry>
     <title>Win32API</title>
@@ -1703,6 +1691,12 @@
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;tlhelp32.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;windows.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    DWORD dwCreateAPIAddr;                <span class="comment">// Createfile函数的地址</span></span><br><span class="line">    LPCTSTR lpFileName;                    <span class="comment">// 下面都是CreateFile所需要用到的参数</span></span><br><span class="line">    DWORD dwDesiredAccess;</span><br><span class="line">    DWORD dwShareMode;</span><br><span class="line">    LPSECURITY_ATTRIBUTES lpSecurityAttributes;</span><br><span class="line">    DWORD dwCreationDisposition;</span><br><span class="line">    DWORD dwFlagsAndAttributes;</span><br><span class="line">    HANDLE hTemplateFile;</span><br><span class="line">&#125; CREATEFILE_PARAM;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义一个函数指针</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="title function_">HANDLE</span><span class="params">(WINAPI* PFN_CreateFile)</span> <span class="params">(</span></span><br><span class="line"><span class="params">    LPCTSTR lpFileName,</span></span><br><span class="line"><span class="params">    DWORD dwDesiredAccess,</span></span><br><span class="line"><span class="params">    DWORD dwShareMode,</span></span><br><span class="line"><span class="params">    LPSECURITY_ATTRIBUTES lpSecurityAttributes,</span></span><br><span class="line"><span class="params">    DWORD dwCreationDisposition,</span></span><br><span class="line"><span class="params">    DWORD dwFlagsAndAttributes,</span></span><br><span class="line"><span class="params">    HANDLE hTemplateFile</span></span><br><span class="line"><span class="params">)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 编写要复制到目标进程的函数</span></span><br><span class="line">DWORD _stdcall <span class="title function_">CreateFileThreadProc</span><span class="params">(LPVOID lparam)</span></span><br><span class="line">&#123;</span><br><span class="line">    CREATEFILE_PARAM* Gcreate = (CREATEFILE_PARAM*)lparam;</span><br><span class="line">    PFN_CreateFile pfnCreateFile;</span><br><span class="line">    pfnCreateFile = (PFN_CreateFile)Gcreate-&gt;dwCreateAPIAddr;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// creatFile结构体全部参数</span></span><br><span class="line">    pfnCreateFile(</span><br><span class="line">        Gcreate-&gt;lpFileName,</span><br><span class="line">        Gcreate-&gt;dwDesiredAccess,</span><br><span class="line">        Gcreate-&gt;dwShareMode,</span><br><span class="line">        Gcreate-&gt;lpSecurityAttributes,</span><br><span class="line">        Gcreate-&gt;dwCreationDisposition,</span><br><span class="line">        Gcreate-&gt;dwFlagsAndAttributes,</span><br><span class="line">        Gcreate-&gt;hTemplateFile</span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 远程创建文件</span></span><br><span class="line">BOOL <span class="title function_">RemotCreateFile</span><span class="params">(DWORD dwProcessID, <span class="type">char</span>* szFilePathName)</span></span><br><span class="line">&#123;</span><br><span class="line">    BOOL bRet;</span><br><span class="line">    DWORD dwThread;</span><br><span class="line">    HANDLE hProcess;</span><br><span class="line">    HANDLE hThread;</span><br><span class="line">    DWORD dwThreadFunSize;</span><br><span class="line">    CREATEFILE_PARAM GCreateFile;</span><br><span class="line">    LPVOID lpFilePathName;</span><br><span class="line">    LPVOID lpRemotThreadAddr;</span><br><span class="line">    LPVOID lpFileParamAddr;</span><br><span class="line">    DWORD dwFunAddr;</span><br><span class="line">    HMODULE hModule;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    bRet = <span class="number">0</span>;</span><br><span class="line">    hProcess = <span class="number">0</span>;</span><br><span class="line">    dwThreadFunSize = <span class="number">0x400</span>;</span><br><span class="line">    <span class="comment">// 1. 获取进程的句柄</span></span><br><span class="line">    hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwProcessID);</span><br><span class="line">    <span class="keyword">if</span> (hProcess == <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        OutputDebugString(<span class="string">&quot;OpenProcessError! \n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> FALSE;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 2. 分配3段内存：存储参数，线程函数，文件名</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2.1 用来存储文件名 +1是要计算到结尾处</span></span><br><span class="line">    lpFilePathName = VirtualAllocEx(hProcess, <span class="literal">NULL</span>, <span class="built_in">strlen</span>(szFilePathName)+<span class="number">1</span>, MEM_COMMIT, PAGE_READWRITE); <span class="comment">// 在指定的进程中分配内存</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2.2 用来存储线程函数</span></span><br><span class="line">    lpRemotThreadAddr = VirtualAllocEx(hProcess, <span class="literal">NULL</span>, dwThreadFunSize, MEM_COMMIT, PAGE_READWRITE); <span class="comment">// 在指定的进程中分配内存</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2.3 用来存储文件参数</span></span><br><span class="line">    lpFileParamAddr = VirtualAllocEx(hProcess, <span class="literal">NULL</span>, <span class="keyword">sizeof</span>(CREATEFILE_PARAM), MEM_COMMIT, PAGE_READWRITE); <span class="comment">// 在指定的进程中分配内存</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. 初始化CreateFile参数</span></span><br><span class="line">    GCreateFile.dwDesiredAccess = GENERIC_READ | GENERIC_WRITE;</span><br><span class="line">    GCreateFile.dwShareMode = <span class="number">0</span>;</span><br><span class="line">    GCreateFile.lpSecurityAttributes = <span class="literal">NULL</span>;</span><br><span class="line">    GCreateFile.dwCreationDisposition = OPEN_ALWAYS;</span><br><span class="line">    GCreateFile.dwFlagsAndAttributes = FILE_ATTRIBUTE_NORMAL;</span><br><span class="line">    GCreateFile.hTemplateFile = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 4. 获取CreateFile的地址</span></span><br><span class="line">    <span class="comment">// 因为每个进程中的LoadLibrary函数都在Kernel32.dll中，而且此dll的物理页是共享的，所以我们进程中获得的LoadLibrary地址和别的进程都是一样的</span></span><br><span class="line">    hModule = GetModuleHandle(<span class="string">&quot;kernel32.dll&quot;</span>);</span><br><span class="line">    GCreateFile.dwCreateAPIAddr = (DWORD)GetProcAddress(hModule, <span class="string">&quot;CreateFileA&quot;</span>);</span><br><span class="line">    FreeLibrary(hModule);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 5. 初始化CreatFile文件名</span></span><br><span class="line">    GCreateFile.lpFileName = (LPCTSTR)lpFilePathName;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 6. 修改线程函数起始地址</span></span><br><span class="line">    dwFunAddr = (DWORD)CreateFileThreadProc;</span><br><span class="line">    <span class="comment">// 间接跳</span></span><br><span class="line">    <span class="keyword">if</span> (*((BYTE*)dwFunAddr) == <span class="number">0xE9</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        dwFunAddr = dwFunAddr + <span class="number">5</span> + *(DWORD*)(dwFunAddr + <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 7. 开始复制</span></span><br><span class="line">    <span class="comment">// 7.1 拷贝文件名</span></span><br><span class="line">    WriteProcessMemory(hProcess, lpFilePathName, szFilePathName, <span class="built_in">strlen</span>(szFilePathName) + <span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 7.2 拷贝线程函数</span></span><br><span class="line">    WriteProcessMemory(hProcess, lpRemotThreadAddr, (LPVOID)dwFunAddr, dwThreadFunSize, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 7.3 拷贝参数</span></span><br><span class="line">    WriteProcessMemory(hProcess, lpFileParamAddr, &amp;GCreateFile, <span class="keyword">sizeof</span>(CREATEFILE_PARAM), <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 8. 创建远程线程</span></span><br><span class="line">    hThread = CreateRemoteThread(hProcess, <span class="literal">NULL</span>, <span class="number">0</span>, (LPTHREAD_START_ROUTINE)lpRemotThreadAddr, lpFileParamAddr, <span class="number">0</span>, &amp;dwThread);<span class="comment">// lpAllocAddr传给线程函数的参数.因为dll名字分配在内存中</span></span><br><span class="line">    <span class="keyword">if</span> (hThread == <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        OutputDebugString(<span class="string">&quot;CreateRemoteThread Error! \n&quot;</span>);</span><br><span class="line">        CloseHandle(hProcess);</span><br><span class="line">        CloseHandle(hModule);</span><br><span class="line">        <span class="keyword">return</span> FALSE;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 9. 关闭资源</span></span><br><span class="line">    CloseHandle(hProcess);</span><br><span class="line">    CloseHandle(hThread);</span><br><span class="line">    CloseHandle(hModule);</span><br><span class="line">    <span class="keyword">return</span> TRUE;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 根据进程名称获取进程ID</span></span><br><span class="line">DWORD <span class="title function_">GetPID</span><span class="params">(<span class="type">char</span> *szName)</span></span><br><span class="line">&#123;</span><br><span class="line">    HANDLE hProcessSnapShot = <span class="literal">NULL</span>;</span><br><span class="line">    PROCESSENTRY32 pe32 = &#123;<span class="number">0</span>&#125;;</span><br><span class="line"></span><br><span class="line">    hProcessSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> (hProcessSnapShot == (HANDLE)<span class="number">-1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    pe32.dwSize = <span class="keyword">sizeof</span>(PROCESSENTRY32);</span><br><span class="line">    <span class="keyword">if</span> (Process32First(hProcessSnapShot, &amp;pe32))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">do</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(szName, pe32.szExeFile)) &#123;</span><br><span class="line">                <span class="keyword">return</span> (<span class="type">int</span>)pe32.th32ProcessID;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">while</span> (Process32Next(hProcessSnapShot, &amp;pe32));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        CloseHandle(hProcessSnapShot);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    RemotCreateFile(GetPID(<span class="string">&quot;进程名&quot;</span>), <span class="string">&quot;文件名&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h1 id><a href="#" class="headerlink" title></a></h1>]]></content>
+      <categories>
+        <category>C/C++</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+      </tags>
   </entry>
   <entry>
     <title>PE</title>
@@ -2018,6 +2012,13 @@
 <p>​		（防）先对相关API全代码校验，多个线程互相检测，并检测线程是否在活动中</p>
 <p>​		（破）使用瞬时钩子&#x2F;硬件钩子</p>
 <h3 id="瞬时HOOK过检测"><a href="#瞬时HOOK过检测" class="headerlink" title="瞬时HOOK过检测"></a>瞬时HOOK过检测</h3>]]></content>
+      <categories>
+        <category>PE</category>
+      </categories>
+      <tags>
+        <tag>PE</tag>
+        <tag>汇编</tag>
+      </tags>
   </entry>
   <entry>
     <title>c++</title>
@@ -2168,6 +2169,12 @@
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;1&gt;出现在类体外的函数定义不能指定关键字static；</span><br><span class="line">&lt;2&gt;静态成员之间可以相互访问，包括静态成员函数访问静态数据成员和访问静态成员函数；</span><br><span class="line">&lt;3&gt;非静态成员函数可以任意地访问静态成员函数和静态数据成员；</span><br><span class="line">&lt;4&gt;静态成员函数不能访问非静态成员函数和非静态数据成员；</span><br><span class="line">&lt;5&gt;调用类的静态成员函数的两种方式；</span><br><span class="line">		&lt;类名&gt;::&lt;静态成员函数名&gt;（&lt;参数表&gt;）</span><br><span class="line">		&lt;对象名&gt;.&lt;静态成员函数名&gt;(&lt;参数表&gt;)</span><br></pre></td></tr></table></figure>
 
 ]]></content>
+      <categories>
+        <category>C/C++</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+      </tags>
   </entry>
   <entry>
     <title>c</title>
@@ -2971,6 +2978,13 @@
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> r = pFun(<span class="number">1</span>, <span class="number">2</span>);</span><br></pre></td></tr></table></figure>
 
 ]]></content>
+      <categories>
+        <category>C/C++</category>
+      </categories>
+      <tags>
+        <tag>汇编</tag>
+        <tag>C</tag>
+      </tags>
   </entry>
   <entry>
     <title>汇编</title>
@@ -3581,6 +3595,12 @@
 <h3 id="11-JCC指令"><a href="#11-JCC指令" class="headerlink" title="11.JCC指令"></a>11.JCC指令</h3><img src="/2023/12/10/compilation/image-20231222144942623.png" alt="image-20231222144942623" style="zoom:67%;">
 
 ]]></content>
+      <categories>
+        <category>汇编</category>
+      </categories>
+      <tags>
+        <tag>汇编</tag>
+      </tags>
   </entry>
   <entry>
     <title>微信小程序加载网络字体</title>
@@ -3638,5 +3658,11 @@
 
 <p>这样第三方网络字库就加载完成了</p>
 ]]></content>
+      <categories>
+        <category>Study Essay</category>
+      </categories>
+      <tags>
+        <tag>微信小程序</tag>
+      </tags>
   </entry>
 </search>

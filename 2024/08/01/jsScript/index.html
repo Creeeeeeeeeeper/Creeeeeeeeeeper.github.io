@@ -41,8 +41,11 @@
 <meta property="og:image" content="http://creeeeeeeeeeper.github.io/2024/08/01/jsScript/image-20240802002125428.png">
 <meta property="og:image" content="http://creeeeeeeeeeper.github.io/2024/08/01/jsScript/image-20240802002214549.png">
 <meta property="og:image" content="http://creeeeeeeeeeper.github.io/2024/08/01/jsScript/image-20240802002521991.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2024/08/01/jsScript/image-20240802003855298.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2024/08/01/jsScript/image-20240802003912394.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2024/08/01/jsScript/image-20240802004238259.png">
 <meta property="article:published_time" content="2024-08-01T15:23:21.000Z">
-<meta property="article:modified_time" content="2024-08-01T16:35:49.583Z">
+<meta property="article:modified_time" content="2024-08-01T16:42:58.605Z">
 <meta property="article:author" content="ZYG">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://creeeeeeeeeeper.github.io/2024/08/01/jsScript/image-20240801234544151.png">
@@ -243,7 +246,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-08-02 00:35:49" itemprop="dateModified" datetime="2024-08-02T00:35:49+08:00">2024-08-02</time>
+                <time title="修改时间：2024-08-02 00:42:58" itemprop="dateModified" datetime="2024-08-02T00:42:58+08:00">2024-08-02</time>
               </span>
 
           
@@ -259,14 +262,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>2.6k</span>
+              <span>2.8k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>9 分钟</span>
+              <span>10 分钟</span>
             </span>
 
         </div>
@@ -361,6 +364,13 @@
 <p>启用</p>
 <p><img src="/2024/08/01/jsScript/image-20240802002521991.png" alt="image-20240802002521991"></p>
 <p>脚本成功运行</p>
+<h2 id="Bug"><a href="#Bug" class="headerlink" title="Bug"></a>Bug</h2><p>其实是懒得写还没实现的功能</p>
+<p>比如：当最后一个课程学完后，需要打开下一个折叠的层</p>
+<p><img src="/2024/08/01/jsScript/image-20240802003855298.png" alt="image-20240802003855298"><img src="/2024/08/01/jsScript/image-20240802003912394.png" alt="image-20240802003912394"></p>
+<p>才能自动播放下一个折叠层中的视频</p>
+<p>所以播放完一个视频应该先遍历一下所有<code>.resource-item.resource-item-train</code>的类中的所有<code>&lt;i&gt;</code>标签的title是否都为“已学完”，然后再找到折叠层的类，使用浏览器模拟点击让他折叠打开，然后再点击课程…………因为这里没必要所以没写</p>
+<p>折叠层的类：<img src="/2024/08/01/jsScript/image-20240802004238259.png" alt="image-20240802004238259"></p>
+<p>判断点击这里就可以实现自动展开了</p>
 
     </div>
 
@@ -440,7 +450,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.</span> <span class="nav-text">实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95"><span class="nav-number">1.1.</span> <span class="nav-text">1. 实现方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%87%AA%E5%8A%A8%E6%92%AD%E6%94%BE%E8%A7%86%E9%A2%91"><span class="nav-number">1.2.</span> <span class="nav-text">2.自动播放视频</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E6%9F%A5%E6%89%BE%E9%A1%B5%E9%9D%A2%E4%B8%AD%E7%9A%84video%E5%85%83%E7%B4%A0"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 查找页面中的video元素</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E6%A3%80%E6%9F%A5%E8%A7%86%E9%A2%91%E6%98%AF%E5%90%A6%E6%9C%AA%E6%92%AD%E6%94%BE"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2 检查视频是否未播放</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-%E6%A8%A1%E6%8B%9F%E7%82%B9%E5%87%BB%E4%B8%80%E4%B8%8Bvideo%E5%85%83%E7%B4%A0"><span class="nav-number">1.2.3.</span> <span class="nav-text">2.3 模拟点击一下video元素</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%80%8D%E9%80%9F"><span class="nav-number">1.3.</span> <span class="nav-text">3. 倍速</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%AD%A6%E5%AE%8C%E8%87%AA%E5%8A%A8%E6%92%AD%E6%94%BE%E4%B8%8B%E4%B8%80%E4%B8%AA%E8%A7%86%E9%A2%91"><span class="nav-number">1.4.</span> <span class="nav-text">4. 学完自动播放下一个视频</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-%E6%A3%80%E6%B5%8B%E6%98%AF%E5%90%A6%E5%AD%A6%E5%AE%8C"><span class="nav-number">1.4.1.</span> <span class="nav-text">4.1 检测是否学完</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-%E7%9B%91%E5%90%AC%E8%A7%86%E9%A2%91%E6%98%AF%E5%90%A6%E6%92%AD%E6%94%BE%E5%AE%8C"><span class="nav-number">1.4.2.</span> <span class="nav-text">4.2 监听视频是否播放完</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-%E6%92%AD%E6%94%BE%E4%B8%8B%E4%B8%80%E4%B8%AA%E8%A7%86%E9%A2%91"><span class="nav-number">1.4.3.</span> <span class="nav-text">4.3 播放下一个视频</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-4-%E6%A8%A1%E6%8B%9F%E7%82%B9%E5%87%BB"><span class="nav-number">1.4.4.</span> <span class="nav-text">4.4 模拟点击</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E5%A4%84%E7%90%86alert"><span class="nav-number">1.5.</span> <span class="nav-text">5. 处理alert</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E6%B5%8F%E8%A7%88%E5%99%A8%E6%A8%A1%E6%8B%9F%E7%82%B9%E5%87%BB%E5%BC%B9%E5%87%BA%E7%9A%84%E6%8C%89%E9%92%AE"><span class="nav-number">1.6.</span> <span class="nav-text">6. 浏览器模拟点击弹出的按钮</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E6%8C%81%E7%BB%AD%E6%89%A7%E8%A1%8C%E7%9A%84%E5%87%BD%E6%95%B0"><span class="nav-number">1.7.</span> <span class="nav-text">7. 持续执行的函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E4%BB%A3%E7%A0%81"><span class="nav-number">2.</span> <span class="nav-text">总代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">使用</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.</span> <span class="nav-text">实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95"><span class="nav-number">1.1.</span> <span class="nav-text">1. 实现方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%87%AA%E5%8A%A8%E6%92%AD%E6%94%BE%E8%A7%86%E9%A2%91"><span class="nav-number">1.2.</span> <span class="nav-text">2.自动播放视频</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E6%9F%A5%E6%89%BE%E9%A1%B5%E9%9D%A2%E4%B8%AD%E7%9A%84video%E5%85%83%E7%B4%A0"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 查找页面中的video元素</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E6%A3%80%E6%9F%A5%E8%A7%86%E9%A2%91%E6%98%AF%E5%90%A6%E6%9C%AA%E6%92%AD%E6%94%BE"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2 检查视频是否未播放</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-%E6%A8%A1%E6%8B%9F%E7%82%B9%E5%87%BB%E4%B8%80%E4%B8%8Bvideo%E5%85%83%E7%B4%A0"><span class="nav-number">1.2.3.</span> <span class="nav-text">2.3 模拟点击一下video元素</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%80%8D%E9%80%9F"><span class="nav-number">1.3.</span> <span class="nav-text">3. 倍速</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%AD%A6%E5%AE%8C%E8%87%AA%E5%8A%A8%E6%92%AD%E6%94%BE%E4%B8%8B%E4%B8%80%E4%B8%AA%E8%A7%86%E9%A2%91"><span class="nav-number">1.4.</span> <span class="nav-text">4. 学完自动播放下一个视频</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-%E6%A3%80%E6%B5%8B%E6%98%AF%E5%90%A6%E5%AD%A6%E5%AE%8C"><span class="nav-number">1.4.1.</span> <span class="nav-text">4.1 检测是否学完</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-%E7%9B%91%E5%90%AC%E8%A7%86%E9%A2%91%E6%98%AF%E5%90%A6%E6%92%AD%E6%94%BE%E5%AE%8C"><span class="nav-number">1.4.2.</span> <span class="nav-text">4.2 监听视频是否播放完</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-%E6%92%AD%E6%94%BE%E4%B8%8B%E4%B8%80%E4%B8%AA%E8%A7%86%E9%A2%91"><span class="nav-number">1.4.3.</span> <span class="nav-text">4.3 播放下一个视频</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-4-%E6%A8%A1%E6%8B%9F%E7%82%B9%E5%87%BB"><span class="nav-number">1.4.4.</span> <span class="nav-text">4.4 模拟点击</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E5%A4%84%E7%90%86alert"><span class="nav-number">1.5.</span> <span class="nav-text">5. 处理alert</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E6%B5%8F%E8%A7%88%E5%99%A8%E6%A8%A1%E6%8B%9F%E7%82%B9%E5%87%BB%E5%BC%B9%E5%87%BA%E7%9A%84%E6%8C%89%E9%92%AE"><span class="nav-number">1.6.</span> <span class="nav-text">6. 浏览器模拟点击弹出的按钮</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E6%8C%81%E7%BB%AD%E6%89%A7%E8%A1%8C%E7%9A%84%E5%87%BD%E6%95%B0"><span class="nav-number">1.7.</span> <span class="nav-text">7. 持续执行的函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E4%BB%A3%E7%A0%81"><span class="nav-number">2.</span> <span class="nav-text">总代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bug"><span class="nav-number">4.</span> <span class="nav-text">Bug</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -522,7 +532,7 @@
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">3:23</span>
+    <span title="站点阅读时长">3:24</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>

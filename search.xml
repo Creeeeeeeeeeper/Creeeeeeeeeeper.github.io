@@ -3,7 +3,9 @@
   <entry>
     <title>常见算法逆向</title>
     <url>/2024/09/25/algorithm/</url>
-    <content><![CDATA[<h1 id="常见算法逆向"><a href="#常见算法逆向" class="headerlink" title="常见算法逆向"></a>常见算法逆向</h1><h2 id="Base64"><a href="#Base64" class="headerlink" title="Base64"></a>Base64</h2><h3 id="Base64编码规则"><a href="#Base64编码规则" class="headerlink" title="Base64编码规则"></a>Base64编码规则</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. 将要加密的字符串变成二进制</span><br><span class="line">2. 二进制重新分组</span><br><span class="line">3. 分组后二进制转十进制</span><br><span class="line">4. 根据十进制查base64编码表</span><br></pre></td></tr></table></figure>
+    <content><![CDATA[<span id="more"></span>
+
+<h1 id="常见算法逆向"><a href="#常见算法逆向" class="headerlink" title="常见算法逆向"></a>常见算法逆向</h1><h2 id="Base64"><a href="#Base64" class="headerlink" title="Base64"></a>Base64</h2><h3 id="Base64编码规则"><a href="#Base64编码规则" class="headerlink" title="Base64编码规则"></a>Base64编码规则</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. 将要加密的字符串变成二进制</span><br><span class="line">2. 二进制重新分组</span><br><span class="line">3. 分组后二进制转十进制</span><br><span class="line">4. 根据十进制查base64编码表</span><br></pre></td></tr></table></figure>
 
 <img src="/2024/09/25/algorithm/image-20240925101744872.png" alt="image-20240925101744872" style="zoom:50%;">
 

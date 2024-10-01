@@ -3,13 +3,14 @@
   <entry>
     <title>清理C盘之数据迁移</title>
     <url>/2024/10/01/cleanC/</url>
-    <content><![CDATA[<h2 id="清理C盘"><a href="#清理C盘" class="headerlink" title="清理C盘"></a>清理C盘</h2><p>清理一下爆满的C盘，其实也不是清理，就是数据转移</p>
+    <content><![CDATA[<h2 id="清理C盘"><a href="#清理C盘" class="headerlink" title="清理C盘"></a>清理C盘</h2><p>每次取证C盘都要被火眼的hlnet填满……</p>
+<p>清理一下爆满的C盘，其实也不是清理，就是数据转移</p>
 <p><img src="/2024/10/01/cleanC/image-20241001142630593.png" alt="image-20241001142630593"></p>
 <p>方法：使用mklink创建系统链接</p>
 <span id="more"></span>
 
 <h2 id="脚本实现"><a href="#脚本实现" class="headerlink" title="脚本实现"></a>脚本实现</h2><div>
-    <text>哦，这里有什么？-></text><text style="color: black; background-color: black">强烈吐槽火眼，每次C盘都要被hlnet文件夹塞满……</text>
+    <text>哦，这里有什么？-></text><text style="color: black; background-color: black">强烈吐槽火眼，hlnet就不能放到别的盘</text>
 </div>
 
 

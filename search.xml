@@ -61,6 +61,11 @@
 <br>
 <br>
 <br>
+<br>
+<div style="display: flex; justify-content: center">
+    <text style="color: white">两个分析文件下载 ↓</text>
+</div>
+<br>
 <div style="display: flex; justify-content: center">
     <a href="https://creeeeeeeeeeper.github.io/2024/10/02/wannacry/wncy.zip" alt="目录迁移.exe"><div style="display: flex; flex-direction:row; border: solid 1px #cccccc; height: 60px;">
         <image src="https://creeeeeeeeeeper.github.io/2024/10/02/wannacry/20241003150917202.png" style="scale: 0.8; margin-top: 10px"></image>

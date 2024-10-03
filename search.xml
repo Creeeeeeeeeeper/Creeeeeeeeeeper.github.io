@@ -68,7 +68,7 @@
 <br>
 <div style="display: flex; justify-content: center">
     <a href="https://creeeeeeeeeeper.github.io/2024/10/02/wannacry/wncy.zip" alt="目录迁移.exe"><div style="display: flex; flex-direction:row; border: solid 1px #cccccc; height: 60px;">
-        <image src="https://creeeeeeeeeeper.github.io/2024/10/02/wannacry/20241003150917202.png" style="scale: 0.8; margin-top: 10px"></image>
+        <image src="https://creeeeeeeeeeper.github.io/2024/10/02/wannacry/image-20241003150917202.png" style="scale: 0.8; margin-top: 10px"></image>
         <div style="display: flex; flex-direction: column; font-size: 12.5px; padding-right: 15px; margin-top: 10px">
             <text>wncy.zip</text>
             <text style="font-size: 8px; color: #cccccc">3.93MB</text>
@@ -76,6 +76,7 @@
     </div></a></div>
 <br>
 </div>
+
 
 <p>下面从第二题开始分析</p>
 <h2 id="释放压缩包的md5"><a href="#释放压缩包的md5" class="headerlink" title="释放压缩包的md5"></a>释放压缩包的md5</h2><p>拿出pestudio看一下压缩包里的“下崽”程序wcry.exe，里面有一个PKZIP压缩包</p>

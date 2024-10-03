@@ -3,7 +3,7 @@
   <entry>
     <title>wannacry勒索病毒分析</title>
     <url>/2024/10/02/wannacry/</url>
-    <content><![CDATA[<p>分析基于2024龙信杯wcry乐锁病毒题目</p>
+    <content><![CDATA[<p>分析基于2024龙信杯wcry乐锁病毒题目，<strong>本题目没有原始wannacry病毒的域名开关部分</strong></p>
 <table>
 <thead>
 <tr>

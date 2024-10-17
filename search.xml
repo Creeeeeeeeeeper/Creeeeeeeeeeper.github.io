@@ -44,7 +44,7 @@
 
 <blockquote>
 <p><strong>本文参考：</strong></p>
-<p><a href="https://www.youtube.com/watch?v=Sv8yu12y5zM">Reversing WannaCry Part 1 - Finding the killswitch and unpacking the malware in #Ghidra - YouTube</a><br><a href="https://www.youtube.com/watch?v=Q90uZS3taG0">Reversing WannaCry Part 2 - Diving into the malware with #Ghidra - YouTube</a><br><a href="https://sayonara.gitbook.io/writeups/malware-analysis/wannacry-ransomware#extracting-the-wannacry-encryptor-binary">WannaCry 勒索软件 |WriteUps (gitbook.io)</a><br><a href="https://thewebchap.wordpress.com/2017/05/16/wannacry-detailed-analysis-part-2-of-3/">Wannacry ： 详细分析（第 2 部分，共 3 部分） – 网络章节 (wordpress.com)</a></p>
+<p><a href="https://www.youtube.com/watch?v=Sv8yu12y5zM">Reversing WannaCry Part 1 - Finding the killswitch and unpacking the malware in #Ghidra - YouTube</a><br><a href="https://www.youtube.com/watch?v=Q90uZS3taG0">Reversing WannaCry Part 2 - Diving into the malware with #Ghidra - YouTube</a><br><a href="https://sayonara.gitbook.io/writeups/malware-analysis/wannacry-ransomware#extracting-the-wannacry-encryptor-binary">WannaCry 勒索软件 |WriteUps (gitbook.io)</a><br><a href="https://thewebchap.wordpress.com/2017/05/16/wannacry-detailed-analysis-part-2-of-3/">Wannacry ： 详细分析（第 2 部分，共 3 部分） – 网络章节 (wordpress.com)</a><br>[<a href="https://blog.csdn.net/anhui8496/article/details/102431403">病毒分析]WannaCry病毒分析(永恒之蓝)-CSDN博客</a></p>
 </blockquote>
 <div style="color: red; font-weight: 600;">
     <br>
@@ -357,6 +357,7 @@
     <url>/2024/09/21/pythonScripts/</url>
     <content><![CDATA[<h2 id="pdf2docx"><a href="#pdf2docx" class="headerlink" title="pdf2docx"></a>pdf2docx</h2><span id="more"></span>
 
+<h3 id="exe下载"><a href="#exe下载" class="headerlink" title="exe下载"></a>exe下载</h3><p><a href="https://wwuf.lanzouv.com/i5aIU2cqnwri">文件 (lanzouv.com)</a><br>密码:0000</p>
 <h3 id="库"><a href="#库" class="headerlink" title="库"></a>库</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">pip install pdf2docx</span><br></pre></td></tr></table></figure>
 
 <h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pdf2docx <span class="keyword">import</span> Converter</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">pdf_to_word</span>(<span class="params">pdf_file, word_file</span>):</span><br><span class="line">    cv = Converter(pdf_file)</span><br><span class="line">    cv.convert(word_file, start=<span class="number">0</span>, end=<span class="literal">None</span>)</span><br><span class="line">    cv.close()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&#x27;转换完成：<span class="subst">&#123;word_file&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    pdf_file = <span class="string">&#x27;input.pdf&#x27;</span>  <span class="comment"># 替换为 PDF 文件路径</span></span><br><span class="line">    word_file = <span class="string">&#x27;output.docx&#x27;</span>  <span class="comment"># 输出的 Word 文件路径</span></span><br><span class="line"></span><br><span class="line">pdf_to_word(pdf_file, word_file)</span><br></pre></td></tr></table></figure>

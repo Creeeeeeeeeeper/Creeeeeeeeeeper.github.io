@@ -31,7 +31,7 @@
 <meta property="og:image" content="http://creeeeeeeeeeper.github.io/2024/09/21/ms/image-20240921194356442.png">
 <meta property="og:image" content="http://creeeeeeeeeeper.github.io/2024/09/21/ms/image-20240921194554141.png">
 <meta property="article:published_time" content="2024-09-21T07:36:16.000Z">
-<meta property="article:modified_time" content="2024-09-25T03:37:07.823Z">
+<meta property="article:modified_time" content="2024-10-17T09:42:29.100Z">
 <meta property="article:author" content="ZYG">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://creeeeeeeeeeper.github.io/2024/09/21/ms/image-20240921192249823.png">
@@ -233,7 +233,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-09-25 11:37:07" itemprop="dateModified" datetime="2024-09-25T11:37:07+08:00">2024-09-25</time>
+                <time title="修改时间：2024-10-17 17:42:29" itemprop="dateModified" datetime="2024-10-17T17:42:29+08:00">2024-10-17</time>
               </span>
 
           
@@ -249,7 +249,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>213</span>
+              <span>329</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -274,6 +274,10 @@
 <p>在静态免杀中，如果字符串使用<code>const char* str = &quot;Hello World&quot;;</code>方式，或者放在全局变量区初始化，会在文件中直接看到</p>
 <p><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/2024/09/21/ms/image-20240921192249823.png" alt="image-20240921192249823"></p>
 <p>对免杀要隐藏字符串，使用<code>char str[] = &#123;&#39;h&#39;, &#39;e&#39;, &#39;l&#39;, &#39;l&#39;, &#39;o&#39;, 0&#125;;</code>初始化的字符串不会编译到文件里面，只有在程序开始运行的时候才会加载到栈中。</p>
+<p>但是这种方法在exe中使用release版本编译还是可能被系统优化成一段完整的字符串，因此可以加入一些混淆代码，比如：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">mian</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> a[<span class="number">6</span>] = &#123; <span class="number">0</span> &#125;;</span><br><span class="line">    <span class="type">int</span> b[<span class="number">5</span>] = &#123; <span class="number">0</span> &#125;;</span><br><span class="line">    a[<span class="number">0</span>] = <span class="string">&#x27;h&#x27;</span>;</span><br><span class="line">    b[<span class="number">0</span>] = <span class="string">&#x27;a&#x27;</span>;</span><br><span class="line">    a[<span class="number">1</span>] = <span class="string">&#x27;e&#x27;</span>;</span><br><span class="line">    b[<span class="number">1</span>] = <span class="string">&#x27;f&#x27;</span>;</span><br><span class="line">    a[<span class="number">2</span>] = <span class="string">&#x27;l&#x27;</span>;</span><br><span class="line">    b[<span class="number">2</span>] = <span class="string">&#x27;r&#x27;</span>;</span><br><span class="line">    a[<span class="number">3</span>] = <span class="string">&#x27;l&#x27;</span>;</span><br><span class="line">    b[<span class="number">3</span>] = <span class="string">&#x27;p&#x27;</span>;</span><br><span class="line">    a[<span class="number">4</span>] = <span class="string">&#x27;o&#x27;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样打印数组a就是hello，并且使用release生成也不会显示在PE文件中。</p>
 <p><strong>命令行参数</strong></p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;windows.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span>* argv[])</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;argc = %d\n&quot;</span>, argc);</span><br><span class="line">    <span class="comment">// 循环打印argv数组中的内容</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; argc; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;argv[%d] = %s\n&quot;</span>, i, argv[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -282,8 +286,7 @@
 <p><strong>argc</strong>是输入的参数的个数加一，第一个参数是当前进程名，如果是在cmd中执行这个exe：</p>
 <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/2024/09/21/ms/image-20240921194554141.png" alt="image-20240921194554141" style="zoom:50%;">
 
-
-
+<p><strong>指针</strong></p>
 
     </div>
 

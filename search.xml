@@ -6,6 +6,7 @@
     <content><![CDATA[<p>之前一直弄Kali，Ubuntu，aliyunECS之类的，想搞一块本地的玩玩，整了块Raspberry Pi 5</p>
 <span id="more"></span>
 
+<p>思路：从tf卡启动系统，ssd作为存储盘，使用电脑热点和XTerminal连接，系统使用Raspberry Pi OS Lite（Ubuntu不好使）</p>
 <h1 id="硬件"><a href="#硬件" class="headerlink" title="硬件"></a>硬件</h1><h2 id="树莓派5"><a href="#树莓派5" class="headerlink" title="树莓派5"></a>树莓派5</h2><p>首先就是一块Raspberry 5，规格是4核8G。</p>
 <img src="/2024/11/23/raspberrypi/image-20241123212605050.png" alt="image-20241123212605050" style="zoom:50%;">
 
@@ -219,6 +220,7 @@
 <br>
 <br>
 </div>
+
 
 <p>累了，有空再折腾（2024.11.23 21:12）</p>
 ]]></content>

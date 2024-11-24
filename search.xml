@@ -6,7 +6,7 @@
     <content><![CDATA[<p>之前一直弄Kali，Ubuntu，aliyunECS之类的，想搞一块本地的玩玩，整了块Raspberry Pi 5</p>
 <span id="more"></span>
 
-<p>思路：从tf卡启动系统，ssd作为存储盘，使用电脑热点和XTerminal连接，系统使用Raspberry Pi OS Lite（Ubuntu不好使）</p>
+<p><strong>思路：从tf卡启动系统，ssd作为存储盘，使用电脑热点和XTerminal连接，系统使用Raspberry Pi OS Lite（Ubuntu不好使）</strong></p>
 <h1 id="硬件"><a href="#硬件" class="headerlink" title="硬件"></a>硬件</h1><h2 id="树莓派5"><a href="#树莓派5" class="headerlink" title="树莓派5"></a>树莓派5</h2><p>首先就是一块Raspberry 5，规格是4核8G。</p>
 <img src="/2024/11/23/raspberrypi/image-20241123212605050.png" alt="image-20241123212605050" style="zoom:50%;">
 
@@ -222,7 +222,44 @@
 </div>
 
 
-<p>累了，有空再折腾（2024.11.23 21:12）</p>
+<h1 id="frpc"><a href="#frpc" class="headerlink" title="frpc"></a>frpc</h1><p>在树莓派上弄一个内网穿透，用的是<a href="https://www.natfrp.com/?page=panel&module=download">Sakura Frp | 樱花内网穿透 </a> </p>
+<p>首先看一下<a href="https://doc.natfrp.com/frpc/usage.html">SakuraFrp frpc使用帮助文档</a></p>
+<h2 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h2><p>首先看一下系统架构</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">uname</span> -m</span><br></pre></td></tr></table></figure>
+
+<img src="/2024/11/23/raspberrypi/image-20241124095330221.png" alt="image-20241124095330221" style="zoom:67%;">
+
+<p>然后使用 <code>wget</code> 下载对应的版本</p>
+<p><img src="/2024/11/23/raspberrypi/image-20241124095419276.png" alt="image-20241124095419276"></p>
+<p>算一下MD5</p>
+<img src="/2024/11/23/raspberrypi/image-20241124095445830.png" alt="image-20241124095445830" style="zoom: 67%;">
+
+<h2 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h2><p>没怎么用过linux，我竟然不知道怎么启动哈哈哈哈，是需要加 <code>./xxx</code>，来启动的</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">chmod</span> +x frpc</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">./frpc</span><br></pre></td></tr></table></figure>
+
+<p>你别说，这个Sakura frp整的这个TUI还挺高级，应该叫Terminal UI吧</p>
+<p><img src="/2024/11/23/raspberrypi/image-20241124124639408.png" alt="image-20241124124639408"></p>
+<p>输入秘钥后登录，选择隧道</p>
+<p><img src="/2024/11/23/raspberrypi/image-20241124124725810.png" alt="image-20241124124725810"></p>
+<p>这样就启动了</p>
+<p><img src="/2024/11/23/raspberrypi/image-20241124124753469.png" alt="image-20241124124753469"></p>
+<p>因为想van我的世界，所以下一个Java和Spigot用来开服</p>
+<h1 id="Minecraft-Server"><a href="#Minecraft-Server" class="headerlink" title="Minecraft Server"></a>Minecraft Server</h1><h2 id="Java"><a href="#Java" class="headerlink" title="Java"></a>Java</h2><p>下载jdk21，建议下载jdk17+，我玩的是1.20.1</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">wget https://download.oracle.com/java/21/latest/jdk-21_linux-aarch64_bin.tar.gz</span><br></pre></td></tr></table></figure>
+
+<p>然后去 <code>~/.bashrc</code> 配置一下java的环境变量，不会从网上搜搜或者问AI</p>
+<h2 id="Spigot"><a href="#Spigot" class="headerlink" title="Spigot"></a>Spigot</h2><p>先开个原版服务器 <a href="https://www.spigotmc.org/">SpigotMC - High Performance Minecraft</a></p>
+<p>开服教程去B站搜即可</p>
+<h2 id="连接-1"><a href="#连接-1" class="headerlink" title="连接"></a>连接</h2><p>可以看到还是非常流畅的，但是网络延时有点高，到了将近250ms，可能是树莓派连接的电脑热点，电脑又连了手机热点，并且连得还是内网穿透的地址，所以还有待改进，不过整体还算不错，我自己一个人连进去玩，树莓派的风扇都不转，之后试试多人</p>
+<div>
+    <video width="900" height="520" controls>
+          <source src="https://creeeeeeeeeeper.github.io//2024/11/23/raspberrypi/cc.mp4" type="video/mp4">
+    </video>
+</div>
+
+
 ]]></content>
   </entry>
   <entry>
@@ -4245,8 +4282,8 @@
         <category>C/C++</category>
       </categories>
       <tags>
-        <tag>C</tag>
         <tag>汇编</tag>
+        <tag>C</tag>
       </tags>
   </entry>
   <entry>

@@ -245,6 +245,9 @@
 <p><img src="/2024/11/23/raspberrypi/image-20241124124725810.png" alt="image-20241124124725810"></p>
 <p>这样就启动了</p>
 <p><img src="/2024/11/23/raspberrypi/image-20241124124753469.png" alt="image-20241124124753469"></p>
+<blockquote>
+<p>配置开机自启详见<a href="https://doc.natfrp.com/frpc/service/systemd.html">systemd 配置 frpc 服务 | SakuraFrp 帮助文档</a></p>
+</blockquote>
 <p>因为想van我的世界，所以下一个Java和Spigot用来开服</p>
 <h1 id="Minecraft-Server"><a href="#Minecraft-Server" class="headerlink" title="Minecraft Server"></a>Minecraft Server</h1><h2 id="Java"><a href="#Java" class="headerlink" title="Java"></a>Java</h2><p>下载jdk21，建议下载jdk17+，我玩的是1.20.1</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">wget https://download.oracle.com/java/21/latest/jdk-21_linux-aarch64_bin.tar.gz</span><br></pre></td></tr></table></figure>
@@ -258,12 +261,44 @@
           <source src="https://creeeeeeeeeeper.github.io//2024/11/23/raspberrypi/cc.mp4" type="video/mp4">
     </video>
 </div>
-<div style="display:flex; justify-content: center; font-size: 10px; color: gray">
+<div style="display:flex; justify-content: center; font-size: 18px; color: gray">
     （别问为什么视频有BGM，因为当时在听歌）
 </div>
 
 
 
+<h1 id="Nginx"><a href="#Nginx" class="headerlink" title="Nginx"></a>Nginx</h1><p>先下载Nginx <a href="https://nginx.org/en/download.html">nginx: download</a>，Linux的话下中间这个稳定版就可以了</p>
+<p><img src="/2024/11/23/raspberrypi/image-20241125132700880.png" alt="image-20241125132700880"></p>
+<p><img src="/2024/11/23/raspberrypi/image-20241125132916949.png" alt="image-20241125132916949"></p>
+<p>解压缩一下</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo tar -zxf nginx-1.26.2.tar.gz</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2024/11/23/raspberrypi/image-20241125133145485.png" alt="image-20241125133145485"></p>
+<p>然后用以下指令配置Nginx</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">./configure</span><br></pre></td></tr></table></figure>
+
+<p>中间报了很多错，因为没有一些库，问问AI把这些库下载上就好了</p>
+<p>最终配置好出现这个东西：</p>
+<p><img src="/2024/11/23/raspberrypi/image-20241125133709574.png" alt="image-20241125133709574"></p>
+<p>然后用以下指令编译</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo make&amp;&amp;sudo make install</span><br></pre></td></tr></table></figure>
+
+<p>编译完之后直接就可以启动了</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo /usr/local/nginx/sbin/nginx</span><br></pre></td></tr></table></figure>
+
+
+
+<img src="/2024/11/23/raspberrypi/image-20241125162749646.png" alt="image-20241125162749646" style="zoom:50%;">
+
+<p>在本地查看一下网页</p>
+<p><code>ifconfig</code>看一下局域网内的IP地址</p>
+<img src="/2024/11/23/raspberrypi/image-20241125163025047.png" alt="image-20241125163025047" style="zoom:50%;">
+
+<img src="/2024/11/23/raspberrypi/image-20241125163046438.png" alt="image-20241125163046438" style="zoom:30%;">
+
+<p>然后如果在公网访问需要再建一个隧道，用来穿透Nginx的80端口</p>
+<p><img src="/2024/11/23/raspberrypi/image-20241125170815139.png" alt="image-20241125170815139"></p>
+<p>当然，内网穿透隧道可能会变，导致不能一直访问，有一个解决方法是在github上创建一个page（因为已经有一个github的博客），然后再在这个page的script里面写一个重定向就可以了，如果隧道改了，那么直接在github的page上更新就可以了。不过没有备案的话，访问还是会显示不安全，不过也无伤大雅</p>
 ]]></content>
   </entry>
   <entry>
@@ -4286,8 +4321,8 @@
         <category>C/C++</category>
       </categories>
       <tags>
-        <tag>汇编</tag>
         <tag>C</tag>
+        <tag>汇编</tag>
       </tags>
   </entry>
   <entry>

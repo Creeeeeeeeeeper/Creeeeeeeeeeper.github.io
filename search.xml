@@ -3,7 +3,10 @@
   <entry>
     <title>在内网搭建ws服务器出现的一些问题</title>
     <url>/2024/12/19/frp-CA/</url>
-    <content><![CDATA[<p>在搭建自己的一个内网网站时，将这个网站通过<a href="https://www.natfrp.com/">Sakura Frp</a>穿了出去，因为Sakura_Frp开启隧道时打开了自动https（必须开不然访问不了网站），所以直接访问网站是https的，只不过会显示不安全（不受信任），网页还是可以正常访问的。</p>
+    <content><![CDATA[<p>WebSocket服务器搭建时的一些问题</p>
+<span id="more"></span>
+
+<p>在搭建自己的一个内网网站时，将这个网站通过<a href="https://www.natfrp.com/">Sakura Frp</a>穿了出去，因为Sakura_Frp开启隧道时打开了自动https（必须开不然访问不了网站），所以直接访问网站是https的，只不过会显示不安全（不受信任），网页还是可以正常访问的。</p>
 <p>那么问题出在哪呢，昨天尝试在内网使用php写了一个websocket的聊天室demo，那么浏览器访问这个聊天室的时候先用https发送一个upgrade的请求，然后尝试websocket，但是通过frp的这个公网发送的请求，到了websocket会变成wss而不是ws，网页会返回状态码426，websocket尝试连接wss又不能强制转换成ws，使用frp访问网站也不能使用http访问，必须要https，所以应该需要搞一个CA证书。无法连接的报错如下：</p>
 <blockquote>
 <p>Mixed Content: The page at ‘<a href="https://frp-xxx.xxx:port/demoPage/">https://frp-xxx.xxx:port/demoPage/</a>‘  was loaded over HTTPS, but attempted to connect to the insecure WebSocket endpoint ‘ws:&#x2F;&#x2F;xxx.xxx.xxx.xxx:port&#x2F;chat’. This request has been blocked; this endpoint must be available over WSS. Uncaught DOMException: Failed to construct ‘WebSocket’: An insecure WebSocket connection may not be initiated from a page loaded over HTTPS.</p>

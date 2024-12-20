@@ -20,17 +20,17 @@
     var CONFIG = {"hostname":"creeeeeeeeeeper.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="在搭建自己的一个内网网站时，将这个网站通过Sakura Frp穿了出去，因为Sakura_Frp开启隧道时打开了自动https（必须开不然访问不了网站），所以直接访问网站是https的，只不过会显示不安全（不受信任），网页还是可以正常访问的。 那么问题出在哪呢，昨天尝试在内网使用php写了一个websocket的聊天室demo，那么浏览器访问这个聊天室的时候先用https发送一个upgrade的请">
+  <meta name="description" content="WebSocket服务器搭建时的一些问题">
 <meta property="og:type" content="article">
 <meta property="og:title" content="在内网搭建ws服务器出现的一些问题">
 <meta property="og:url" content="http://creeeeeeeeeeper.github.io/2024/12/19/frp-CA/index.html">
 <meta property="og:site_name" content="ZYG&#39;s Notes">
-<meta property="og:description" content="在搭建自己的一个内网网站时，将这个网站通过Sakura Frp穿了出去，因为Sakura_Frp开启隧道时打开了自动https（必须开不然访问不了网站），所以直接访问网站是https的，只不过会显示不安全（不受信任），网页还是可以正常访问的。 那么问题出在哪呢，昨天尝试在内网使用php写了一个websocket的聊天室demo，那么浏览器访问这个聊天室的时候先用https发送一个upgrade的请">
+<meta property="og:description" content="WebSocket服务器搭建时的一些问题">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://creeeeeeeeeeper.github.io/2024/12/19/frp-CA/image-20241220164533172.png">
 <meta property="og:image" content="http://creeeeeeeeeeper.github.io/2024/12/19/frp-CA/a63e07e755ab0376578dafc8d320c715.jpg">
 <meta property="article:published_time" content="2024-12-19T04:24:07.000Z">
-<meta property="article:modified_time" content="2024-12-20T08:51:40.455Z">
+<meta property="article:modified_time" content="2024-12-20T08:54:11.716Z">
 <meta property="article:author" content="ZYG">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://creeeeeeeeeeper.github.io/2024/12/19/frp-CA/image-20241220164533172.png">
@@ -232,7 +232,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-20 16:51:40" itemprop="dateModified" datetime="2024-12-20T16:51:40+08:00">2024-12-20</time>
+                <time title="修改时间：2024-12-20 16:54:11" itemprop="dateModified" datetime="2024-12-20T16:54:11+08:00">2024-12-20</time>
               </span>
 
           
@@ -248,7 +248,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.3k</span>
+              <span>1.4k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -267,7 +267,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>在搭建自己的一个内网网站时，将这个网站通过<a target="_blank" rel="noopener" href="https://www.natfrp.com/">Sakura Frp</a>穿了出去，因为Sakura_Frp开启隧道时打开了自动https（必须开不然访问不了网站），所以直接访问网站是https的，只不过会显示不安全（不受信任），网页还是可以正常访问的。</p>
+        <p>WebSocket服务器搭建时的一些问题</p>
+<span id="more"></span>
+
+<p>在搭建自己的一个内网网站时，将这个网站通过<a target="_blank" rel="noopener" href="https://www.natfrp.com/">Sakura Frp</a>穿了出去，因为Sakura_Frp开启隧道时打开了自动https（必须开不然访问不了网站），所以直接访问网站是https的，只不过会显示不安全（不受信任），网页还是可以正常访问的。</p>
 <p>那么问题出在哪呢，昨天尝试在内网使用php写了一个websocket的聊天室demo，那么浏览器访问这个聊天室的时候先用https发送一个upgrade的请求，然后尝试websocket，但是通过frp的这个公网发送的请求，到了websocket会变成wss而不是ws，网页会返回状态码426，websocket尝试连接wss又不能强制转换成ws，使用frp访问网站也不能使用http访问，必须要https，所以应该需要搞一个CA证书。无法连接的报错如下：</p>
 <blockquote>
 <p>Mixed Content: The page at ‘<a href="https://frp-xxx.xxx:port/demoPage/">https://frp-xxx.xxx:port/demoPage/</a>‘  was loaded over HTTPS, but attempted to connect to the insecure WebSocket endpoint ‘ws:&#x2F;&#x2F;xxx.xxx.xxx.xxx:port&#x2F;chat’. This request has been blocked; this endpoint must be available over WSS. Uncaught DOMException: Failed to construct ‘WebSocket’: An insecure WebSocket connection may not be initiated from a page loaded over HTTPS.</p>

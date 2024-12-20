@@ -196,6 +196,125 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://creeeeeeeeeeper.github.io/2024/12/19/frp-CA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://creeeeeeeeeeper.github.io/2023/12/15/c/ccccc.jpg">
+      <meta itemprop="name" content="ZYG">
+      <meta itemprop="description" content="重生之我要在数据警务社要成为电脑糕手！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ZYG's Notes">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/12/19/frp-CA/" class="post-title-link" itemprop="url">在内网搭建ws服务器出现的一些问题</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-12-19 12:24:07" itemprop="dateCreated datePublished" datetime="2024-12-19T12:24:07+08:00">2024-12-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-12-20 16:51:40" itemprop="dateModified" datetime="2024-12-20T16:51:40+08:00">2024-12-20</time>
+              </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>在搭建自己的一个内网网站时，将这个网站通过<a target="_blank" rel="noopener" href="https://www.natfrp.com/">Sakura Frp</a>穿了出去，因为Sakura_Frp开启隧道时打开了自动https（必须开不然访问不了网站），所以直接访问网站是https的，只不过会显示不安全（不受信任），网页还是可以正常访问的。</p>
+<p>那么问题出在哪呢，昨天尝试在内网使用php写了一个websocket的聊天室demo，那么浏览器访问这个聊天室的时候先用https发送一个upgrade的请求，然后尝试websocket，但是通过frp的这个公网发送的请求，到了websocket会变成wss而不是ws，网页会返回状态码426，websocket尝试连接wss又不能强制转换成ws，使用frp访问网站也不能使用http访问，必须要https，所以应该需要搞一个CA证书。无法连接的报错如下：</p>
+<blockquote>
+<p>Mixed Content: The page at ‘<a href="https://frp-xxx.xxx:port/demoPage/">https://frp-xxx.xxx:port/demoPage/</a>‘  was loaded over HTTPS, but attempted to connect to the insecure WebSocket endpoint ‘ws:&#x2F;&#x2F;xxx.xxx.xxx.xxx:port&#x2F;chat’. This request has been blocked; this endpoint must be available over WSS. Uncaught DOMException: Failed to construct ‘WebSocket’: An insecure WebSocket connection may not be initiated from a page loaded over HTTPS.</p>
+</blockquote>
+<p><strong>已有配置：</strong>使用php和Apache搭建的网站（80端口），本地的80端口通过frp-xxx.xxx:port暴露在公网上，本地开启了一个简单的websocket服务器，ws服务器监听本地8081端口。</p>
+<h3 id="第一次的思路"><a href="#第一次的思路" class="headerlink" title="第一次的思路"></a>第一次的思路</h3><p>想使用Apache反向代理，因为网站是在frp-xxx.xxx:port上的，所以使用Apache代理一个frp-xxx.xxx:port&#x2F;chat&#x2F;，将访问这个网址时的流量转发到本地的127.0.0.1:8081。</p>
+<p>所以第一次的代码是这样写的：</p>
+<p><strong>index.html：</strong>（这里没啥特殊的，放在这里可以抄一抄）</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;zh&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>WebSocket Chat Room<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="language-css"></span></span><br><span class="line"><span class="language-css">        <span class="selector-tag">body</span> &#123;</span></span><br><span class="line"><span class="language-css">            <span class="attribute">font-family</span>: Arial, sans-serif;</span></span><br><span class="line"><span class="language-css">            <span class="attribute">margin</span>: <span class="number">20px</span>;</span></span><br><span class="line"><span class="language-css">        &#125;</span></span><br><span class="line"><span class="language-css">        <span class="selector-id">#messages</span> &#123;</span></span><br><span class="line"><span class="language-css">            <span class="attribute">width</span>: <span class="number">400px</span>;</span></span><br><span class="line"><span class="language-css">            <span class="attribute">height</span>: <span class="number">300px</span>;</span></span><br><span class="line"><span class="language-css">            <span class="attribute">border</span>: <span class="number">1px</span> solid <span class="number">#ccc</span>;</span></span><br><span class="line"><span class="language-css">            <span class="attribute">overflow-y</span>: scroll;</span></span><br><span class="line"><span class="language-css">            <span class="attribute">padding</span>: <span class="number">10px</span>;</span></span><br><span class="line"><span class="language-css">        &#125;</span></span><br><span class="line"><span class="language-css">        <span class="selector-id">#messageInput</span> &#123;</span></span><br><span class="line"><span class="language-css">            <span class="attribute">width</span>: <span class="number">300px</span>;</span></span><br><span class="line"><span class="language-css">            <span class="attribute">padding</span>: <span class="number">10px</span>;</span></span><br><span class="line"><span class="language-css">            <span class="attribute">margin-right</span>: <span class="number">10px</span>;</span></span><br><span class="line"><span class="language-css">        &#125;</span></span><br><span class="line"><span class="language-css">        <span class="selector-id">#sendButton</span> &#123;</span></span><br><span class="line"><span class="language-css">            <span class="attribute">padding</span>: <span class="number">10px</span> <span class="number">20px</span>;</span></span><br><span class="line"><span class="language-css">        &#125;</span></span><br><span class="line"><span class="language-css">    </span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h1</span>&gt;</span>WebSocket Chat Room<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;messages&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">id</span>=<span class="string">&quot;messageInput&quot;</span> <span class="attr">placeholder</span>=<span class="string">&quot;Input Messages...&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">button</span> <span class="attr">id</span>=<span class="string">&quot;sendButton&quot;</span>&gt;</span>Send<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;chat.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>websocket-server.php：</strong>（放在这里也可以抄一下）</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">require</span> <span class="title function_ invoke__">dirname</span>(<span class="keyword">__DIR__</span>) . <span class="string">&#x27;/composerApp/vendor/autoload.php&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">Ratchet</span>\<span class="title">Server</span>\<span class="title">IoServer</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Ratchet</span>\<span class="title">Http</span>\<span class="title">HttpServer</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Ratchet</span>\<span class="title">WebSocket</span>\<span class="title">WsServer</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Ratchet</span>\<span class="title">ConnectionInterface</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Ratchet</span>\<span class="title">MessageComponentInterface</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Chat</span> <span class="keyword">implements</span> <span class="title">MessageComponentInterface</span> </span>&#123;</span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$clients</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;clients = <span class="keyword">new</span> <span class="title class_">\SplObjectStorage</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">onOpen</span>(<span class="params">ConnectionInterface <span class="variable">$conn</span></span>) </span>&#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;clients-&gt;<span class="title function_ invoke__">attach</span>(<span class="variable">$conn</span>);</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">&quot;新连接! (<span class="subst">&#123;$conn-&gt;resourceId&#125;</span>)\n&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">onMessage</span>(<span class="params">ConnectionInterface <span class="variable">$from</span>, <span class="variable">$msg</span></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">foreach</span> (<span class="variable language_">$this</span>-&gt;clients <span class="keyword">as</span> <span class="variable">$client</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="variable">$from</span> !== <span class="variable">$client</span>) &#123;</span><br><span class="line">                <span class="variable">$client</span>-&gt;<span class="title function_ invoke__">send</span>(<span class="variable">$msg</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">onClose</span>(<span class="params">ConnectionInterface <span class="variable">$conn</span></span>) </span>&#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;clients-&gt;<span class="title function_ invoke__">detach</span>(<span class="variable">$conn</span>);</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">&quot;连接 <span class="subst">&#123;$conn-&gt;resourceId&#125;</span> 已断开\n&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">onError</span>(<span class="params">ConnectionInterface <span class="variable">$conn</span>, \<span class="built_in">Exception</span> <span class="variable">$e</span></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">&quot;发生错误: <span class="subst">&#123;$e-&gt;getMessage()&#125;</span>\n&quot;</span>;</span><br><span class="line">        <span class="variable">$conn</span>-&gt;<span class="title function_ invoke__">close</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$server</span> = <span class="title class_">IoServer</span>::<span class="title function_ invoke__">factory</span>(</span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">HttpServer</span>(</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">WsServer</span>(</span><br><span class="line">            <span class="keyword">new</span> <span class="title class_">Chat</span></span><br><span class="line">        )</span><br><span class="line">    ),</span><br><span class="line">    <span class="number">8081</span></span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="variable">$server</span>-&gt;<span class="title function_ invoke__">run</span>();</span><br></pre></td></tr></table></figure>
+
+<p><strong>PS:如何建立上面这样一个服务器？</strong></p>
+<blockquote>
+<p>首先安装<a target="_blank" rel="noopener" href="https://getcomposer.org/download/">Composer</a>，看完官方文档还是不知道咋安装就问问AI</p>
+<p>安装完后，composer -v 有输出就说明安好了</p>
+<p>新建一个项目文件夹，然后在文件夹里 <code>composer init</code>，init的时候可以直接无脑回车，因为这里的conf配置也没啥用， 然后安装 <code>Ratchet</code></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">composer require cboden/ratchet</span><br></pre></td></tr></table></figure>
+
+<p>安装好就行了，注意websocket-server.php的第一行，如果报错说什么文件找不到，就是第一行的文件夹路径错了</p>
+</blockquote>
+<p><strong>chat.js：</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">document</span>.<span class="title function_">addEventListener</span>(<span class="string">&#x27;DOMContentLoaded&#x27;</span>, <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> messages = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;messages&#x27;</span>);</span><br><span class="line">    <span class="keyword">const</span> messageInput = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;messageInput&#x27;</span>);</span><br><span class="line">    <span class="keyword">const</span> sendButton = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;sendButton&#x27;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建连接</span></span><br><span class="line">    <span class="keyword">const</span> wsUri = <span class="string">&quot;ws://127.0.0.1:80/chat&quot;</span>;</span><br><span class="line">	<span class="keyword">const</span> websocket = <span class="keyword">new</span> <span class="title class_">WebSocket</span>(wsUri);</span><br><span class="line"></span><br><span class="line">    websocket.<span class="property">onopen</span> = <span class="keyword">function</span>(<span class="params">evt</span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;连接已打开&quot;</span>);</span><br><span class="line">        <span class="title function_">appendMessage</span>(<span class="string">&quot;系统: 连接到聊天室&quot;</span>);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    websocket.<span class="property">onclose</span> = <span class="keyword">function</span>(<span class="params">evt</span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;连接已关闭&quot;</span>);</span><br><span class="line">        <span class="title function_">appendMessage</span>(<span class="string">&quot;系统: 从聊天室断开&quot;</span>);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    websocket.<span class="property">onmessage</span> = <span class="keyword">function</span>(<span class="params">evt</span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;收到消息: &quot;</span> + evt.<span class="property">data</span>);</span><br><span class="line">        <span class="title function_">appendMessage</span>(evt.<span class="property">data</span>);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    websocket.<span class="property">onerror</span> = <span class="keyword">function</span>(<span class="params">evt</span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">error</span>(<span class="string">&quot;发生错误: &quot;</span> + evt.<span class="property">data</span>);</span><br><span class="line">        <span class="title function_">appendMessage</span>(<span class="string">&quot;系统: 发生错误&quot;</span>);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 发送消息</span></span><br><span class="line">    sendButton.<span class="property">onclick</span> = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="keyword">const</span> message = messageInput.<span class="property">value</span>.<span class="title function_">trim</span>();</span><br><span class="line">        <span class="keyword">if</span> (message) &#123;</span><br><span class="line">            websocket.<span class="title function_">send</span>(message);</span><br><span class="line">            <span class="title function_">appendMessage</span>(<span class="string">&quot;我: &quot;</span> + message);</span><br><span class="line">            messageInput.<span class="property">value</span> = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 追加消息</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">appendMessage</span>(<span class="params">message</span>) &#123;</span><br><span class="line">        <span class="keyword">const</span> messageElement = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;div&#x27;</span>);</span><br><span class="line">        messageElement.<span class="property">textContent</span> = message;</span><br><span class="line">        messages.<span class="title function_">appendChild</span>(messageElement);</span><br><span class="line">        messages.<span class="property">scrollTop</span> = messages.<span class="property">scrollHeight</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>&#x2F;etc&#x2F;apache2&#x2F;sites-available&#x2F;000-default.conf：</strong>Apache配置文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;VirtualHost *:80&gt;</span><br><span class="line">	ServerAdmin webmaster@localhost</span><br><span class="line">	DocumentRoot /xxx/html # 根据自己的设定</span><br><span class="line"></span><br><span class="line">	ErrorLog $&#123;APACHE_LOG_DIR&#125;/error.log</span><br><span class="line">	CustomLog $&#123;APACHE_LOG_DIR&#125;/access.log combined</span><br><span class="line"></span><br><span class="line">	&lt;Location /chat&gt;</span><br><span class="line">                ProxyPass ws://127.0.0.1:8081/</span><br><span class="line">                ProxyPassReverse ws://127.0.0.1:8081/</span><br><span class="line">     &lt;/Location&gt;</span><br><span class="line">&lt;/VirtualHost&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>以上全都配置好之后，能够访问成功这个index.html页面，但是连接ws:127.0.0.1:8081是不成功的。</p>
+<blockquote>
+<p><strong>WHY?</strong></p>
+<p>使用的内网穿透工具是Sakura Frp，用frpc穿透之后，访问网站是必须要使用https的，那么，使用https连接到网站之后，Websocket是通过HTTPS运行的，意味着WebSocket连接是使用 SSL&#x2F;TLS加密的，所以，对于wss的访问需要有认证的证书，但是我妹有证书啊QAQ，但是我这里也有一个问题，既然是用https访问的网站，那我用这个https网站在apache配置反向代理为啥不行呢</p>
+</blockquote>
+<p>又看了一下为什么连接不上呢，因为这个js是相当于被浏览器加载到了本地，所以，我使用我的Windows电脑访问127.0.0.1:8081相当于访问的是我自己Windows电脑上的8081端口，那这当然是访问不到的，所以这个wsUri应该填的是公网上的一个ws服务器，所以又想了个办法，用frpc再建一条隧道，把ws服务器再穿出去。</p>
+<p>这个方法后来试了试，当然是行得通了的。</p>
+<p>于是代码变成了这样：</p>
+<p><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/2024/12/19/frp-CA/image-20241220164533172.png" alt="image-20241220164533172"></p>
+<img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/2024/12/19/frp-CA/a63e07e755ab0376578dafc8d320c715.jpg" alt="a63e07e755ab0376578dafc8d320c715" style="zoom:50%;">
+
+<p>但这也有问题，安全性问题，ws服务器的地址很容易被获取到，被其他人利用，所以后期会做一些js隐藏、混淆之类的</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://creeeeeeeeeeper.github.io/2024/11/23/raspberrypi/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -634,92 +753,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://creeeeeeeeeeper.github.io/2024/09/25/algorithm/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://creeeeeeeeeeper.github.io/2023/12/15/c/ccccc.jpg">
-      <meta itemprop="name" content="ZYG">
-      <meta itemprop="description" content="重生之我要在数据警务社要成为电脑糕手！">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ZYG's Notes">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/09/25/algorithm/" class="post-title-link" itemprop="url">常见算法逆向</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-09-25 09:51:54" itemprop="dateCreated datePublished" datetime="2024-09-25T09:51:54+08:00">2024-09-25</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-11-02 18:52:52" itemprop="dateModified" datetime="2024-11-02T18:52:52+08:00">2024-11-02</time>
-              </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>4.5k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>16 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="常见算法逆向"><a href="#常见算法逆向" class="headerlink" title="常见算法逆向"></a>常见算法逆向</h1>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/09/25/algorithm/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -793,7 +826,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-count">23</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -853,13 +886,13 @@
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">71k</span>
+    <span title="站点总字数">73k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">4:17</span>
+    <span title="站点阅读时长">4:26</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>

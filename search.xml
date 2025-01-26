@@ -245,6 +245,8 @@
 
 <p>以上三个例子说明了使用contextBridge方法进行ipc通信的示例，还有其他的方法，这里就不讲了，因为简直易(wo)如(bu)反(xiang)掌(xue)</p>
 <h2 id="消息通知"><a href="#消息通知" class="headerlink" title="消息通知"></a>消息通知</h2><p>像Windows那样，在桌面右下角弹出一个通知窗口，点击后有相应的操作</p>
+<img src="/2025/01/23/Electron/78456.gif" alt="78456" style="zoom:67%;">
+
 <p>官方文档说在渲染进程中可以直接操作notification，那就在渲染进程操作吧，因为比较简单</p>
 <h3 id="渲染进程创建"><a href="#渲染进程创建" class="headerlink" title="渲染进程创建"></a>渲染进程创建</h3><p>先随便写个button</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">button</span> <span class="attr">id</span>=<span class="string">&quot;notificationBtn&quot;</span>&gt;</span>消息通知<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br></pre></td></tr></table></figure>
@@ -2019,8 +2021,8 @@
         <category>Study Essay</category>
       </categories>
       <tags>
-        <tag>C++</tag>
         <tag>Virtual Environment</tag>
+        <tag>C++</tag>
       </tags>
   </entry>
   <entry>

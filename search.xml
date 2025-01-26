@@ -173,7 +173,7 @@
 <p>这个操作我会用一下一个例子实现（gif加载不出来就等会 ~）：</p>
 <p><img src="/2025/01/23/Electron/789456123.gif" alt="789456123"></p>
 <span style="color: rgba(200, 50, 55); font-weight: 550;">
-    学习这部分之前请先了解下面的</span>[IPC通信](#IPC通信)<span style="color: rgba(200, 50, 55); font-weight: 550;">
+    学习这部分之前请先了解下面的</span><a href="IPC通信"><span style="color: rgba(200, 50, 55); font-weight: 550;">IPC通信</span></a><span style="color: rgba(200, 50, 55); font-weight: 550;">
 相关内容
 </span>
 

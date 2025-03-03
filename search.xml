@@ -23,12 +23,12 @@
 
 <p>构建成功</p>
 <p><img src="/2025/01/23/Electron/image-20250123232527154.png" alt="image-20250123232527154"></p>
-<h1 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h1><p>下面通过源码阅读的方式简要梳理Electron应用程序的原理</p>
+<h1 id="运行原理"><a href="#运行原理" class="headerlink" title="运行原理"></a>运行原理</h1><p>下面通过源码阅读的方式简要梳理Electron应用程序的原理</p>
 <p>首先<code>git clone https://github.com/electron/electron-quick-start</code>，下载一个demo示例</p>
 <p>使用<code>npm start</code>，就可以运行这个Electron应用程序</p>
 <img src="/2025/01/23/Electron/image-20250123232946907.png" alt="image-20250123232946907" style="zoom:33%;">
 
-<h2 id="main-js"><a href="#main-js" class="headerlink" title="main.js"></a>main.js</h2><p>首先看前两行</p>
+<p>首先看前两行</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; app, <span class="title class_">BrowserWindow</span> &#125; = <span class="built_in">require</span>(<span class="string">&#x27;electron&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">&#x27;node:path&#x27;</span>)</span><br></pre></td></tr></table></figure>
 
 <p>以上从require能够看出，肯定是支持node的一些模块，我们只需要查看文档，知道app、BrowserWindow这些有什么样的功能然后对他进行调用就可以了</p>
@@ -38,7 +38,7 @@
 <p>这个就是主进程创建的一个窗口，<code>webPreferences</code>暂时不知道是干什么的，先不管，但是能知道实例化了一个窗口，有我们自定义的宽度和高度</p>
 <p>最后一行的mainWindow.loadFile是加载了加载了一个界面，也就是当前目录下的index.html文件</p>
 <p>继续往下看</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">app.<span class="title function_">whenReady</span>().<span class="title function_">then</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="title function_">createWindow</span>()</span><br><span class="line">  app.<span class="title function_">on</span>(<span class="string">&#x27;activate&#x27;</span>, <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="title class_">BrowserWindow</span>.<span class="title function_">getAllWindows</span>().<span class="property">length</span> === <span class="number">0</span>) <span class="title function_">createWindow</span>()</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">app.<span class="title function_">on</span>(<span class="string">&#x27;window-all-closed&#x27;</span>, <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (process.<span class="property">platform</span> !== <span class="string">&#x27;darwin&#x27;</span>) app.<span class="title function_">quit</span>()</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">app.<span class="title function_">whenReady</span>().<span class="title function_">then</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="title function_">createWindow</span>()</span><br><span class="line">    app.<span class="title function_">on</span>(<span class="string">&#x27;activate&#x27;</span>, <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="title class_">BrowserWindow</span>.<span class="title function_">getAllWindows</span>().<span class="property">length</span> === <span class="number">0</span>) <span class="title function_">createWindow</span>()</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">app.<span class="title function_">on</span>(<span class="string">&#x27;window-all-closed&#x27;</span>, <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (process.<span class="property">platform</span> !== <span class="string">&#x27;darwin&#x27;</span>) app.<span class="title function_">quit</span>()</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 
 <p>这里就先只看前几行，app这个就相当于我们开发的整个应用程序，whenReady后返回Promise再调用它成功的result，在他里面就调用了createWindow函数，走到这一行，我们程序加载窗口界面这一套东西就算是出来了，后面app.on的内容就是一些针对程序不同生命周期的函数，以后再说。</p>
 <p>再看一下index.html</p>
@@ -46,7 +46,7 @@
 <p>我们在第一次运行这个程序的时候看到有一些数值，比如版本之类，但是前端是没有写出来的，这些前端中的数据是可以通过nodejs来获取的，此时可以看一下preload.js，这里面就是获取数据的操作：</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="variable language_">window</span>.<span class="title function_">addEventListener</span>(<span class="string">&#x27;DOMContentLoaded&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="title function_">replaceText</span> = (<span class="params">selector, text</span>) =&gt; &#123;</span><br><span class="line">        <span class="keyword">const</span> element = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(selector)</span><br><span class="line">        <span class="keyword">if</span> (element) element.<span class="property">innerText</span> = text</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> type <span class="keyword">of</span> [<span class="string">&#x27;chrome&#x27;</span>, <span class="string">&#x27;node&#x27;</span>, <span class="string">&#x27;electron&#x27;</span>]) &#123;</span><br><span class="line">        <span class="title function_">replaceText</span>(<span class="string">`<span class="subst">$&#123;type&#125;</span>-version`</span>, process.<span class="property">versions</span>[type])</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 
-<p>至此，基本的运行流程就是这样，下面自己创建一个Electron项目</p>
+<p>至此，基本的运行流程就是这样，下面自己创建一个Electron项目（看不懂也没关系，学完下面的就看懂了）</p>
 <h1 id="项目搭建"><a href="#项目搭建" class="headerlink" title="项目搭建"></a>项目搭建</h1><p>首先自己建一个项目，然后<code>npm install electron --save-dev</code>，跟官方示例一样，将package.json里的启动项改成main.js，然后创建一个main.js</p>
 <img src="/2025/01/23/Electron/image-20250123234806003.png" alt="image-20250123234806003" style="zoom:33%;">
 

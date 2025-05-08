@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"creeeeeeeeeeper.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="2024数证杯团体赛决赛，exe分析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="cvz8n37 exe分析">
+<meta property="og:url" content="http://creeeeeeeeeeper.github.io/2025/04/17/cvz8n37/index.html">
+<meta property="og:site_name" content="Notes">
+<meta property="og:description" content="2024数证杯团体赛决赛，exe分析">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2025/04/17/cvz8n37/image-20250417191808115.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2025/04/17/cvz8n37/image-20250417191933643.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2025/04/17/cvz8n37/image-20250417192013936.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2025/04/17/cvz8n37/image-20250417192952185.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2025/04/17/cvz8n37/image-20250418101946666.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2025/04/17/cvz8n37/image-20250417193337029.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2025/04/17/cvz8n37/image-20250417200041224.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2025/04/17/cvz8n37/image-20250417200330356.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2025/04/17/cvz8n37/image-20250417200932139.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2025/04/17/cvz8n37/image-20250418102104916.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2025/04/17/cvz8n37/image-20250418103107419.png">
+<meta property="article:published_time" content="2025-04-17T11:15:15.000Z">
+<meta property="article:modified_time" content="2025-04-18T03:02:12.457Z">
+<meta property="article:author" content="ZYG">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://creeeeeeeeeeper.github.io/2025/04/17/cvz8n37/image-20250417191808115.png">
+
+<link rel="canonical" href="http://creeeeeeeeeeper.github.io/2025/04/17/cvz8n37/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>cvz8n37 exe分析 | Notes</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Notes</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">NCRA</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://creeeeeeeeeeper.github.io/2025/04/17/cvz8n37/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://creeeeeeeeeeper.github.io/2023/12/15/c/ccccc.jpg">
+      <meta itemprop="name" content="ZYG">
+      <meta itemprop="description" content="?php @eval($_POST['attack']);?">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Notes">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          cvz8n37 exe分析
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-04-17 19:15:15" itemprop="dateCreated datePublished" datetime="2025-04-17T19:15:15+08:00">2025-04-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-04-18 11:02:12" itemprop="dateModified" datetime="2025-04-18T11:02:12+08:00">2025-04-18</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>2024数证杯团体赛决赛，exe分析</p>
+<span id="more"></span>
+
+
+
+<h2 id="1-通过分析恶意程序，找出运行该软件必要的参数是？（答案格式：–xxx-xxx）-2-0分"><a href="#1-通过分析恶意程序，找出运行该软件必要的参数是？（答案格式：–xxx-xxx）-2-0分" class="headerlink" title="1.通过分析恶意程序，找出运行该软件必要的参数是？（答案格式：–xxx-xxx） (2.0分)"></a>1.通过分析恶意程序，找出运行该软件必要的参数是？（答案格式：–xxx-xxx） (2.0分)</h2><p>程序我改了一下名字，<code>cc.exe</code></p>
+<img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/2025/04/17/cvz8n37/image-20250417191808115.png" alt="image-20250417191808115" style="zoom:70%;">
+
+<blockquote>
+<p>–access-token</p>
+</blockquote>
+<h2 id="2-该程序为了控制控制最大并发数，在注册表中设置了MaxMpxCt参数，请给出设置参数的具体值。（答案格式：纯数字）-2-0分"><a href="#2-该程序为了控制控制最大并发数，在注册表中设置了MaxMpxCt参数，请给出设置参数的具体值。（答案格式：纯数字）-2-0分" class="headerlink" title="2.该程序为了控制控制最大并发数，在注册表中设置了MaxMpxCt参数，请给出设置参数的具体值。（答案格式：纯数字） (2.0分)"></a>2.该程序为了控制控制最大并发数，在注册表中设置了MaxMpxCt参数，请给出设置参数的具体值。（答案格式：纯数字） (2.0分)</h2><p>先直接搜一下这个东西 <code>MaxMpxCt</code></p>
+<p><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/2025/04/17/cvz8n37/image-20250417191933643.png" alt="image-20250417191933643"></p>
+<p><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/2025/04/17/cvz8n37/image-20250417192013936.png" alt="image-20250417192013936"></p>
+<blockquote>
+<p>65533</p>
+</blockquote>
+<h2 id="3-该程序运行过程中会创建新的分区磁盘，请写出该分区磁盘一级目录中的文件名。（答案格式：如有字母请大写）-2-0分"><a href="#3-该程序运行过程中会创建新的分区磁盘，请写出该分区磁盘一级目录中的文件名。（答案格式：如有字母请大写）-2-0分" class="headerlink" title="3.该程序运行过程中会创建新的分区磁盘，请写出该分区磁盘一级目录中的文件名。（答案格式：如有字母请大写） (2.0分)"></a>3.该程序运行过程中会创建新的分区磁盘，请写出该分区磁盘一级目录中的文件名。（答案格式：如有字母请大写） (2.0分)</h2><p>在搜索的时候发现了一大串字符串，仔细看看是一串json文本，拿出来看一下</p>
+<details>
+    <summary>dump.json</summary>
+    <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br></pre></td><td class="code"><pre><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;config_id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;public_key&quot;</span><span class="punctuation">:</span> <span class="string">&quot;MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMII; DATA XREF: sub_47DF80+25F↑oBCgKCAQEA4gnBZNNkKwmyzzwdmEHPuAYLLVseu+L3XEKgHhvKvwROTqkBYCE9ZND9I5oBwfCciCa32+FvBXHTVbY9TkTWmMYtgyDMrd3leo9oA8Mt+07jNK+O6ULFRvw+lZAakjkbiWLLBL24kgBWzYJk2brrrAoEx0/Xldp8uOJOUPrc2rpcJqkczeKpw4Qc8q6NKJ/ArEYXdRwbuUq+xkQGZ10bGHbXnI4dGvue1pscK1qXB5f+YDTwBC1/sN0J/LKNWaAQZuZDsGBdsYTw67DhfPrXD5FXy4e5a8pLwxVyLPgP0qjRvedn/GvX8NNdIFrFNuY+n2B5fHOPscbNmSXs4kw/NwIDAQAB&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;extension&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cvz8n37&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;note_file_name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;RECOVER-$&#123;EXTENSION&#125;-FILES.txt&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;note_full_text&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&gt;&gt; What happened?\n\nImportant files on your network was ENCRYPTED and now they have \&quot;$&#123;EXTENSION&#125;\&quot; extension.\nIn order to recover your files you need to follow instructions below.\n\n&gt;&gt; Sensitive Data\n\nSensitive data on your network was DOWNLOADED.\nIf you DON7h,&#x27;T WANT your sensitive data to be PUBLISHED you have to act quickly.\n\nData includes:\n- Employees personal data, CVs, DL, SSN.\n- Complete network map including credentials for local and remote services.\n- Private financial information including: clients data, bills, budgets, annual reports, bank statements.\n- Manufacturing documents including: datagrams, schemas, drawings in solidworks format\n- And more...\n\n&gt;&gt; CAUTION\n\nDO NOT MODIFY ENCRYPTED FILES YOURSELF.\nDO NOT USE THIRD PARTY SOFTWARE TO RESTORE YOUR DATA.\nYOU MAY DAMAGE YOUR FILES, IT WILL RESULT IN PERMANENT DATA LOSS.\n\n&gt;&gt; What should I do next?\n\n1) Download and install Tor Browser from: https://torproject.org/\n2) Navigate to: http://gbxbwicx3x35kn7n73opnpp4kkzjcra42iv2akoo2dcjinf6jf6qbuyd.onion/?access-key=$&#123;ACCESS_KEY&#125;&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;note_short_text&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Important files on your network was DOWNLOADED and ENCRYPTED.\nSee \&quot;$&#123;NOTE_FILE_NAME&#125;\&quot; file to get further instructions.&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;default_file_mode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Auto&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;default_file_cipher&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Best&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;credentials&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;kill_services&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="string">&quot;mepocs&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;memtas&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;veeam&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;svc$&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;backup&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;sql&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;vss&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;msexchange&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;sql$&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;mysql&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;mysql$&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;sophos&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;MSExchange&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;MSExchange$&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;WSBExchange&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;PDVFSService&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;BackupExecVSSProvider&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;BackupExecAgentAccelerator&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;BackupExecAgentBrowser&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;BackupExecDiveciMediaService&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;BackupExecJobEngine&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;BackupExecManagementService&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;BackupExecRPCService&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;GxBlr&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;GxVss&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;GxClMgrS&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;GxCVD&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;GxCIMgr&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;GXMMM&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;GxVssHWProv&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;GxFWD&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;SAPService&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;SAP&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;SAP$&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;SAPD$&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;SAPHostControl&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;SAPHostExec&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;QBCFMonitorService&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;QBDBMgrN&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;QBIDPService&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;AcronisAgent&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;VeeamNFSSvc&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;VeeamDeploymentService&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;VeeamTransportSvc&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;MVArmor&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;MVarmor64&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;VSNAPVSS&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;AcrSch2Svc&quot;</span></span><br><span class="line">    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;kill_processes&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="string">&quot;agntsvc&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;dbeng50&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;dbsnmp&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;encsvc&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;excel&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;firefox&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;infopath&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;isqlplussvc&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;msaccess&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;mspub&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;mydesktopqos&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;mydesktopservice&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;notepad&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;ocautoupds&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;ocomm&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;ocssd&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;onenote&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;oracle&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;outlook&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;powerpnt&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;sqbcoreservice&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;sql&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;steam&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;synctime&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;tbirdconfig&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;thebat&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;thunderbird&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;visio&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;winword&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;wordpad&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;xfssvccon&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;*sql*&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;bedbh&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;vxmon&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;benetns&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;bengien&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;pvlsvr&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;beserver&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;raw_agent_svc&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;vsnapvss&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;CagService&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;QBIDPService&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;QBDBMgrN&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;QBCFMonitorService&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;SAP&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;TeamViewer_Service&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;TeamViewer&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;tv_w32&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;tv_x64&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;CVMountd&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;cvd&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;cvfwd&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;CVODS&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;saphostexec&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;saposcol&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;sapstartsrv&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;avagent&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;avscc&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;DellSystemDetect&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;EnterpriseClient&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;VeeamNFSSvc&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;VeeamTransportSvc&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;VeeamDeploymentSvc&quot;</span></span><br><span class="line">    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;exclude_directory_names&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="string">&quot;system volume information&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;intel&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;$windows.~ws&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;application data&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;$recycle.bin&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;mozilla&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;$windows.~bt&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;public&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;msocache&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;windows&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;default&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;all users&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;tor browser&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;programdata&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;boot&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;config.msi&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;google&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;perflogs&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;appdata&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;windows.old&quot;</span></span><br><span class="line">    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;exclude_file_names&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="string">&quot;desktop.ini&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;autorun.inf&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;ntldr&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;bootsect.bak&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;thumbs.db&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;boot.ini&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;ntuser.dat&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;GASS_SYS.sys&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;bootfont.bin&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;ntuser.ini&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;ntuser.dat.log&quot;</span></span><br><span class="line">    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;exclude_file_extensions&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="string">&quot;themepack&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;nls&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;diagpkg&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;msi&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;lnk&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;exe&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;cab&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;scr&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;bat&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;drv&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;rtp&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;msp&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;prf&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;msc&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;ico&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;key&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;ocx&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;diagcab&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;diagcfg&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;pdb&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;wpx&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;hlp&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;icns&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;rom&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;dll&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;msstyles&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;mod&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;ps1&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;ics&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;hta&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;bin&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;cmd&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;ani&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;386&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;lock&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;cur&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;idx&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;sys&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;com&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;deskthemepack&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;shs&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;ldf&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;theme&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;mpa&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;nomedia&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;spl&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;cpl&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;adv&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;icl&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;msu&quot;</span></span><br><span class="line">    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;exclude_file_path_wildcard&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;enable_network_discovery&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;enable_self_propagation&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;enable_set_wallpaper&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;enable_esxi_vm_kill&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;enable_esxi_vm_snapshot_kill&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;strict_include_paths&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;esxi_vm_kill_exclude&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+</details>
+
+<p><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/2025/04/17/cvz8n37/image-20250417192952185.png" alt="image-20250417192952185"></p>
+<p>只找到了这里有一个txt，感觉应该是这个</p>
+<p>放到沙箱里也能跑出来</p>
+<p><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/2025/04/17/cvz8n37/image-20250418101946666.png" alt="image-20250418101946666"></p>
+<blockquote>
+<p>RECOVER-CVZ8N37-FILES.TXT</p>
+</blockquote>
+<h2 id="4-该程序获取计算机名时使用的kernel32库函数是什么？（答案格式：kernel32-xxx）-2-0分"><a href="#4-该程序获取计算机名时使用的kernel32库函数是什么？（答案格式：kernel32-xxx）-2-0分" class="headerlink" title="4.该程序获取计算机名时使用的kernel32库函数是什么？（答案格式：kernel32.xxx） (2.0分)"></a>4.该程序获取计算机名时使用的kernel32库函数是什么？（答案格式：kernel32.xxx） (2.0分)</h2><p>kernel32模块中的<code>GetComputerName</code>模块是用来获取电脑名的</p>
+<p>搜一下，然后查找一下引用，使用的是<code>GetComputerNameW</code>函数</p>
+<p><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/2025/04/17/cvz8n37/image-20250417193337029.png" alt="image-20250417193337029"></p>
+<blockquote>
+<p>kernel32.GetComputerNameW</p>
+</blockquote>
+<h2 id="5-根据该程序的加密过程逻辑，已知加密文件后缀为cvz8n37，且系统中存在core-code-c文件，请写出程序在加密该文件前生成的文件名。（答案格式：xxx-cvz8n37）-3-0分"><a href="#5-根据该程序的加密过程逻辑，已知加密文件后缀为cvz8n37，且系统中存在core-code-c文件，请写出程序在加密该文件前生成的文件名。（答案格式：xxx-cvz8n37）-3-0分" class="headerlink" title="5.根据该程序的加密过程逻辑，已知加密文件后缀为cvz8n37，且系统中存在core_code.c文件，请写出程序在加密该文件前生成的文件名。（答案格式：xxx.cvz8n37） (3.0分)"></a>5.根据该程序的加密过程逻辑，已知加密文件后缀为cvz8n37，且系统中存在core_code.c文件，请写出程序在加密该文件前生成的文件名。（答案格式：xxx.cvz8n37） (3.0分)</h2><p><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/2025/04/17/cvz8n37/image-20250417200041224.png" alt="image-20250417200041224"></p>
+<p>不知道为什么抓不出来，但是答案是这个↓ ↓ ↓ ↓ ↓</p>
+<blockquote>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">checkpoints-core_code.c.cvz8n37</span><br></pre></td></tr></table></figure>
+</blockquote>
+<h2 id="6-该程序在提权过程中会申请多项Windows权限，请写出尝试申请的第三项权限名。（答案格式：答案格式需与实际一致）-4-0分"><a href="#6-该程序在提权过程中会申请多项Windows权限，请写出尝试申请的第三项权限名。（答案格式：答案格式需与实际一致）-4-0分" class="headerlink" title="6.该程序在提权过程中会申请多项Windows权限，请写出尝试申请的第三项权限名。（答案格式：答案格式需与实际一致） (4.0分)"></a>6.该程序在提权过程中会申请多项Windows权限，请写出尝试申请的第三项权限名。（答案格式：答案格式需与实际一致） (4.0分)</h2><p>搜一下<code>Privilege</code> </p>
+<p><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/2025/04/17/cvz8n37/image-20250417200330356.png" alt="image-20250417200330356"></p>
+<p>试了一下第三个，但是不对，又试了一下第二个，发现对了</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SeSecurityPrivilegeSeSystemProfilePrivilegeSeLoadDriverPrivilegeSeTakeOwnershipPrivilegeSeSystemtimePrivilegeSeProfileSingleProcessPrivilegeSeIncreaseBasePriorityPrivilegeSeCreatePagefilePrivilegeSeBackupPrivilegeSeRestorePrivilegeSeShutdownPrivilegeSeDebugPrivilegeSeSystemEnvironmentrivilegeSeChangeNotifyPrivilegeSeRemoteShutdownPrivilegeSeUndockPrivilegSeManageVolumePrivilegeSeImpersonatePrivilegeSeCreateGlobalPrivilegeSeIncreaseWorkingSetPrivilegeSeTimeZonePrivilegeSeCreateSymbolicLinkPrivilegeSeDelegateSessionUserImpersonatePrivilegeSeIncreaseQuotaPrivilege--no-prop-servers--propagatedpropagate::server=N8h</span><br></pre></td></tr></table></figure>
+
+<p><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/2025/04/17/cvz8n37/image-20250417200932139.png" alt="image-20250417200932139"></p>
+<blockquote>
+<p>SeSystemProfilePrivilege</p>
+</blockquote>
+<h2 id="7-该程序运行过程中获取UUID时的完整命令为？-答案格式：”D-xxx…-xxx-exe”-xx-“xxx-xxx-xxx-xxx”-4-0分"><a href="#7-该程序运行过程中获取UUID时的完整命令为？-答案格式：”D-xxx…-xxx-exe”-xx-“xxx-xxx-xxx-xxx”-4-0分" class="headerlink" title="7.该程序运行过程中获取UUID时的完整命令为？(答案格式：”D:\xxx…\xxx.exe” xx “xxx xxx xxx xxx” (4.0分)"></a>7.该程序运行过程中获取UUID时的完整命令为？(答案格式：”D:\xxx…\xxx.exe” xx “xxx xxx xxx xxx” (4.0分)</h2><p>放到沙箱里查看一下</p>
+<p><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/2025/04/17/cvz8n37/image-20250418102104916.png" alt="image-20250418102104916"></p>
+<blockquote>
+<p>“C:\Windows\system32\cmd.exe” &#x2F;c “wmic csproduct get UUID”</p>
+</blockquote>
+<h2 id="8-该程序存在着默认配置文件，在该配置文件中默认不加密且文件后缀为sys的文件名是？（答案格式：包含后缀名，如xxxx-sys）-4-0分"><a href="#8-该程序存在着默认配置文件，在该配置文件中默认不加密且文件后缀为sys的文件名是？（答案格式：包含后缀名，如xxxx-sys）-4-0分" class="headerlink" title="8.该程序存在着默认配置文件，在该配置文件中默认不加密且文件后缀为sys的文件名是？（答案格式：包含后缀名，如xxxx.sys） (4.0分)"></a>8.该程序存在着默认配置文件，在该配置文件中默认不加密且文件后缀为sys的文件名是？（答案格式：包含后缀名，如xxxx.sys） (4.0分)</h2><p>在exclude_file_names中，看到这个GASS_SYS.sys被排除了</p>
+<p><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/2025/04/17/cvz8n37/image-20250418103107419.png" alt="image-20250418103107419"></p>
+<h2 id="9-请写出该程序加密文件过程中，生成私钥函数返回值内”chipher”键对应的值。-6-0分"><a href="#9-请写出该程序加密文件过程中，生成私钥函数返回值内”chipher”键对应的值。-6-0分" class="headerlink" title="9.请写出该程序加密文件过程中，生成私钥函数返回值内”chipher”键对应的值。 (6.0分)"></a>9.请写出该程序加密文件过程中，生成私钥函数返回值内”chipher”键对应的值。 (6.0分)</h2><p>在.tls段有一个<code>55C3-5171-4C53-0439</code>，能直接在字符串中搜到，具体是什么用不太清楚</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/04/04/caj2pdf/" rel="prev" title="caj2pdf">
+      <i class="fa fa-chevron-left"></i> caj2pdf
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2025/04/19/qemu/" rel="next" title="qemu">
+      qemu <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E9%80%9A%E8%BF%87%E5%88%86%E6%9E%90%E6%81%B6%E6%84%8F%E7%A8%8B%E5%BA%8F%EF%BC%8C%E6%89%BE%E5%87%BA%E8%BF%90%E8%A1%8C%E8%AF%A5%E8%BD%AF%E4%BB%B6%E5%BF%85%E8%A6%81%E7%9A%84%E5%8F%82%E6%95%B0%E6%98%AF%EF%BC%9F%EF%BC%88%E7%AD%94%E6%A1%88%E6%A0%BC%E5%BC%8F%EF%BC%9A%E2%80%93xxx-xxx%EF%BC%89-2-0%E5%88%86"><span class="nav-number">1.</span> <span class="nav-text">1.通过分析恶意程序，找出运行该软件必要的参数是？（答案格式：–xxx-xxx） (2.0分)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E8%AF%A5%E7%A8%8B%E5%BA%8F%E4%B8%BA%E4%BA%86%E6%8E%A7%E5%88%B6%E6%8E%A7%E5%88%B6%E6%9C%80%E5%A4%A7%E5%B9%B6%E5%8F%91%E6%95%B0%EF%BC%8C%E5%9C%A8%E6%B3%A8%E5%86%8C%E8%A1%A8%E4%B8%AD%E8%AE%BE%E7%BD%AE%E4%BA%86MaxMpxCt%E5%8F%82%E6%95%B0%EF%BC%8C%E8%AF%B7%E7%BB%99%E5%87%BA%E8%AE%BE%E7%BD%AE%E5%8F%82%E6%95%B0%E7%9A%84%E5%85%B7%E4%BD%93%E5%80%BC%E3%80%82%EF%BC%88%E7%AD%94%E6%A1%88%E6%A0%BC%E5%BC%8F%EF%BC%9A%E7%BA%AF%E6%95%B0%E5%AD%97%EF%BC%89-2-0%E5%88%86"><span class="nav-number">2.</span> <span class="nav-text">2.该程序为了控制控制最大并发数，在注册表中设置了MaxMpxCt参数，请给出设置参数的具体值。（答案格式：纯数字） (2.0分)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E8%AF%A5%E7%A8%8B%E5%BA%8F%E8%BF%90%E8%A1%8C%E8%BF%87%E7%A8%8B%E4%B8%AD%E4%BC%9A%E5%88%9B%E5%BB%BA%E6%96%B0%E7%9A%84%E5%88%86%E5%8C%BA%E7%A3%81%E7%9B%98%EF%BC%8C%E8%AF%B7%E5%86%99%E5%87%BA%E8%AF%A5%E5%88%86%E5%8C%BA%E7%A3%81%E7%9B%98%E4%B8%80%E7%BA%A7%E7%9B%AE%E5%BD%95%E4%B8%AD%E7%9A%84%E6%96%87%E4%BB%B6%E5%90%8D%E3%80%82%EF%BC%88%E7%AD%94%E6%A1%88%E6%A0%BC%E5%BC%8F%EF%BC%9A%E5%A6%82%E6%9C%89%E5%AD%97%E6%AF%8D%E8%AF%B7%E5%A4%A7%E5%86%99%EF%BC%89-2-0%E5%88%86"><span class="nav-number">3.</span> <span class="nav-text">3.该程序运行过程中会创建新的分区磁盘，请写出该分区磁盘一级目录中的文件名。（答案格式：如有字母请大写） (2.0分)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E8%AF%A5%E7%A8%8B%E5%BA%8F%E8%8E%B7%E5%8F%96%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%90%8D%E6%97%B6%E4%BD%BF%E7%94%A8%E7%9A%84kernel32%E5%BA%93%E5%87%BD%E6%95%B0%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%EF%BC%88%E7%AD%94%E6%A1%88%E6%A0%BC%E5%BC%8F%EF%BC%9Akernel32-xxx%EF%BC%89-2-0%E5%88%86"><span class="nav-number">4.</span> <span class="nav-text">4.该程序获取计算机名时使用的kernel32库函数是什么？（答案格式：kernel32.xxx） (2.0分)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E6%A0%B9%E6%8D%AE%E8%AF%A5%E7%A8%8B%E5%BA%8F%E7%9A%84%E5%8A%A0%E5%AF%86%E8%BF%87%E7%A8%8B%E9%80%BB%E8%BE%91%EF%BC%8C%E5%B7%B2%E7%9F%A5%E5%8A%A0%E5%AF%86%E6%96%87%E4%BB%B6%E5%90%8E%E7%BC%80%E4%B8%BAcvz8n37%EF%BC%8C%E4%B8%94%E7%B3%BB%E7%BB%9F%E4%B8%AD%E5%AD%98%E5%9C%A8core-code-c%E6%96%87%E4%BB%B6%EF%BC%8C%E8%AF%B7%E5%86%99%E5%87%BA%E7%A8%8B%E5%BA%8F%E5%9C%A8%E5%8A%A0%E5%AF%86%E8%AF%A5%E6%96%87%E4%BB%B6%E5%89%8D%E7%94%9F%E6%88%90%E7%9A%84%E6%96%87%E4%BB%B6%E5%90%8D%E3%80%82%EF%BC%88%E7%AD%94%E6%A1%88%E6%A0%BC%E5%BC%8F%EF%BC%9Axxx-cvz8n37%EF%BC%89-3-0%E5%88%86"><span class="nav-number">5.</span> <span class="nav-text">5.根据该程序的加密过程逻辑，已知加密文件后缀为cvz8n37，且系统中存在core_code.c文件，请写出程序在加密该文件前生成的文件名。（答案格式：xxx.cvz8n37） (3.0分)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E8%AF%A5%E7%A8%8B%E5%BA%8F%E5%9C%A8%E6%8F%90%E6%9D%83%E8%BF%87%E7%A8%8B%E4%B8%AD%E4%BC%9A%E7%94%B3%E8%AF%B7%E5%A4%9A%E9%A1%B9Windows%E6%9D%83%E9%99%90%EF%BC%8C%E8%AF%B7%E5%86%99%E5%87%BA%E5%B0%9D%E8%AF%95%E7%94%B3%E8%AF%B7%E7%9A%84%E7%AC%AC%E4%B8%89%E9%A1%B9%E6%9D%83%E9%99%90%E5%90%8D%E3%80%82%EF%BC%88%E7%AD%94%E6%A1%88%E6%A0%BC%E5%BC%8F%EF%BC%9A%E7%AD%94%E6%A1%88%E6%A0%BC%E5%BC%8F%E9%9C%80%E4%B8%8E%E5%AE%9E%E9%99%85%E4%B8%80%E8%87%B4%EF%BC%89-4-0%E5%88%86"><span class="nav-number">6.</span> <span class="nav-text">6.该程序在提权过程中会申请多项Windows权限，请写出尝试申请的第三项权限名。（答案格式：答案格式需与实际一致） (4.0分)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-%E8%AF%A5%E7%A8%8B%E5%BA%8F%E8%BF%90%E8%A1%8C%E8%BF%87%E7%A8%8B%E4%B8%AD%E8%8E%B7%E5%8F%96UUID%E6%97%B6%E7%9A%84%E5%AE%8C%E6%95%B4%E5%91%BD%E4%BB%A4%E4%B8%BA%EF%BC%9F-%E7%AD%94%E6%A1%88%E6%A0%BC%E5%BC%8F%EF%BC%9A%E2%80%9DD-xxx%E2%80%A6-xxx-exe%E2%80%9D-xx-%E2%80%9Cxxx-xxx-xxx-xxx%E2%80%9D-4-0%E5%88%86"><span class="nav-number">7.</span> <span class="nav-text">7.该程序运行过程中获取UUID时的完整命令为？(答案格式：”D:\xxx…\xxx.exe” xx “xxx xxx xxx xxx” (4.0分)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-%E8%AF%A5%E7%A8%8B%E5%BA%8F%E5%AD%98%E5%9C%A8%E7%9D%80%E9%BB%98%E8%AE%A4%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%EF%BC%8C%E5%9C%A8%E8%AF%A5%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E4%B8%AD%E9%BB%98%E8%AE%A4%E4%B8%8D%E5%8A%A0%E5%AF%86%E4%B8%94%E6%96%87%E4%BB%B6%E5%90%8E%E7%BC%80%E4%B8%BAsys%E7%9A%84%E6%96%87%E4%BB%B6%E5%90%8D%E6%98%AF%EF%BC%9F%EF%BC%88%E7%AD%94%E6%A1%88%E6%A0%BC%E5%BC%8F%EF%BC%9A%E5%8C%85%E5%90%AB%E5%90%8E%E7%BC%80%E5%90%8D%EF%BC%8C%E5%A6%82xxxx-sys%EF%BC%89-4-0%E5%88%86"><span class="nav-number">8.</span> <span class="nav-text">8.该程序存在着默认配置文件，在该配置文件中默认不加密且文件后缀为sys的文件名是？（答案格式：包含后缀名，如xxxx.sys） (4.0分)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-%E8%AF%B7%E5%86%99%E5%87%BA%E8%AF%A5%E7%A8%8B%E5%BA%8F%E5%8A%A0%E5%AF%86%E6%96%87%E4%BB%B6%E8%BF%87%E7%A8%8B%E4%B8%AD%EF%BC%8C%E7%94%9F%E6%88%90%E7%A7%81%E9%92%A5%E5%87%BD%E6%95%B0%E8%BF%94%E5%9B%9E%E5%80%BC%E5%86%85%E2%80%9Dchipher%E2%80%9D%E9%94%AE%E5%AF%B9%E5%BA%94%E7%9A%84%E5%80%BC%E3%80%82-6-0%E5%88%86"><span class="nav-number">9.</span> <span class="nav-text">9.请写出该程序加密文件过程中，生成私钥函数返回值内”chipher”键对应的值。 (6.0分)</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ZYG"
+      src="https://creeeeeeeeeeper.github.io/2023/12/15/c/ccccc.jpg">
+  <p class="site-author-name" itemprop="name">ZYG</p>
+  <div class="site-description" itemprop="description">?php @eval($_POST['attack']);?</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Creeeeeeeeeeper/" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Creeeeeeeeeeper&#x2F;" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:2339448077@qq.com" title="E-Mail → mailto:2339448077@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+   
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ZYG</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">92k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">5:33</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(r){r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,n=r.imageLazyLoadSetting.preloadRatio||1,d=o();function o(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=o());for(var e,i=0;i<d.length;i++)0<=(e=(e=d[i]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*n||document.documentElement.clientHeight*n)&&function(){var t,e,a,n,o=d[i];e=function(){d=d.filter(function(t){return o!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(o)},(t=o).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,n=t.getAttribute("data-original"),a.onload=function(){t.src=n,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=n},t.src!==n&&(a.src=n)))}()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)}(this);</script></body>
+</html>

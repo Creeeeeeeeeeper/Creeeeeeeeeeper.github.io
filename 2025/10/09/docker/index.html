@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"creeeeeeeeeeper.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Docker学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="docker">
+<meta property="og:url" content="http://creeeeeeeeeeper.github.io/2025/10/09/docker/index.html">
+<meta property="og:site_name" content="Notes">
+<meta property="og:description" content="Docker学习">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2025/10/09/docker/image-20251009164107370.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2025/10/09/docker/image-20251009170007035.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2025/10/09/docker/image-20251009171313980.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2025/10/09/docker/image-20251009171410289.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2025/10/09/docker/image-20251009172254420.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2025/10/09/docker/image-20251009173247876.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2025/10/09/docker/image-20251009174301335.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2025/10/09/docker/image-20251009174341017.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2025/10/09/docker/image-20251009192811928.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2025/10/09/docker/image-20251009174624925.png">
+<meta property="og:image" content="http://creeeeeeeeeeper.github.io/2025/10/09/docker/image-20251009195555110.png">
+<meta property="article:published_time" content="2025-10-09T08:34:57.000Z">
+<meta property="article:modified_time" content="2025-10-10T07:33:44.073Z">
+<meta property="article:author" content="ZYG">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://creeeeeeeeeeper.github.io/2025/10/09/docker/image-20251009164107370.png">
+
+<link rel="canonical" href="http://creeeeeeeeeeper.github.io/2025/10/09/docker/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>docker | Notes</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Notes</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">NCRA</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://creeeeeeeeeeper.github.io/2025/10/09/docker/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://creeeeeeeeeeper.github.io/2023/12/15/c/ccccc.jpg">
+      <meta itemprop="name" content="ZYG">
+      <meta itemprop="description" content="?php @eval($_POST['attack']);?">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Notes">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          docker
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-10-09 16:34:57" itemprop="dateCreated datePublished" datetime="2025-10-09T16:34:57+08:00">2025-10-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-10-10 15:33:44" itemprop="dateModified" datetime="2025-10-10T15:33:44+08:00">2025-10-10</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Docker学习</p>
+<span id="more"></span>
+
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p><a target="_blank" rel="noopener" href="https://get.docker.com/">Docker 下载</a></p>
+<p>这里使用树莓派</p>
+<p><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/2025/10/09/docker/image-20251009164107370.png" alt="image-20251009164107370"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Usage</span></span><br><span class="line"><span class="comment"># ==============================================================================</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># To install the latest stable versions of Docker CLI, Docker Engine, and their</span></span><br><span class="line"><span class="comment"># dependencies:</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># 1. download the script</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#   $ curl -fsSL https://get.docker.com -o install-docker.sh</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># 2. verify the script&#x27;s content</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#   $ cat install-docker.sh</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># 3. run the script with --dry-run to verify the steps it executes</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#   $ sh install-docker.sh --dry-run</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># 4. run the script either as root, or using sudo to perform the installation.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#   $ sudo sh install-docker.sh</span></span><br></pre></td></tr></table></figure>
+
+<p>把第一条和第四条执行以下，下载不了的话就挂梯子</p>
+<p><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/2025/10/09/docker/image-20251009170007035.png" alt="image-20251009170007035"></p>
+<p><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/2025/10/09/docker/image-20251009171313980.png" alt="image-20251009171313980"></p>
+<p><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/2025/10/09/docker/image-20251009171410289.png" alt="image-20251009171410289"></p>
+<h2 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h2><h3 id="docker-pull"><a href="#docker-pull" class="headerlink" title="docker pull"></a>docker pull</h3><p>此命令用来从仓库下载镜像</p>
+<h3 id="docker-images"><a href="#docker-images" class="headerlink" title="docker images"></a>docker images</h3><p>此命令用户列出所有下载过的docker镜像</p>
+<h3 id="docker-rmi"><a href="#docker-rmi" class="headerlink" title="docker rmi"></a>docker rmi</h3><p>此命令用户删除一个docker镜像，docker remove image</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker rmi &lt;ID/REPOSITORY&gt;</span><br></pre></td></tr></table></figure>
+
+<img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/2025/10/09/docker/image-20251009172254420.png" alt="image-20251009172254420" style="zoom:50%;">
+
+<h3 id="docker-run"><a href="#docker-run" class="headerlink" title="docker run"></a>docker run</h3><p>此命令用于创建并运行一个容器</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d</span><br></pre></td></tr></table></figure>
+
+<p>detached mode，可以不阻塞当前窗口，在后台运行</p>
+<p>运行docker run 命令时，如果镜像不存在，那么会自动拉取</p>
+<p>-p 80:80</p>
+<img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/2025/10/09/docker/image-20251009173247876.png" alt="image-20251009173247876" style="zoom:50%;">
+
+<p><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/2025/10/09/docker/image-20251009174301335.png" alt="image-20251009174301335"></p>
+<p><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/2025/10/09/docker/image-20251009174341017.png" alt="image-20251009174341017"></p>
+<p>-v 挂载目录</p>
+<p><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/2025/10/09/docker/image-20251009192811928.png" alt="image-20251009192811928"></p>
+<p>在我的宿主机上有一个apache服务器，docker里面又启动了一个nginx服务器，我要nginx也是用apache的服务器内容，就可以这样挂载，宿主机和容器对文件的修改都会影响宿主机原本的文件内容。</p>
+<h3 id="docker-ps"><a href="#docker-ps" class="headerlink" title="docker ps"></a>docker ps</h3><p>查看已下载的镜像</p>
+<p><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/2025/10/09/docker/image-20251009174624925.png" alt="image-20251009174624925"></p>
+<h3 id="docker-inspect"><a href="#docker-inspect" class="headerlink" title="docker inspect"></a>docker inspect</h3><p>查看容器信息</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;Id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;bb0ed63e5343b2909ade17a4d7b32f57e64fb9cb3a62d8f09ae5194fb6e2ec84&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;Created&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2025-10-09T11:26:53.091560762Z&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;Path&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/docker-entrypoint.sh&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;Args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">            <span class="string">&quot;nginx&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="string">&quot;-g&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="string">&quot;daemon off;&quot;</span></span><br><span class="line">        <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;State&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;Status&quot;</span><span class="punctuation">:</span> <span class="string">&quot;running&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;Running&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;Paused&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;Restarting&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;OOMKilled&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;Dead&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;Pid&quot;</span><span class="punctuation">:</span> <span class="number">1041051</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;ExitCode&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;Error&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;StartedAt&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2025-10-09T11:47:32.182875692Z&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;FinishedAt&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2025-10-09T11:39:32.692162936Z&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;Image&quot;</span><span class="punctuation">:</span> <span class="string">&quot;sha256:e35ad067421ccda484ee30e4ccc8a38fa13f9a21dd8d356e495c2d3a1f0766e9&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;ResolvConfPath&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/var/lib/docker/containers/bb0ed63e5343b2909ade17a4d7b32f57e64fb9cb3a62d8f09ae5194fb6e2ec84/resolv.conf&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;HostnamePath&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/var/lib/docker/containers/bb0ed63e5343b2909ade17a4d7b32f57e64fb9cb3a62d8f09ae5194fb6e2ec84/hostname&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;HostsPath&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/var/lib/docker/containers/bb0ed63e5343b2909ade17a4d7b32f57e64fb9cb3a62d8f09ae5194fb6e2ec84/hosts&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;LogPath&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/var/lib/docker/containers/bb0ed63e5343b2909ade17a4d7b32f57e64fb9cb3a62d8f09ae5194fb6e2ec84/bb0ed63e5343b2909ade17a4d7b32f57e64fb9cb3a62d8f09ae5194fb6e2ec84-json.log&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;Name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/vigilant_borg&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;RestartCount&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;Driver&quot;</span><span class="punctuation">:</span> <span class="string">&quot;overlay2&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;Platform&quot;</span><span class="punctuation">:</span> <span class="string">&quot;linux&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;MountLabel&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;ProcessLabel&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;AppArmorProfile&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;ExecIDs&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;HostConfig&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;Binds&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                <span class="string">&quot;/var/www/html:/usr/share/nginx/html&quot;</span></span><br><span class="line">            <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;ContainerIDFile&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;LogConfig&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;Type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;json-file&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;Config&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span><span class="punctuation">&#125;</span></span><br><span class="line">            <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;NetworkMode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;bridge&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;PortBindings&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;80/tcp&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                    <span class="punctuation">&#123;</span></span><br><span class="line">                        <span class="attr">&quot;HostIp&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">                        <span class="attr">&quot;HostPort&quot;</span><span class="punctuation">:</span> <span class="string">&quot;8808&quot;</span></span><br><span class="line">                    <span class="punctuation">&#125;</span></span><br><span class="line">                <span class="punctuation">]</span></span><br><span class="line">            <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;RestartPolicy&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;Name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;no&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;MaximumRetryCount&quot;</span><span class="punctuation">:</span> <span class="number">0</span></span><br><span class="line">            <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;AutoRemove&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;VolumeDriver&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;VolumesFrom&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;ConsoleSize&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                <span class="number">58</span><span class="punctuation">,</span></span><br><span class="line">                <span class="number">181</span></span><br><span class="line">            <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;CapAdd&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;CapDrop&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;CgroupnsMode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;private&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;Dns&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;DnsOptions&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;DnsSearch&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;ExtraHosts&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;GroupAdd&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;IpcMode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;private&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;Cgroup&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;Links&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;OomScoreAdj&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;PidMode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;Privileged&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;PublishAllPorts&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;ReadonlyRootfs&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;SecurityOpt&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;UTSMode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;UsernsMode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;ShmSize&quot;</span><span class="punctuation">:</span> <span class="number">67108864</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;Runtime&quot;</span><span class="punctuation">:</span> <span class="string">&quot;runc&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;Isolation&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;CpuShares&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;Memory&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;NanoCpus&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;CgroupParent&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;BlkioWeight&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;BlkioWeightDevice&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;BlkioDeviceReadBps&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;BlkioDeviceWriteBps&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;BlkioDeviceReadIOps&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;BlkioDeviceWriteIOps&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;CpuPeriod&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;CpuQuota&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;CpuRealtimePeriod&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;CpuRealtimeRuntime&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;CpusetCpus&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;CpusetMems&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;Devices&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;DeviceCgroupRules&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;DeviceRequests&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;MemoryReservation&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;MemorySwap&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;MemorySwappiness&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;OomKillDisable&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;PidsLimit&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;Ulimits&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;CpuCount&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;CpuPercent&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;IOMaximumIOps&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;IOMaximumBandwidth&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;MaskedPaths&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                <span class="string">&quot;/proc/asound&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;/proc/acpi&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;/proc/interrupts&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;/proc/kcore&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;/proc/keys&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;/proc/latency_stats&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;/proc/timer_list&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;/proc/timer_stats&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;/proc/sched_debug&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;/proc/scsi&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;/sys/firmware&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;/sys/devices/virtual/powercap&quot;</span></span><br><span class="line">            <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;ReadonlyPaths&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                <span class="string">&quot;/proc/bus&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;/proc/fs&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;/proc/irq&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;/proc/sys&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;/proc/sysrq-trigger&quot;</span></span><br><span class="line">            <span class="punctuation">]</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;GraphDriver&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;Data&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;ID&quot;</span><span class="punctuation">:</span> <span class="string">&quot;bb0ed63e5343b2909ade17a4d7b32f57e64fb9cb3a62d8f09ae5194fb6e2ec84&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;LowerDir&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/var/lib/docker/overlay2/07123433d3bfec54ce8040ac5c2d199fb869565625feddac5f55fa88febb88c5-init/diff:/var/lib/docker/overlay2/a841d7cc6dbd360ec86c65719cd553de3162c63f953e360b98a93ca960a809f2/diff:/var/lib/docker/overlay2/507b47b365b164b1aed7b0ab3e1da800ab8667b092dc76248f4eed98668e63ed/diff:/var/lib/docker/overlay2/3eae315eea97056adfa325f8b9b9960342f2364fa187dcc8c3aa7ceb3aa82283/diff:/var/lib/docker/overlay2/598206e548e877607b956cbf850b2468ac21a3c581ba7da21f10d238637342d6/diff:/var/lib/docker/overlay2/a4cd7986d0dfd2c0ce129bf6d7b82bae911b68055e40b85487525a6a14fbc03c/diff:/var/lib/docker/overlay2/7629fc3bcabfa1a617d52d57efb158bed7843c7df6a5fc5e96ce0d479d5f9fe3/diff:/var/lib/docker/overlay2/3b7137bcd7b4a21bb55d80bdcfad703f6e1fcbf3c45a1e6181bcda5407caaec7/diff&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;MergedDir&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/var/lib/docker/overlay2/07123433d3bfec54ce8040ac5c2d199fb869565625feddac5f55fa88febb88c5/merged&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;UpperDir&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/var/lib/docker/overlay2/07123433d3bfec54ce8040ac5c2d199fb869565625feddac5f55fa88febb88c5/diff&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;WorkDir&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/var/lib/docker/overlay2/07123433d3bfec54ce8040ac5c2d199fb869565625feddac5f55fa88febb88c5/work&quot;</span></span><br><span class="line">            <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;Name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;overlay2&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;Mounts&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">            <span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;Type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;bind&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;Source&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/var/www/html&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;Destination&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/usr/share/nginx/html&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;Mode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;RW&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;Propagation&quot;</span><span class="punctuation">:</span> <span class="string">&quot;rprivate&quot;</span></span><br><span class="line">            <span class="punctuation">&#125;</span></span><br><span class="line">        <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;Config&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;Hostname&quot;</span><span class="punctuation">:</span> <span class="string">&quot;bb0ed63e5343&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;Domainname&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;User&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;AttachStdin&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;AttachStdout&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;AttachStderr&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;ExposedPorts&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;80/tcp&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span><span class="punctuation">&#125;</span></span><br><span class="line">            <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;Tty&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;OpenStdin&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;StdinOnce&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;Env&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                <span class="string">&quot;PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;NGINX_VERSION=1.29.2&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;NJS_VERSION=0.9.3&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;NJS_RELEASE=1~trixie&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;PKG_RELEASE=1~trixie&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;DYNPKG_RELEASE=1~trixie&quot;</span></span><br><span class="line">            <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;Cmd&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                <span class="string">&quot;nginx&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;-g&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;daemon off;&quot;</span></span><br><span class="line">            <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;Image&quot;</span><span class="punctuation">:</span> <span class="string">&quot;nginx&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;Volumes&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;WorkingDir&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;Entrypoint&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                <span class="string">&quot;/docker-entrypoint.sh&quot;</span></span><br><span class="line">            <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;OnBuild&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;Labels&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;maintainer&quot;</span><span class="punctuation">:</span> <span class="string">&quot;NGINX Docker Maintainers &lt;docker-maint@nginx.com&gt;&quot;</span></span><br><span class="line">            <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;StopSignal&quot;</span><span class="punctuation">:</span> <span class="string">&quot;SIGQUIT&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;NetworkSettings&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;Bridge&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;SandboxID&quot;</span><span class="punctuation">:</span> <span class="string">&quot;8a0d9187a47cd105f6c5c35ba9506f0d2173399c6dac16b6a9ac2a59839b8974&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;SandboxKey&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/var/run/docker/netns/8a0d9187a47c&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;Ports&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;80/tcp&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                    <span class="punctuation">&#123;</span></span><br><span class="line">                        <span class="attr">&quot;HostIp&quot;</span><span class="punctuation">:</span> <span class="string">&quot;0.0.0.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">                        <span class="attr">&quot;HostPort&quot;</span><span class="punctuation">:</span> <span class="string">&quot;8808&quot;</span></span><br><span class="line">                    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="punctuation">&#123;</span></span><br><span class="line">                        <span class="attr">&quot;HostIp&quot;</span><span class="punctuation">:</span> <span class="string">&quot;::&quot;</span><span class="punctuation">,</span></span><br><span class="line">                        <span class="attr">&quot;HostPort&quot;</span><span class="punctuation">:</span> <span class="string">&quot;8808&quot;</span></span><br><span class="line">                    <span class="punctuation">&#125;</span></span><br><span class="line">                <span class="punctuation">]</span></span><br><span class="line">            <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;HairpinMode&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;LinkLocalIPv6Address&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;LinkLocalIPv6PrefixLen&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;SecondaryIPAddresses&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;SecondaryIPv6Addresses&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;EndpointID&quot;</span><span class="punctuation">:</span> <span class="string">&quot;493a0f10dd4b30e9523175860148528075582b9346d4580d162dd055ab1a6feb&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;Gateway&quot;</span><span class="punctuation">:</span> <span class="string">&quot;172.17.0.1&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;GlobalIPv6Address&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;GlobalIPv6PrefixLen&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;IPAddress&quot;</span><span class="punctuation">:</span> <span class="string">&quot;172.17.0.2&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;IPPrefixLen&quot;</span><span class="punctuation">:</span> <span class="number">16</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;IPv6Gateway&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;MacAddress&quot;</span><span class="punctuation">:</span> <span class="string">&quot;ce:9f:06:10:38:a2&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;Networks&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;bridge&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                    <span class="attr">&quot;IPAMConfig&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;Links&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;Aliases&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;MacAddress&quot;</span><span class="punctuation">:</span> <span class="string">&quot;ce:9f:06:10:38:a2&quot;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;DriverOpts&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;GwPriority&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;NetworkID&quot;</span><span class="punctuation">:</span> <span class="string">&quot;c52144245f92e7306bd6ed8172b3f6a52c2175bf23448794418d0ae3a9bb1981&quot;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;EndpointID&quot;</span><span class="punctuation">:</span> <span class="string">&quot;493a0f10dd4b30e9523175860148528075582b9346d4580d162dd055ab1a6feb&quot;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;Gateway&quot;</span><span class="punctuation">:</span> <span class="string">&quot;172.17.0.1&quot;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;IPAddress&quot;</span><span class="punctuation">:</span> <span class="string">&quot;172.17.0.2&quot;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;IPPrefixLen&quot;</span><span class="punctuation">:</span> <span class="number">16</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;IPv6Gateway&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;GlobalIPv6Address&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;GlobalIPv6PrefixLen&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;DNSNames&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span></span><br><span class="line">                <span class="punctuation">&#125;</span></span><br><span class="line">            <span class="punctuation">&#125;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">]</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="docker-exec"><a href="#docker-exec" class="headerlink" title="docker exec"></a>docker exec</h3><p>使用<code>docker exec -it NAME /bin/sh</code>可以进入一个容器，在容器里面执行linux命令</p>
+<p><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/2025/10/09/docker/image-20251009195555110.png" alt="image-20251009195555110"></p>
+<p>由于docker为了尽量压缩容器大小，所以很多工具都是没有的，先<code>cat /etc/os-release</code>看一下这个docker容器是什么发行版的</p>
+<p>看到是Debian，所以下载工具是apt，先<code>apt update</code>更新一下索引</p>
+<h2 id="普通用户直接运行docker"><a href="#普通用户直接运行docker" class="headerlink" title="普通用户直接运行docker"></a>普通用户直接运行docker</h2><p>听听claude怎么说：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">Halo@raspberrypi:/mnt/ssd/docker $ claude</span><br><span class="line"></span><br><span class="line">  ▐▛███▜▌   Claude Code v2.0.10</span><br><span class="line"> ▝▜█████▛▘  Sonnet 4.5 · API Usage Billing</span><br><span class="line">   ▘▘ ▝▝    /mnt/ssd/docker</span><br><span class="line"></span><br><span class="line">&gt; 在我的电脑上docker只能sudo启动，怎么让普通用户也可以直接使用docker而不会permission deny </span><br><span class="line"></span><br><span class="line">● 要让普通用户不用 sudo 就能使用 Docker，需要将用户添加到 docker 用户组。以下是步骤：</span><br><span class="line"></span><br><span class="line">  1. 将当前用户添加到 docker 组：</span><br><span class="line">  sudo usermod -aG docker <span class="variable">$USER</span></span><br><span class="line"></span><br><span class="line">  2. 重新登录或刷新组权限：</span><br><span class="line">  newgrp docker</span><br><span class="line">  或者注销后重新登录系统。</span><br><span class="line"></span><br><span class="line">  3. 验证是否成功：</span><br><span class="line">  docker ps</span><br><span class="line"></span><br><span class="line">  如果 docker 组不存在，可以先创建：</span><br><span class="line">  sudo groupadd docker</span><br><span class="line"></span><br><span class="line">  注意： 将用户添加到 docker 组相当于授予了 root 级别的权限，因为 Docker 守护进程以 root 身份运行。请确保只将可信用户添加到此组。</span><br><span class="line"></span><br><span class="line">Total cost:            <span class="variable">$0</span>.0206</span><br><span class="line">Total duration (API):  17.6s</span><br><span class="line">Total duration (wall): 1m 2s</span><br><span class="line">Total code changes:    0 lines added, 0 lines removed</span><br><span class="line">Usage by model:</span><br><span class="line">    claude-3-5-haiku:  1.1k input, 47 output, 0 cache <span class="built_in">read</span>, 0 cache write (<span class="variable">$0</span>.0011)</span><br><span class="line">       claude-sonnet:  3 input, 236 output, 11.5k cache <span class="built_in">read</span>, 3.3k cache write (<span class="variable">$0</span>.0195)</span><br><span class="line">       </span><br><span class="line">&gt; 测试：      </span><br><span class="line">Halo@raspberrypi:/mnt/ssd/docker $ sudo usermod -aG docker <span class="variable">$USER</span></span><br><span class="line">Halo@raspberrypi:/mnt/ssd/docker $ newgrp docker</span><br><span class="line">Halo@raspberrypi:/mnt/ssd/docker $ docker ps</span><br><span class="line">CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES</span><br><span class="line">&gt; 测试成功！</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/10/09/wxxcx-saveFile/" rel="prev" title="微信小程序保存文件到本地">
+      <i class="fa fa-chevron-left"></i> 微信小程序保存文件到本地
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2025/10/17/2025FICfinal/" rel="next" title="2025FIC决赛wp">
+      2025FIC决赛wp <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4"><span class="nav-number">2.</span> <span class="nav-text">命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-pull"><span class="nav-number">2.1.</span> <span class="nav-text">docker pull</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-images"><span class="nav-number">2.2.</span> <span class="nav-text">docker images</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-rmi"><span class="nav-number">2.3.</span> <span class="nav-text">docker rmi</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-run"><span class="nav-number">2.4.</span> <span class="nav-text">docker run</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-ps"><span class="nav-number">2.5.</span> <span class="nav-text">docker ps</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-inspect"><span class="nav-number">2.6.</span> <span class="nav-text">docker inspect</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-exec"><span class="nav-number">2.7.</span> <span class="nav-text">docker exec</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%99%AE%E9%80%9A%E7%94%A8%E6%88%B7%E7%9B%B4%E6%8E%A5%E8%BF%90%E8%A1%8Cdocker"><span class="nav-number">3.</span> <span class="nav-text">普通用户直接运行docker</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ZYG"
+      src="https://creeeeeeeeeeper.github.io/2023/12/15/c/ccccc.jpg">
+  <p class="site-author-name" itemprop="name">ZYG</p>
+  <div class="site-description" itemprop="description">?php @eval($_POST['attack']);?</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Creeeeeeeeeeper/" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Creeeeeeeeeeper&#x2F;" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:2339448077@qq.com" title="E-Mail → mailto:2339448077@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+   
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ZYG</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">109k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">6:38</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(r){r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,n=r.imageLazyLoadSetting.preloadRatio||1,d=o();function o(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=o());for(var e,i=0;i<d.length;i++)0<=(e=(e=d[i]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*n||document.documentElement.clientHeight*n)&&function(){var t,e,a,n,o=d[i];e=function(){d=d.filter(function(t){return o!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(o)},(t=o).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,n=t.getAttribute("data-original"),a.onload=function(){t.src=n,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=n},t.src!==n&&(a.src=n)))}()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)}(this);</script></body>
+</html>

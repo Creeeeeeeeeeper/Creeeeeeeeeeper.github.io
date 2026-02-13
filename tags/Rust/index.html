@@ -54,7 +54,7 @@
         document.head.appendChild(link)
       }),
       addGlobalFn: (key, fn, name = false, parent = window) => {
-        if (!false && key.startsWith('pjax')) return
+        if (!true && key.startsWith('pjax')) return
         const globalFn = parent.globalFn || {}
         globalFn[key] = globalFn[key] || {}
         globalFn[key][name || Object.keys(globalFn[key]).length] = fn
@@ -141,7 +141,210 @@
   isHighlightShrink: false,
   isToc: false,
   pageType: 'tag'
-}</script><style>
+}</script><script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script><style>
+/* 音乐播放器样式 */
+#music-player {
+  position: fixed;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%) translateX(-284px);
+  z-index: 9999;
+  display: flex;
+  align-items: stretch;
+  transition: transform 0.3s ease;
+}
+#music-player.open {
+  transform: translateY(-50%) translateX(0);
+}
+#music-player .mp-content {
+  display: flex;
+  align-items: stretch;
+  background: rgba(30, 30, 30, 0.95);
+  width: 284px;
+}
+#music-player .mp-cover {
+  width: 80px;
+  height: 80px;
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+  margin: 12px;
+  margin-right: 0;
+  position: relative;
+}
+#music-player .mp-cover::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  box-shadow: inset 0 0 8px rgba(150, 150, 150, 0.6);
+  border-radius: 6px;
+  pointer-events: none;
+}
+#music-player .mp-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  min-height: 0 !important;
+  background: none !important;
+  animation: none !important;
+}
+#music-player .mp-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 180px;
+  padding: 12px;
+}
+#music-player .mp-title {
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#music-player .mp-title a {
+  color: #fff;
+  text-decoration: none;
+}
+#music-player .mp-title a:hover {
+  color: #ccc;
+}
+/* 禁止选择，文章内容除外 */
+body {
+  user-select: none;
+  -webkit-user-select: none;
+}
+#article-container,
+#article-container * {
+  user-select: text;
+  -webkit-user-select: text;
+}
+#music-player .mp-artist {
+  color: #aaa;
+  font-size: 11px;
+}
+#music-player .mp-artist a {
+  color: #aaa;
+  text-decoration: none;
+}
+#music-player .mp-artist a:hover {
+  color: #fff;
+}
+#music-player .mp-progress {
+  width: 100%;
+  height: 4px;
+  background: #555;
+  border-radius: 2px;
+  cursor: pointer;
+  position: relative;
+}
+#music-player .mp-progress-fill {
+  height: 100%;
+  background: #fff;
+  border-radius: 2px;
+  width: 0%;
+  position: relative;
+}
+#music-player .mp-progress-fill::after {
+  content: '';
+  position: absolute;
+  right: -5px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 10px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 3px rgba(0,0,0,0.3);
+}
+#music-player .mp-time {
+  display: flex;
+  justify-content: space-between;
+  color: #888;
+  font-size: 10px;
+  margin-top: 2px;
+}
+#music-player .mp-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+#music-player .mp-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#music-player .mp-btn:hover {
+  color: #ccc;
+}
+#music-player .mp-play {
+  font-size: 18px;
+}
+#music-player .mp-volume {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  justify-content: flex-end;
+}
+#music-player .mp-volume i {
+  color: #888;
+  font-size: 12px;
+}
+#music-player .mp-vol-bar {
+  width: 50px;
+  height: 4px;
+  background: #555;
+  border-radius: 2px;
+  cursor: pointer;
+  position: relative;
+}
+#music-player .mp-vol-fill {
+  height: 100%;
+  background: #fff;
+  border-radius: 2px;
+  width: 50%;
+  position: relative;
+}
+#music-player .mp-vol-fill::after {
+  content: '';
+  position: absolute;
+  right: -4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 3px rgba(0,0,0,0.3);
+}
+#music-player .mp-toggle {
+  width: 36px;
+  background: rgba(30, 30, 30, 0.95);
+  border-radius: 0 8px 8px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #fff;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+#music-player .mp-toggle:hover {
+  background: rgba(50, 50, 50, 0.95);
+}
+</style>
+<style>
 /* 按钮灰黑渐变 */
 .btn-beautify, #pagination .page-number.current,
 a.btn, button.btn, .search-dialog .search-nav,
@@ -221,6 +424,292 @@ img:not(.loaded):not([src*="avatar"]) {
   background-size: 200% 100%;
 }
 </style>
+<script>
+// HLS 音乐播放器 - 全局持久化（放在head中避免pjax重复执行）
+(function() {
+  if (window._mpInit) return;
+  window._mpInit = true;
+
+  var STORAGE_KEY = 'music_player_state';
+  var audioSrc = '/audio/playlist.m3u8';
+
+  // 全局audio元素 - 永不销毁
+  var audio = document.createElement('audio');
+  window._mpAudio = audio;
+
+  // 记录播放状态
+  var wasPlaying = false;
+
+  // pjax事件处理
+  document.addEventListener('pjax:send', function() {
+    wasPlaying = !audio.paused;
+  });
+  document.addEventListener('pjax:complete', function() {
+    setTimeout(function() {
+      createPlayer();
+      if (wasPlaying && audio.paused) {
+        audio.play().catch(function(){});
+      }
+    }, 50);
+  });
+
+  // 浏览器后退/前进
+  window.addEventListener('popstate', function() {
+    wasPlaying = !audio.paused;
+    setTimeout(function() {
+      createPlayer();
+      if (wasPlaying && audio.paused) {
+        audio.play().catch(function(){});
+      }
+    }, 100);
+  });
+
+  // 初始化HLS
+  function initHls() {
+    if (typeof Hls !== 'undefined' && Hls.isSupported()) {
+      var hls = new Hls();
+      hls.loadSource(audioSrc);
+      hls.attachMedia(audio);
+    } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
+      audio.src = audioSrc;
+    }
+  }
+
+  // 等HLS.js加载完
+  function waitForHls() {
+    if (typeof Hls !== 'undefined') {
+      initHls();
+    } else {
+      setTimeout(waitForHls, 50);
+    }
+  }
+  waitForHls();
+
+  function formatTime(sec) {
+    if (isNaN(sec)) return '00:00';
+    var h = Math.floor(sec / 3600);
+    var m = Math.floor((sec % 3600) / 60);
+    var s = Math.floor(sec % 60);
+    if (h > 0) return h + ':' + (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+    return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+  }
+
+  function getState() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch(e) { return {}; }
+  }
+
+  function saveState() {
+    try {
+      var player = document.getElementById('music-player');
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        open: player ? player.classList.contains('open') : false,
+        volume: audio.volume,
+        currentTime: audio.currentTime,
+        isPlaying: !audio.paused
+      }));
+    } catch(e) {}
+  }
+
+  // 恢复播放状态
+  audio.addEventListener('loadedmetadata', function() {
+    var state = getState();
+    if (state.volume !== undefined) audio.volume = state.volume;
+    if (state.currentTime > 0 && state.currentTime < audio.duration) {
+      audio.currentTime = state.currentTime;
+    }
+    if (state.isPlaying) audio.play().catch(function(){});
+    updateUI();
+  });
+
+  setInterval(function() { if (!audio.paused) saveState(); }, 5000);
+  window.addEventListener('beforeunload', saveState);
+
+  function updateUI() {
+    var player = document.getElementById('music-player');
+    if (!player) return;
+    var playBtn = player.querySelector('.mp-play');
+    var progressFill = player.querySelector('.mp-progress-fill');
+    var currentTimeEl = player.querySelector('.mp-current');
+    var durationEl = player.querySelector('.mp-duration');
+    var volFill = player.querySelector('.mp-vol-fill');
+
+    if (playBtn) playBtn.innerHTML = audio.paused ? '<i class="fas fa-play"></i>' : '<i class="fas fa-pause"></i>';
+    if (progressFill && audio.duration) progressFill.style.width = (audio.currentTime / audio.duration * 100) + '%';
+    if (currentTimeEl) currentTimeEl.textContent = formatTime(audio.currentTime);
+    if (durationEl && audio.duration) durationEl.textContent = formatTime(audio.duration);
+    if (volFill) volFill.style.width = (audio.volume * 100) + '%';
+  }
+
+  audio.addEventListener('play', function() { updateUI(); saveState(); });
+  audio.addEventListener('pause', function() { updateUI(); saveState(); });
+  audio.addEventListener('timeupdate', updateUI);
+  audio.addEventListener('durationchange', updateUI);
+
+  function createPlayer() {
+    var existing = document.getElementById('music-player');
+    if (existing) return; // 已存在则不重复创建
+
+    var player = document.createElement('div');
+    player.id = 'music-player';
+    player.innerHTML = [
+      '<div class="mp-content">',
+      '  <div class="mp-cover"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/anm.png" alt="cover"></div>',
+      '  <div class="mp-info">',
+      '    <div class="mp-title"><a href="https://www.bilibili.com/video/BV1BW4y1L7oL" target="_blank">Animenz 200首动漫钢琴串烧</a></div>',
+      '    <div class="mp-artist"><a href="https://space.bilibili.com/6075139" target="_blank">Animenzzz</a></div>',
+      '    <div class="mp-progress"><div class="mp-progress-fill"></div></div>',
+      '    <div class="mp-time"><span class="mp-current">00:00</span><span class="mp-duration">00:00</span></div>',
+      '    <div class="mp-controls">',
+      '      <button class="mp-btn mp-backward"><i class="fas fa-backward"></i></button>',
+      '      <button class="mp-btn mp-play"><i class="fas fa-play"></i></button>',
+      '      <button class="mp-btn mp-forward"><i class="fas fa-forward"></i></button>',
+      '      <div class="mp-volume">',
+      '        <i class="fas fa-volume-up"></i>',
+      '        <div class="mp-vol-bar"><div class="mp-vol-fill"></div></div>',
+      '      </div>',
+      '    </div>',
+      '  </div>',
+      '</div>',
+      '<div class="mp-toggle"><i class="fas fa-chevron-right"></i></div>'
+    ].join('');
+    document.body.appendChild(player);
+
+    var state = getState();
+    var toggle = player.querySelector('.mp-toggle');
+    var progressBar = player.querySelector('.mp-progress');
+    var progressFill = player.querySelector('.mp-progress-fill');
+    var volBar = player.querySelector('.mp-vol-bar');
+    var volFill = player.querySelector('.mp-vol-fill');
+
+    if (state.open) {
+      player.classList.add('open');
+      toggle.innerHTML = '<i class="fas fa-chevron-left"></i>';
+    }
+
+    // 拖拽状态
+    var dragging = null;
+    var dragValue = 0;
+
+    // 进度条拖拽
+    progressBar.addEventListener('mousedown', function(e) {
+      dragging = 'progress';
+      var rect = progressBar.getBoundingClientRect();
+      dragValue = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+      progressFill.style.width = (dragValue * 100) + '%';
+      e.preventDefault();
+      e.stopPropagation();
+    });
+
+    // 音量条拖拽
+    volBar.addEventListener('mousedown', function(e) {
+      dragging = 'volume';
+      var rect = volBar.getBoundingClientRect();
+      dragValue = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+      audio.volume = dragValue;
+      volFill.style.width = (dragValue * 100) + '%';
+      e.preventDefault();
+      e.stopPropagation();
+    });
+
+    // 拖拽中 - 只更新UI，不改变播放位置
+    document.addEventListener('mousemove', function(e) {
+      if (!dragging) return;
+      if (dragging === 'progress') {
+        var rect = progressBar.getBoundingClientRect();
+        dragValue = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+        progressFill.style.width = (dragValue * 100) + '%';
+      } else if (dragging === 'volume') {
+        var rect = volBar.getBoundingClientRect();
+        dragValue = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+        audio.volume = dragValue;
+        volFill.style.width = (dragValue * 100) + '%';
+      }
+    });
+
+    // 松手 - 应用最终值
+    document.addEventListener('mouseup', function() {
+      if (dragging === 'progress' && audio.duration) {
+        audio.currentTime = dragValue * audio.duration;
+      } else if (dragging === 'volume') {
+        saveState();
+      }
+      dragging = null;
+    });
+
+    // 按钮点击
+    toggle.addEventListener('click', function(e) {
+      player.classList.toggle('open');
+      toggle.innerHTML = player.classList.contains('open') ? '<i class="fas fa-chevron-left"></i>' : '<i class="fas fa-chevron-right"></i>';
+      saveState();
+      e.stopPropagation();
+    });
+
+    player.querySelector('.mp-play').addEventListener('click', function(e) {
+      audio.paused ? audio.play().catch(function(){}) : audio.pause();
+      e.stopPropagation();
+    });
+
+    player.querySelector('.mp-backward').addEventListener('click', function(e) {
+      audio.currentTime = Math.max(0, audio.currentTime - 30);
+      e.stopPropagation();
+    });
+
+    player.querySelector('.mp-forward').addEventListener('click', function(e) {
+      audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 30);
+      e.stopPropagation();
+    });
+
+    // 自动收起功能
+    var hideTimer = null;
+
+    function startHideTimer() {
+      clearTimeout(hideTimer);
+      hideTimer = setTimeout(function() {
+        if (player.classList.contains('open')) {
+          player.classList.remove('open');
+          toggle.innerHTML = '<i class="fas fa-chevron-right"></i>';
+          saveState();
+        }
+      }, 5000);
+    }
+
+    function stopHideTimer() {
+      clearTimeout(hideTimer);
+    }
+
+    // 鼠标离开5秒后自动收起
+    player.addEventListener('mouseenter', stopHideTimer);
+    player.addEventListener('mouseleave', startHideTimer);
+
+    // 滚动页面时自动收起
+    var scrollTimer = null;
+    window.addEventListener('scroll', function() {
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(function() {
+        if (player.classList.contains('open')) {
+          player.classList.remove('open');
+          toggle.innerHTML = '<i class="fas fa-chevron-right"></i>';
+          saveState();
+        }
+      }, 100);
+    }, { passive: true });
+
+    // 如果初始状态是展开的，启动计时器
+    if (player.classList.contains('open')) {
+      startHideTimer();
+    }
+
+    updateUI();
+  }
+
+  // DOM ready时创建播放器
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', createPlayer);
+  } else {
+    createPlayer();
+  }
+})();
+</script>
 <meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://creeeeeeeeeeper.github.io/2023/12/15/c/ccccc.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">37</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">45</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fas fa-comment-dots"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="not-home-page" id="page-header" style="background: transparent;"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">CodeHut</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fas fa-comment-dots"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="page-site-info"><h1 id="site-title">Rust</h1></div></header><main class="layout" id="content-inner"><div id="tag"><div class="article-sort-title">标签 - Rust</div><div class="article-sort"><div class="article-sort-item year">2025</div><div class="article-sort-item no-article-cover"><div class="article-sort-item-info"><div class="article-sort-item-time"><i class="far fa-calendar-alt"></i><time class="post-meta-date-created" datetime="2025-05-09T03:19:59.000Z" title="发表于 2025-05-09 11:19:59">2025-05-09</time></div><a class="article-sort-item-title" href="/2025/05/09/rust-prog/" title="rust-prog">rust-prog</a></div></div><div class="article-sort-item no-article-cover"><div class="article-sort-item-info"><div class="article-sort-item-time"><i class="far fa-calendar-alt"></i><time class="post-meta-date-created" datetime="2025-03-31T06:54:57.000Z" title="发表于 2025-03-31 14:54:57">2025-03-31</time></div><a class="article-sort-item-title" href="/2025/03/31/Tauri/" title="Tauri">Tauri</a></div></div><div class="article-sort-item no-article-cover"><div class="article-sort-item-info"><div class="article-sort-item-time"><i class="far fa-calendar-alt"></i><time class="post-meta-date-created" datetime="2025-03-29T09:15:22.000Z" title="发表于 2025-03-29 17:15:22">2025-03-29</time></div><a class="article-sort-item-title" href="/2025/03/29/rust/" title="Rust">Rust</a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://creeeeeeeeeeper.github.io/2023/12/15/c/ccccc.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">ZYG</div><div class="author-info-description">?php @eval($_POST['attack']);?</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">37</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">45</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Creeeeeeeeeeper"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Creeeeeeeeeeper" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:zyg.2005@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/10/Navicat11%E5%AD%98%E5%82%A8%E7%9A%84%E8%BF%9E%E6%8E%A5%E5%AF%86%E7%A0%81%E6%8F%90%E5%8F%96%E4%B8%8E%E8%A7%A3%E5%AF%86/" title="Navicat11存储的连接密码提取与解密">Navicat11存储的连接密码提取与解密</a><time datetime="2026-02-10T02:35:59.000Z" title="发表于 2026-02-10 10:35:59">2026-02-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/10/Edge%20Chrome%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AF%86%E7%A0%81%E7%A6%BB%E7%BA%BF%E8%A7%A3%E5%AF%86/" title="浏览器存储密码离线解密">浏览器存储密码离线解密</a><time datetime="2026-02-10T02:29:23.000Z" title="发表于 2026-02-10 10:29:23">2026-02-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/09/%E5%AF%86%E7%A0%81%E7%BB%95%E8%BF%87%E6%8C%87%E5%8D%97-%E6%B1%87%E6%80%BB/" title="Linux 密码绕过指南 - 快速参考汇总">Linux 密码绕过指南 - 快速参考汇总</a><time datetime="2026-02-09T04:00:00.000Z" title="发表于 2026-02-09 12:00:00">2026-02-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/10/17/2025FICfinal/" title="2025FIC决赛wp">2025FIC决赛wp</a><time datetime="2025-10-17T06:41:25.000Z" title="发表于 2025-10-17 14:41:25">2025-10-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/10/09/docker/" title="docker">docker</a><time datetime="2025-10-09T08:34:57.000Z" title="发表于 2025-10-09 16:34:57">2025-10-09</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
             <i class="fas fa-folder-open"></i>
             <span>分类</span>
@@ -229,7 +718,7 @@ img:not(.loaded):not([src*="avatar"]) {
           </div>
           <ul class="card-category-list" id="aside-cat-list">
             <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/C-C/"><span class="card-category-list-name">C/C++</span><span class="card-category-list-count">6</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/PE/"><span class="card-category-list-name">PE</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Study-Essay/"><span class="card-category-list-name">Study Essay</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Study-Essay/"><span class="card-category-list-name">Study-Essay</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E5%BC%80%E5%8F%91%E7%AC%94%E8%AE%B0/"><span class="card-category-list-name">开发笔记</span><span class="card-category-list-count">15</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E6%B1%87%E7%BC%96/"><span class="card-category-list-name">汇编</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E7%94%B5%E5%AD%90%E5%8F%96%E8%AF%81/"><span class="card-category-list-name">电子取证</span><span class="card-category-list-count">5</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/"><span class="card-category-list-name">编程语言</span><span class="card-category-list-count">1</span></a></li>
-          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/Virtual-Environment/" style="font-size: 1.15em; color: rgb(92, 50, 50);">Virtual Environment</a><a href="/tags/C/" style="font-size: 1.45em; color: rgb(168, 86, 72);">C++</a><a href="/tags/%E7%94%B5%E5%AD%90%E5%8F%96%E8%AF%81/" style="font-size: 1.45em; color: rgb(68, 65, 50);">电子取证</a><a href="/tags/CTF/" style="font-size: 1.22em; color: rgb(153, 50, 122);">CTF</a><a href="/tags/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/" style="font-size: 1.38em; color: rgb(73, 50, 163);">逆向工程</a><a href="/tags/Windows/" style="font-size: 1.38em; color: rgb(141, 133, 106);">Windows</a><a href="/tags/Hook/" style="font-size: 1.15em; color: rgb(198, 50, 50);">Hook</a><a href="/tags/C/" style="font-size: 1.22em; color: rgb(79, 50, 50);">C</a><a href="/tags/Cpp/" style="font-size: 1.22em; color: rgb(50, 103, 50);">Cpp</a><a href="/tags/Internet-Programming/" style="font-size: 1.15em; color: rgb(161, 62, 60);">Internet Programming</a><a href="/tags/Tools/" style="font-size: 1.15em; color: rgb(85, 126, 108);">Tools</a><a href="/tags/%E5%AF%86%E7%A0%81%E8%A7%A3%E5%AF%86/" style="font-size: 1.22em; color: rgb(139, 155, 66);">密码解密</a><a href="/tags/Java/" style="font-size: 1.22em; color: rgb(187, 196, 125);">Java</a><a href="/tags/%E5%B7%A5%E5%85%B7/" style="font-size: 1.3em; color: rgb(55, 62, 50);">工具</a><a href="/tags/Electron/" style="font-size: 1.15em; color: rgb(105, 50, 50);">Electron</a><a href="/tags/JavaScript/" style="font-size: 1.3em; color: rgb(166, 83, 104);">JavaScript</a><a href="/tags/%E6%A1%8C%E9%9D%A2%E5%BC%80%E5%8F%91/" style="font-size: 1.22em; color: rgb(167, 129, 65);">桌面开发</a><a href="/tags/PE/" style="font-size: 1.15em; color: rgb(128, 77, 106);">PE</a><a href="/tags/%E6%B1%87%E7%BC%96/" style="font-size: 1.3em; color: rgb(195, 151, 170);">汇编</a><a href="/tags/Tauri/" style="font-size: 1.3em; color: rgb(90, 100, 55);">Tauri</a></div></div><div class="card-widget card-archives">
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/" style="font-size: 1.38em; color: rgb(188, 50, 192);">逆向工程</a><a href="/tags/Windows/" style="font-size: 1.38em; color: rgb(163, 95, 143);">Windows</a><a href="/tags/Hook/" style="font-size: 1.15em; color: rgb(92, 126, 135);">Hook</a><a href="/tags/C/" style="font-size: 1.22em; color: rgb(50, 144, 143);">C</a><a href="/tags/Cpp/" style="font-size: 1.22em; color: rgb(128, 116, 61);">Cpp</a><a href="/tags/Internet-Programming/" style="font-size: 1.15em; color: rgb(50, 72, 50);">Internet Programming</a><a href="/tags/%E7%94%B5%E5%AD%90%E5%8F%96%E8%AF%81/" style="font-size: 1.45em; color: rgb(141, 50, 50);">电子取证</a><a href="/tags/%E5%AF%86%E7%A0%81%E8%A7%A3%E5%AF%86/" style="font-size: 1.22em; color: rgb(64, 102, 191);">密码解密</a><a href="/tags/C/" style="font-size: 1.45em; color: rgb(102, 50, 166);">C++</a><a href="/tags/Tools/" style="font-size: 1.15em; color: rgb(56, 85, 50);">Tools</a><a href="/tags/CTF/" style="font-size: 1.22em; color: rgb(50, 50, 50);">CTF</a><a href="/tags/Java/" style="font-size: 1.22em; color: rgb(50, 102, 162);">Java</a><a href="/tags/%E5%B7%A5%E5%85%B7/" style="font-size: 1.3em; color: rgb(123, 115, 50);">工具</a><a href="/tags/PE/" style="font-size: 1.15em; color: rgb(132, 171, 60);">PE</a><a href="/tags/%E6%B1%87%E7%BC%96/" style="font-size: 1.3em; color: rgb(141, 50, 84);">汇编</a><a href="/tags/Electron/" style="font-size: 1.15em; color: rgb(111, 137, 50);">Electron</a><a href="/tags/JavaScript/" style="font-size: 1.3em; color: rgb(167, 92, 150);">JavaScript</a><a href="/tags/%E6%A1%8C%E9%9D%A2%E5%BC%80%E5%8F%91/" style="font-size: 1.22em; color: rgb(198, 166, 130);">桌面开发</a><a href="/tags/Virtual-Environment/" style="font-size: 1.15em; color: rgb(74, 179, 73);">Virtual Environment</a><a href="/tags/STL/" style="font-size: 1.15em; color: rgb(70, 183, 50);">STL</a></div></div><div class="card-widget card-archives">
     <div class="item-headline">
       <i class="fas fa-archive"></i>
       <span>归档</span>
@@ -314,228 +803,247 @@ img:not(.loaded):not([src*="avatar"]) {
         </li>
       
     </ul>
-  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">37</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-02-13T09:59:02.055Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2023 - 2026 By ZYG</span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@19.1.3/dist/lazyload.iife.min.js"></script><div class="js-pjax"></div><script>
-document.addEventListener('DOMContentLoaded', function() {
-  // 只在首页执行
-  if (window.location.pathname !== '/' && !window.location.pathname.startsWith('/page/')) return;
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">37</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-02-13T12:57:25.694Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2023 - 2026 By ZYG</span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@19.1.3/dist/lazyload.iife.min.js"></script><div class="js-pjax"></div><script>
+(function() {
+  function initBgVideo() {
+    // 只在首页执行
+    if (window.location.pathname !== '/' && !window.location.pathname.startsWith('/page/')) return;
 
-  var videos = window.BG_VIDEOS || [];
-  if (videos.length === 0) return;
-  var CACHE_NAME = 'bg-videos-v1';
-  var pageHeader = document.getElementById('page-header');
-  if (!pageHeader) return;
+    var videos = window.BG_VIDEOS || [];
+    if (videos.length === 0) return;
+    var CACHE_NAME = 'bg-videos-v1';
+    var pageHeader = document.getElementById('page-header');
+    if (!pageHeader) return;
 
-  // 设置骨架屏背景
-  pageHeader.style.background = 'linear-gradient(90deg, #2a2a2a 0%, #3a3a3a 50%, #2a2a2a 100%)';
-  pageHeader.style.backgroundSize = '200% 100%';
-  pageHeader.style.animation = 'skeleton-pulse 1.5s ease-in-out infinite';
+    // 检查是否已初始化
+    if (pageHeader.querySelector('.bg-video-container')) return;
 
-  // 添加骨架屏动画样式
-  var style = document.createElement('style');
-  style.textContent = '@keyframes skeleton-pulse { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }';
-  document.head.appendChild(style);
+    // 设置骨架屏背景
+    pageHeader.style.background = 'linear-gradient(90deg, #2a2a2a 0%, #3a3a3a 50%, #2a2a2a 100%)';
+    pageHeader.style.backgroundSize = '200% 100%';
+    pageHeader.style.animation = 'skeleton-pulse 1.5s ease-in-out infinite';
 
-  // 创建视频容器
-  var videoContainer = document.createElement('div');
-  videoContainer.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;overflow:hidden;z-index:0;pointer-events:none;';
-  pageHeader.style.position = 'relative';
-  pageHeader.insertBefore(videoContainer, pageHeader.firstChild);
+    // 添加骨架屏动画样式
+    if (!document.getElementById('skeleton-style')) {
+      var style = document.createElement('style');
+      style.id = 'skeleton-style';
+      style.textContent = '@keyframes skeleton-pulse { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }';
+      document.head.appendChild(style);
+    }
 
-  // 确保 page-header 内的其他元素在视频之上
-  var headerContent = pageHeader.querySelector('#site-info');
-  if (headerContent) headerContent.style.position = 'relative';
-  var headerMask = pageHeader.querySelector('.header-mask');
-  if (headerMask) headerMask.style.zIndex = '1';
+    // 创建视频容器
+    var videoContainer = document.createElement('div');
+    videoContainer.className = 'bg-video-container';
+    videoContainer.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;overflow:hidden;z-index:0;pointer-events:none;';
+    pageHeader.style.position = 'relative';
+    pageHeader.insertBefore(videoContainer, pageHeader.firstChild);
 
-  var history = [];
-  var currentVideo = null;
-  var isTransitioning = false;
-  var videoCache = {};
+    // 确保 page-header 内的其他元素在视频之上
+    var headerContent = pageHeader.querySelector('#site-info');
+    if (headerContent) headerContent.style.position = 'relative';
+    var headerMask = pageHeader.querySelector('.header-mask');
+    if (headerMask) headerMask.style.zIndex = '1';
 
-  // 缓存管理：获取视频（优先缓存，同时检查更新）
-  function getVideoUrl(url) {
-    return new Promise(function(resolve) {
-      if (!('caches' in window)) {
-        resolve(url);
-        return;
-      }
+    var history = [];
+    var currentVideo = null;
+    var isTransitioning = false;
+    var videoCache = {};
 
-      caches.open(CACHE_NAME).then(function(cache) {
-        cache.match(url).then(function(cachedResponse) {
-          if (cachedResponse && cachedResponse.headers.get('content-length') !== '0') {
-            // 有缓存，先用缓存
-            cachedResponse.blob().then(function(blob) {
-              if (blob.size > 0) {
-                resolve(URL.createObjectURL(blob));
-              } else {
-                // 缓存无效，重新获取
-                fetchAndCache(url, cache, resolve);
+    // 缓存管理：获取视频（优先缓存，同时检查更新）
+    function getVideoUrl(url) {
+      return new Promise(function(resolve) {
+        if (!('caches' in window)) {
+          resolve(url);
+          return;
+        }
+
+        caches.open(CACHE_NAME).then(function(cache) {
+          cache.match(url).then(function(cachedResponse) {
+            if (cachedResponse && cachedResponse.headers.get('content-length') !== '0') {
+              // 有缓存，先用缓存
+              cachedResponse.blob().then(function(blob) {
+                if (blob.size > 0) {
+                  resolve(URL.createObjectURL(blob));
+                } else {
+                  // 缓存无效，重新获取
+                  fetchAndCache(url, cache, resolve);
+                }
+              });
+            } else {
+              // 无缓存，从网络获取并缓存
+              fetchAndCache(url, cache, resolve);
+            }
+          });
+        }).catch(function() {
+          resolve(url);
+        });
+      });
+    }
+
+    function fetchAndCache(url, cache, resolve) {
+      fetch(url).then(function(response) {
+        if (response.ok) {
+          response.blob().then(function(blob) {
+            // 用 blob 创建新的 Response 存入缓存
+            var responseToCache = new Response(blob, {
+              headers: {
+                'Content-Type': 'video/mp4',
+                'Content-Length': blob.size
               }
             });
-          } else {
-            // 无缓存，从网络获取并缓存
-            fetchAndCache(url, cache, resolve);
-          }
-        });
+            cache.put(url, responseToCache);
+            resolve(URL.createObjectURL(blob));
+          });
+        } else {
+          resolve(url);
+        }
       }).catch(function() {
         resolve(url);
       });
-    });
-  }
+    }
 
-  function fetchAndCache(url, cache, resolve) {
-    fetch(url).then(function(response) {
-      if (response.ok) {
-        response.blob().then(function(blob) {
-          // 用 blob 创建新的 Response 存入缓存
-          var responseToCache = new Response(blob, {
-            headers: {
-              'Content-Type': 'video/mp4',
-              'Content-Length': blob.size
+    // 清理旧缓存（删除不在列表中的视频，以及删除旧的图片缓存）
+    function cleanupCache() {
+      if (!('caches' in window)) return;
+
+      // 删除旧的 webp 图片缓存
+      caches.delete('bg-images-v1');
+
+      // 清理当前视频缓存中不再使用的文件
+      caches.open(CACHE_NAME).then(function(cache) {
+        cache.keys().then(function(keys) {
+          keys.forEach(function(request) {
+            var url = new URL(request.url);
+            var isInList = videos.some(function(v) {
+              return url.pathname === v;
+            });
+            if (!isInList) {
+              cache.delete(request);
             }
           });
-          cache.put(url, responseToCache);
-          resolve(URL.createObjectURL(blob));
-        });
-      } else {
-        resolve(url);
-      }
-    }).catch(function() {
-      resolve(url);
-    });
-  }
-
-  // 清理旧缓存（删除不在列表中的视频，以及删除旧的图片缓存）
-  function cleanupCache() {
-    if (!('caches' in window)) return;
-
-    // 删除旧的 webp 图片缓存
-    caches.delete('bg-images-v1');
-
-    // 清理当前视频缓存中不再使用的文件
-    caches.open(CACHE_NAME).then(function(cache) {
-      cache.keys().then(function(keys) {
-        keys.forEach(function(request) {
-          var url = new URL(request.url);
-          var isInList = videos.some(function(v) {
-            return url.pathname === v;
-          });
-          if (!isInList) {
-            cache.delete(request);
-          }
         });
       });
-    });
-  }
-
-  // 预缓存所有视频
-  function precacheVideos() {
-    videos.forEach(function(url) {
-      getVideoUrl(url).then(function(blobUrl) {
-        videoCache[url] = blobUrl;
-      });
-    });
-    cleanupCache();
-  }
-
-  function getNextIndex() {
-    var available = [];
-    for (var i = 0; i < videos.length; i++) {
-      if (history.indexOf(i) === -1) {
-        available.push(i);
-      }
     }
-    return available[Math.floor(Math.random() * available.length)];
-  }
 
-  function createVideo(src) {
-    var video = document.createElement('video');
-    video.src = src;
-    video.muted = true;
-    video.loop = false;
-    video.playsInline = true;
-    video.autoplay = true;
-    video.volume = 0;
-    video.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.5s ease-in-out;';
-    return video;
-  }
+    // 预缓存所有视频
+    function precacheVideos() {
+      videos.forEach(function(url) {
+        getVideoUrl(url).then(function(blobUrl) {
+          videoCache[url] = blobUrl;
+        });
+      });
+      cleanupCache();
+    }
 
-  function showVideo(index, withTransition) {
-    if (isTransitioning) return;
+    function getNextIndex() {
+      var available = [];
+      for (var i = 0; i < videos.length; i++) {
+        if (history.indexOf(i) === -1) {
+          available.push(i);
+        }
+      }
+      return available[Math.floor(Math.random() * available.length)];
+    }
 
-    history.push(index);
-    if (history.length > 2) history.shift();
+    function createVideo(src) {
+      var video = document.createElement('video');
+      video.src = src;
+      video.muted = true;
+      video.loop = false;
+      video.playsInline = true;
+      video.autoplay = true;
+      video.volume = 0;
+      video.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.5s ease-in-out;';
+      return video;
+    }
 
-    var videoUrl = videos[index];
-    var srcPromise = videoCache[videoUrl] ? Promise.resolve(videoCache[videoUrl]) : getVideoUrl(videoUrl);
+    function showVideo(index, withTransition) {
+      if (isTransitioning) return;
 
-    srcPromise.then(function(src) {
-      var newVideo = createVideo(src);
-      videoContainer.appendChild(newVideo);
+      history.push(index);
+      if (history.length > 2) history.shift();
 
-      var playTimer = null;
+      var videoUrl = videos[index];
+      var srcPromise = videoCache[videoUrl] ? Promise.resolve(videoCache[videoUrl]) : getVideoUrl(videoUrl);
 
-      newVideo.addEventListener('canplay', function() {
-        // 移除骨架屏
-        pageHeader.style.background = 'transparent';
-        pageHeader.style.animation = 'none';
+      srcPromise.then(function(src) {
+        var newVideo = createVideo(src);
+        videoContainer.appendChild(newVideo);
 
-        if (withTransition && currentVideo) {
-          isTransitioning = true;
-          newVideo.style.opacity = '1';
-          newVideo.play();
-          setTimeout(function() {
+        var playTimer = null;
+
+        newVideo.addEventListener('canplay', function() {
+          // 移除骨架屏
+          pageHeader.style.background = 'transparent';
+          pageHeader.style.animation = 'none';
+
+          if (withTransition && currentVideo) {
+            isTransitioning = true;
+            newVideo.style.opacity = '1';
+            newVideo.play();
+            setTimeout(function() {
+              if (currentVideo && currentVideo.parentNode) {
+                currentVideo.parentNode.removeChild(currentVideo);
+              }
+              currentVideo = newVideo;
+              isTransitioning = false;
+              // 10秒后切换
+              playTimer = setTimeout(function() {
+                var nextIndex = getNextIndex();
+                showVideo(nextIndex, true);
+              }, 10000);
+            }, 1500);
+          } else {
+            newVideo.style.opacity = '1';
+            newVideo.play();
             if (currentVideo && currentVideo.parentNode) {
               currentVideo.parentNode.removeChild(currentVideo);
             }
             currentVideo = newVideo;
-            isTransitioning = false;
             // 10秒后切换
             playTimer = setTimeout(function() {
               var nextIndex = getNextIndex();
               showVideo(nextIndex, true);
             }, 10000);
-          }, 1500);
-        } else {
-          newVideo.style.opacity = '1';
-          newVideo.play();
-          if (currentVideo && currentVideo.parentNode) {
-            currentVideo.parentNode.removeChild(currentVideo);
           }
-          currentVideo = newVideo;
-          // 10秒后切换
-          playTimer = setTimeout(function() {
-            var nextIndex = getNextIndex();
-            showVideo(nextIndex, true);
-          }, 10000);
-        }
-      }, { once: true });
+        }, { once: true });
 
-      // 如果视频加载失败，直接显示
-      newVideo.addEventListener('error', function() {
-        pageHeader.style.background = 'transparent';
-        pageHeader.style.animation = 'none';
-      }, { once: true });
+        // 如果视频加载失败，直接显示
+        newVideo.addEventListener('error', function() {
+          pageHeader.style.background = 'transparent';
+          pageHeader.style.animation = 'none';
+        }, { once: true });
+      });
+    }
+
+    // 页面可见性变化时处理
+    document.addEventListener('visibilitychange', function() {
+      if (document.hidden) {
+        if (currentVideo) currentVideo.pause();
+      } else {
+        if (currentVideo) currentVideo.play();
+        if (isTransitioning) isTransitioning = false;
+      }
     });
+
+    // 预缓存视频
+    precacheVideos();
+
+    // 首个视频随机显示
+    var firstIndex = Math.floor(Math.random() * videos.length);
+    showVideo(firstIndex, false);
   }
 
-  // 页面可见性变化时处理
-  document.addEventListener('visibilitychange', function() {
-    if (document.hidden) {
-      if (currentVideo) currentVideo.pause();
-    } else {
-      if (currentVideo) currentVideo.play();
-      if (isTransitioning) isTransitioning = false;
-    }
-  });
+  // DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initBgVideo);
+  } else {
+    initBgVideo();
+  }
 
-  // 预缓存视频
-  precacheVideos();
-
-  // 首个视频随机显示
-  var firstIndex = Math.floor(Math.random() * videos.length);
-  showVideo(firstIndex, false);
-});
+  // pjax支持
+  document.addEventListener('pjax:complete', initBgVideo);
+})();
 </script>
 <script>
 // 博客背景静态图片（带缓存）
@@ -596,7 +1104,61 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
-<script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.4"></script></div></div><!-- hexo injector body_end start --><script>window.BG_VIDEOS = ["/video/40a0c61bf2d90e77a459657605f1f4f3.mp4","/video/416cb99d3b048ee1cefaa92e93a68711.mp4","/video/43f211bd7b0e6a1534dec31063d30999.mp4","/video/5c8eb4fee50d1552829fbd221309e569.mp4","/video/78a6de50265fc9e6a807a04f409e6562.mp4","/video/8a3f7886ffcc6648d5c6df070041a6a5.mp4","/video/a6371c8ff90daa0696401571ba29f7f2.mp4","/video/ec2b050cf2c07fb6b9f00de63a958a39.mp4"];</script><!-- hexo injector body_end end -->
+<script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js" defer="defer"></script><script>document.addEventListener('DOMContentLoaded', () => {
+  const pjaxSelectors = ["meta[property=\"og:image\"]","meta[property=\"og:title\"]","meta[property=\"og:url\"]","meta[property=\"og:description\"]","link[rel=\"canonical\"]","head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+  window.pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: pjaxSelectors,
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+  })
+
+  const triggerPjaxFn = (val) => {
+    if (!val) return
+    Object.values(val).forEach(fn => {
+      try {
+        fn()
+      } catch (err) {
+        console.debug('Pjax callback failed:', err)
+      }
+    })
+  }
+
+  document.addEventListener('pjax:send', () => {
+    // removeEventListener
+    btf.removeGlobalFnEvent('pjaxSendOnce')
+    btf.removeGlobalFnEvent('themeChange')
+
+    // reset readmode
+    const $bodyClassList = document.body.classList
+    if ($bodyClassList.contains('read-mode')) $bodyClassList.remove('read-mode')
+
+    triggerPjaxFn(window.globalFn.pjaxSend)
+  })
+
+  document.addEventListener('pjax:complete', () => {
+    btf.removeGlobalFnEvent('pjaxCompleteOnce')
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+      const newScript = document.createElement('script')
+      const content = item.text || item.textContent || item.innerHTML || ""
+      Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      newScript.appendChild(document.createTextNode(content))
+      item.parentNode.replaceChild(newScript, item)
+    })
+
+    triggerPjaxFn(window.globalFn.pjaxComplete)
+  })
+
+  document.addEventListener('pjax:error', e => {
+    if (e.request.status === 404) {
+      false
+        ? pjax.loadUrl('/404.html')
+        : window.location.href = e.request.responseURL
+    }
+  })
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.4"></script></div></div><!-- hexo injector body_end start --><script>window.BG_VIDEOS = ["/video/40a0c61bf2d90e77a459657605f1f4f3.mp4","/video/416cb99d3b048ee1cefaa92e93a68711.mp4","/video/43f211bd7b0e6a1534dec31063d30999.mp4","/video/5c8eb4fee50d1552829fbd221309e569.mp4","/video/78a6de50265fc9e6a807a04f409e6562.mp4","/video/8a3f7886ffcc6648d5c6df070041a6a5.mp4","/video/a6371c8ff90daa0696401571ba29f7f2.mp4","/video/ec2b050cf2c07fb6b9f00de63a958a39.mp4"];</script><!-- hexo injector body_end end -->
         <style>
             [bg-lazy] {
                 background-image: none !important;

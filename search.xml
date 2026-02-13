@@ -1338,8 +1338,8 @@
         <category>开发笔记</category>
       </categories>
       <tags>
-        <tag>C++</tag>
         <tag>Windows</tag>
+        <tag>C++</tag>
         <tag>权限</tag>
       </tags>
   </entry>
@@ -1466,8 +1466,8 @@
         <category>开发笔记</category>
       </categories>
       <tags>
-        <tag>Tauri</tag>
         <tag>工具</tag>
+        <tag>Tauri</tag>
       </tags>
   </entry>
   <entry>
@@ -1542,9 +1542,9 @@
         <category>开发笔记</category>
       </categories>
       <tags>
-        <tag>桌面开发</tag>
         <tag>Tauri</tag>
         <tag>Rust</tag>
+        <tag>桌面开发</tag>
       </tags>
   </entry>
   <entry>
@@ -2383,9 +2383,9 @@
         <category>开发笔记</category>
       </categories>
       <tags>
+        <tag>桌面开发</tag>
         <tag>Electron</tag>
         <tag>JavaScript</tag>
-        <tag>桌面开发</tag>
       </tags>
   </entry>
   <entry>
@@ -2902,8 +2902,8 @@
       </categories>
       <tags>
         <tag>Windows</tag>
-        <tag>工具</tag>
         <tag>Java</tag>
+        <tag>工具</tag>
       </tags>
   </entry>
   <entry>

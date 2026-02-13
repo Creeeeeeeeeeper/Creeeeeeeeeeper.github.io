@@ -458,7 +458,9 @@ document.addEventListener('DOMContentLoaded', function() {
   // 只在首页执行
   if (window.location.pathname !== '/' && !window.location.pathname.startsWith('/page/')) return;
 
-  var imgs = ['/img/wl.webp', '/img/bg2.webp', '/img/bg3.webp', '/img/bg4.webp', '/img/bg5.webp'];
+  var videos = window.BG_VIDEOS || [];
+  if (videos.length === 0) return;
+  var CACHE_NAME = 'bg-videos-v1';
   var pageHeader = document.getElementById('page-header');
   if (!pageHeader) return;
 
@@ -472,18 +474,108 @@ document.addEventListener('DOMContentLoaded', function() {
   style.textContent = '@keyframes skeleton-pulse { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }';
   document.head.appendChild(style);
 
-  // 创建叠化层
-  var overlay = document.createElement('div');
-  overlay.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;background-size:cover;background-position:center;opacity:0;transition:opacity 1.5s ease-in-out;z-index:0;pointer-events:none;';
+  // 创建视频容器
+  var videoContainer = document.createElement('div');
+  videoContainer.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;overflow:hidden;z-index:0;pointer-events:none;';
   pageHeader.style.position = 'relative';
-  pageHeader.insertBefore(overlay, pageHeader.firstChild);
+  pageHeader.insertBefore(videoContainer, pageHeader.firstChild);
+
+  // 确保 page-header 内的其他元素在视频之上
+  var headerContent = pageHeader.querySelector('#site-info');
+  if (headerContent) headerContent.style.position = 'relative';
+  var headerMask = pageHeader.querySelector('.header-mask');
+  if (headerMask) headerMask.style.zIndex = '1';
 
   var history = [];
+  var currentVideo = null;
   var isTransitioning = false;
+  var videoCache = {};
+
+  // 缓存管理：获取视频（优先缓存，同时检查更新）
+  function getVideoUrl(url) {
+    return new Promise(function(resolve) {
+      if (!('caches' in window)) {
+        resolve(url);
+        return;
+      }
+
+      caches.open(CACHE_NAME).then(function(cache) {
+        cache.match(url).then(function(cachedResponse) {
+          if (cachedResponse && cachedResponse.headers.get('content-length') !== '0') {
+            // 有缓存，先用缓存
+            cachedResponse.blob().then(function(blob) {
+              if (blob.size > 0) {
+                resolve(URL.createObjectURL(blob));
+              } else {
+                // 缓存无效，重新获取
+                fetchAndCache(url, cache, resolve);
+              }
+            });
+          } else {
+            // 无缓存，从网络获取并缓存
+            fetchAndCache(url, cache, resolve);
+          }
+        });
+      }).catch(function() {
+        resolve(url);
+      });
+    });
+  }
+
+  function fetchAndCache(url, cache, resolve) {
+    fetch(url).then(function(response) {
+      if (response.ok) {
+        response.blob().then(function(blob) {
+          // 用 blob 创建新的 Response 存入缓存
+          var responseToCache = new Response(blob, {
+            headers: {
+              'Content-Type': 'video/mp4',
+              'Content-Length': blob.size
+            }
+          });
+          cache.put(url, responseToCache);
+          resolve(URL.createObjectURL(blob));
+        });
+      } else {
+        resolve(url);
+      }
+    }).catch(function() {
+      resolve(url);
+    });
+  }
+
+  // 清理旧缓存（删除不在列表中的视频）
+  function cleanupCache() {
+    if (!('caches' in window)) return;
+
+    caches.open(CACHE_NAME).then(function(cache) {
+      cache.keys().then(function(keys) {
+        keys.forEach(function(request) {
+          var url = new URL(request.url);
+          var isInList = videos.some(function(v) {
+            return url.pathname === v;
+          });
+          if (!isInList) {
+            cache.delete(request);
+          }
+        });
+      });
+    });
+  }
+
+  // 预缓存所有视频
+  function precacheVideos() {
+    videos.forEach(function(url) {
+      getVideoUrl(url).then(function(blobUrl) {
+        videoCache[url] = blobUrl;
+      });
+    });
+    cleanupCache();
+  }
 
   function getNextIndex() {
     var available = [];
-    for (var i = 0; i < imgs.length; i++) {
+    for (var i = 0; i < videos.length; i++) {
       if (history.indexOf(i) === -1) {
         available.push(i);
       }
@@ -491,87 +583,93 @@ document.addEventListener('DOMContentLoaded', function() {
     return available[Math.floor(Math.random() * available.length)];
   }
 
-  function preloadImage(url) {
-    return new Promise(function(resolve) {
-      if ('caches' in window) {
-        caches.open('bg-images-v1').then(function(cache) {
-          cache.match(url).then(function(response) {
-            if (response) {
-              resolve(url);
-            } else {
-              var img = new Image();
-              img.onload = function() {
-                cache.add(url).then(function() { resolve(url); }).catch(function() { resolve(url); });
-              };
-              img.onerror = function() { resolve(url); };
-              img.src = url;
-            }
-          });
-        }).catch(function() {
-          var img = new Image();
-          img.onload = function() { resolve(url); };
-          img.onerror = function() { resolve(url); };
-          img.src = url;
-        });
-      } else {
-        var img = new Image();
-        img.onload = function() { resolve(url); };
-        img.onerror = function() { resolve(url); };
-        img.src = url;
-      }
-    });
+  function createVideo(src) {
+    var video = document.createElement('video');
+    video.src = src;
+    video.muted = true;
+    video.loop = false;
+    video.playsInline = true;
+    video.autoplay = true;
+    video.volume = 0;
+    video.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.5s ease-in-out;';
+    return video;
   }
 
-  function showImage(index, withTransition) {
+  function showVideo(index, withTransition) {
     if (isTransitioning) return;
 
     history.push(index);
     if (history.length > 2) history.shift();
 
-    preloadImage(imgs[index]).then(function(url) {
-      if (withTransition) {
-        isTransitioning = true;
-        overlay.style.backgroundImage = 'url(' + url + ')';
-        overlay.style.opacity = '1';
-        setTimeout(function() {
-          pageHeader.style.background = 'url(' + url + ') center/cover no-repeat';
-          pageHeader.style.animation = 'none';
-          overlay.style.opacity = '0';
-          isTransitioning = false;
-        }, 1500);
-      } else {
-        pageHeader.style.background = 'url(' + url + ') center/cover no-repeat';
+    var videoUrl = videos[index];
+    var srcPromise = videoCache[videoUrl] ? Promise.resolve(videoCache[videoUrl]) : getVideoUrl(videoUrl);
+
+    srcPromise.then(function(src) {
+      var newVideo = createVideo(src);
+      videoContainer.appendChild(newVideo);
+
+      var playTimer = null;
+
+      newVideo.addEventListener('canplay', function() {
+        // 移除骨架屏
+        pageHeader.style.background = 'transparent';
         pageHeader.style.animation = 'none';
-      }
+
+        if (withTransition && currentVideo) {
+          isTransitioning = true;
+          newVideo.style.opacity = '1';
+          newVideo.play();
+          setTimeout(function() {
+            if (currentVideo && currentVideo.parentNode) {
+              currentVideo.parentNode.removeChild(currentVideo);
+            }
+            currentVideo = newVideo;
+            isTransitioning = false;
+            // 10秒后切换
+            playTimer = setTimeout(function() {
+              var nextIndex = getNextIndex();
+              showVideo(nextIndex, true);
+            }, 10000);
+          }, 1500);
+        } else {
+          newVideo.style.opacity = '1';
+          newVideo.play();
+          if (currentVideo && currentVideo.parentNode) {
+            currentVideo.parentNode.removeChild(currentVideo);
+          }
+          currentVideo = newVideo;
+          // 10秒后切换
+          playTimer = setTimeout(function() {
+            var nextIndex = getNextIndex();
+            showVideo(nextIndex, true);
+          }, 10000);
+        }
+      }, { once: true });
+
+      // 如果视频加载失败，直接显示
+      newVideo.addEventListener('error', function() {
+        pageHeader.style.background = 'transparent';
+        pageHeader.style.animation = 'none';
+      }, { once: true });
     });
   }
 
-  function scheduleNext() {
-    setTimeout(function() {
-      if (!document.hidden) {
-        var nextIndex = getNextIndex();
-        showImage(nextIndex, true);
-      }
-      scheduleNext();
-    }, 8000);
-  }
-
-  // 页面可见性变化时重置
+  // 页面可见性变化时处理
   document.addEventListener('visibilitychange', function() {
-    if (!document.hidden && isTransitioning) {
-      isTransitioning = false;
+    if (document.hidden) {
+      if (currentVideo) currentVideo.pause();
+    } else {
+      if (currentVideo) currentVideo.play();
+      if (isTransitioning) isTransitioning = false;
     }
   });
 
-  // 预加载所有图片
-  imgs.forEach(function(url) { preloadImage(url); });
+  // 预缓存视频
+  precacheVideos();
 
-  // 首图随机显示
-  var firstIndex = Math.floor(Math.random() * imgs.length);
-  showImage(firstIndex, false);
-
-  // 8秒后开始轮播
-  setTimeout(scheduleNext, 8000);
+  // 首个视频随机显示
+  var firstIndex = Math.floor(Math.random() * videos.length);
+  showVideo(firstIndex, false);
 });
 </script>
 <script>
@@ -591,33 +689,41 @@ document.addEventListener('DOMContentLoaded', function() {
     bgContainer.style.backgroundImage = 'url(' + url + ')';
   }
 
+  function fetchAndCacheBg(cache, resolve) {
+    fetch(bgUrl).then(function(response) {
+      if (response.ok) {
+        response.blob().then(function(blob) {
+          var responseToCache = new Response(blob, {
+            headers: {
+              'Content-Type': 'image/png',
+              'Content-Length': blob.size
+            }
+          });
+          cache.put(bgUrl, responseToCache);
+          resolve(URL.createObjectURL(blob));
+        });
+      } else {
+        resolve(bgUrl);
+      }
+    }).catch(function() {
+      resolve(bgUrl);
+    });
+  }
+
   if ('caches' in window) {
     caches.open(cacheKey).then(function(cache) {
-      var cachedSize = 0;
-
-      // 先尝试从缓存加载
       cache.match(bgUrl).then(function(cachedResponse) {
-        if (cachedResponse) {
-          var cachedClone = cachedResponse.clone();
+        if (cachedResponse && cachedResponse.headers.get('content-length') !== '0') {
           cachedResponse.blob().then(function(blob) {
-            cachedSize = blob.size;
-            setBackground(URL.createObjectURL(blob));
+            if (blob.size > 0) {
+              setBackground(URL.createObjectURL(blob));
+            } else {
+              fetchAndCacheBg(cache, setBackground);
+            }
           });
+        } else {
+          fetchAndCacheBg(cache, setBackground);
         }
-
-        // 同时发起网络请求检查更新
-        fetch(bgUrl).then(function(networkResponse) {
-          if (networkResponse.ok) {
-            var responseClone = networkResponse.clone();
-            networkResponse.blob().then(function(newBlob) {
-              if (cachedSize === 0 || newBlob.size !== cachedSize) {
-                // 首次缓存或文件有更新
-                cache.put(bgUrl, responseClone);
-                setBackground(URL.createObjectURL(newBlob));
-              }
-            });
-          }
-        });
       });
     });
   } else {
@@ -625,7 +731,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
-<script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.4"></script></div></div>
+<script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.4"></script></div></div><!-- hexo injector body_end start --><script>window.BG_VIDEOS = ["/video/538a1a54dfce4ebeb7ee7dcd24a08310.mp4","/video/75365902de2bdd369e2fadf2484dd64d.mp4","/video/84bcd4f80de9aab8133842fd6ea25555.mp4","/video/a4cedcfd408f808beb91ccd227a2a91b.mp4","/video/ba0affaf590d207246a73661ef598c8c.mp4","/video/c7515434d6ae2a2a2c32828b26f49bf3.mp4","/video/ca5520d2d10c8033f47a2c0f28d54dd7.mp4","/video/f77e6a25cefb0ef0d32b46370d21d1c6.mp4"];</script><!-- hexo injector body_end end -->
         <style>
             [bg-lazy] {
                 background-image: none !important;

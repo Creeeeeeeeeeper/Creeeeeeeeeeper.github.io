@@ -501,10 +501,14 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // 清理旧缓存（删除不在列表中的视频）
+  // 清理旧缓存（删除不在列表中的视频，以及删除旧的图片缓存）
   function cleanupCache() {
     if (!('caches' in window)) return;
 
+    // 删除旧的 webp 图片缓存
+    caches.delete('bg-images-v1');
+
+    // 清理当前视频缓存中不再使用的文件
     caches.open(CACHE_NAME).then(function(cache) {
       cache.keys().then(function(keys) {
         keys.forEach(function(request) {
@@ -688,7 +692,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
-<script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.4"></script></div></div><!-- hexo injector body_end start --><script>window.BG_VIDEOS = ["/video/538a1a54dfce4ebeb7ee7dcd24a08310.mp4","/video/75365902de2bdd369e2fadf2484dd64d.mp4","/video/84bcd4f80de9aab8133842fd6ea25555.mp4","/video/a4cedcfd408f808beb91ccd227a2a91b.mp4","/video/ba0affaf590d207246a73661ef598c8c.mp4","/video/c7515434d6ae2a2a2c32828b26f49bf3.mp4","/video/ca5520d2d10c8033f47a2c0f28d54dd7.mp4","/video/f77e6a25cefb0ef0d32b46370d21d1c6.mp4"];</script><!-- hexo injector body_end end -->
+<script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.4"></script></div></div><!-- hexo injector body_end start --><script>window.BG_VIDEOS = ["/video/40a0c61bf2d90e77a459657605f1f4f3.mp4","/video/416cb99d3b048ee1cefaa92e93a68711.mp4","/video/43f211bd7b0e6a1534dec31063d30999.mp4","/video/5c8eb4fee50d1552829fbd221309e569.mp4","/video/78a6de50265fc9e6a807a04f409e6562.mp4","/video/8a3f7886ffcc6648d5c6df070041a6a5.mp4","/video/a6371c8ff90daa0696401571ba29f7f2.mp4","/video/ec2b050cf2c07fb6b9f00de63a958a39.mp4"];</script><!-- hexo injector body_end end -->
         <style>
             [bg-lazy] {
                 background-image: none !important;

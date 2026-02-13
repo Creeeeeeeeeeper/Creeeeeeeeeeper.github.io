@@ -164,6 +164,30 @@
   isToc: true,
   pageType: 'post'
 }</script><style>
+/* 按钮灰黑渐变 */
+.btn-beautify, #pagination .page-number.current,
+a.btn, button.btn, .search-dialog .search-nav,
+#article-container .btn-beautify {
+  background: linear-gradient(135deg, #4a4a4a 0%, #2a2a2a 100%) !important;
+  border: none !important;
+}
+/* 滚动条 */
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #4a4a4a 0%, #333 100%);
+}
+/* 页脚 */
+#footer {
+  background: linear-gradient(135deg, #3a3a3a 0%, #1a1a1a 100%) !important;
+  color: #ccc !important;
+}
+#footer a {
+  color: #aaa !important;
+}
+#footer a:hover {
+  color: #fff !important;
+}
+</style>
+<style>
 /* 关闭头像旋转 */
 .avatar-img,
 .avatar-img img {
@@ -569,10 +593,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
   if ('caches' in window) {
     caches.open(cacheKey).then(function(cache) {
+      var cachedSize = 0;
+
       // 先尝试从缓存加载
       cache.match(bgUrl).then(function(cachedResponse) {
         if (cachedResponse) {
+          var cachedClone = cachedResponse.clone();
           cachedResponse.blob().then(function(blob) {
+            cachedSize = blob.size;
             setBackground(URL.createObjectURL(blob));
           });
         }
@@ -580,18 +608,11 @@ document.addEventListener('DOMContentLoaded', function() {
         // 同时发起网络请求检查更新
         fetch(bgUrl).then(function(networkResponse) {
           if (networkResponse.ok) {
-            networkResponse.clone().blob().then(function(newBlob) {
-              if (cachedResponse) {
-                cachedResponse.clone().blob().then(function(oldBlob) {
-                  if (newBlob.size !== oldBlob.size) {
-                    // 文件有更新，刷新缓存和显示
-                    cache.put(bgUrl, networkResponse.clone());
-                    setBackground(URL.createObjectURL(newBlob));
-                  }
-                });
-              } else {
-                // 首次缓存
-                cache.put(bgUrl, networkResponse.clone());
+            var responseClone = networkResponse.clone();
+            networkResponse.blob().then(function(newBlob) {
+              if (cachedSize === 0 || newBlob.size !== cachedSize) {
+                // 首次缓存或文件有更新
+                cache.put(bgUrl, responseClone);
                 setBackground(URL.createObjectURL(newBlob));
               }
             });

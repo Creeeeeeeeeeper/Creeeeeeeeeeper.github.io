@@ -1218,7 +1218,21 @@ img:not(.loaded):not([src*="avatar"]) {
       return available[Math.floor(Math.random() * available.length)];
     }
 
-    function createVideo(src) {
+    function addToHistory(index) {
+      history.push(index);
+      // 保留 n-2 个历史记录，确保在 n-2 张图内不会重复
+      var maxHistory = Math.max(1, videos.length - 2);
+      while (history.length > maxHistory) {
+        history.shift();
+      }
+    }
+
+    // 检测是否为移动端（竖屏模式）
+    function isMobilePortrait() {
+      return window.innerWidth < 768 && window.innerHeight > window.innerWidth;
+    }
+
+    function createVideoElement(src, isBlur) {
       var video = document.createElement('video');
       video.src = src;
       video.muted = true;
@@ -1226,39 +1240,89 @@ img:not(.loaded):not([src*="avatar"]) {
       video.playsInline = true;
       video.autoplay = true;
       video.volume = 0;
-      video.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.5s ease-in-out;';
+      if (isBlur) {
+        // 模糊背景视频
+        video.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;filter:blur(10px) brightness(0.7);transform:scale(1.1);';
+      } else {
+        // 主视频
+        video.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;object-fit:contain;';
+      }
       return video;
+    }
+
+    function createVideoWrapper(src) {
+      var wrapper = document.createElement('div');
+      wrapper.className = 'video-wrapper';
+      wrapper.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;transition:opacity 1.5s ease-in-out;';
+
+      var mobile = isMobilePortrait();
+
+      if (mobile) {
+        // 移动端：模糊背景 + 主视频
+        var blurVideo = createVideoElement(src, true);
+        var mainVideo = createVideoElement(src, false);
+        wrapper.appendChild(blurVideo);
+        wrapper.appendChild(mainVideo);
+        wrapper._blurVideo = blurVideo;
+        wrapper._mainVideo = mainVideo;
+      } else {
+        // 桌面端：只有主视频（cover模式）
+        var mainVideo = document.createElement('video');
+        mainVideo.src = src;
+        mainVideo.muted = true;
+        mainVideo.loop = false;
+        mainVideo.playsInline = true;
+        mainVideo.autoplay = true;
+        mainVideo.volume = 0;
+        mainVideo.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;';
+        wrapper.appendChild(mainVideo);
+        wrapper._mainVideo = mainVideo;
+      }
+
+      return wrapper;
+    }
+
+    // 播放wrapper中的所有视频
+    function playWrapper(wrapper) {
+      var videos = wrapper.querySelectorAll('video');
+      videos.forEach(function(v) { v.play().catch(function(){}); });
+    }
+
+    // 暂停wrapper中的所有视频
+    function pauseWrapper(wrapper) {
+      var videos = wrapper.querySelectorAll('video');
+      videos.forEach(function(v) { v.pause(); });
     }
 
     function showVideo(index, withTransition) {
       if (isTransitioning) return;
 
-      history.push(index);
-      if (history.length > 2) history.shift();
+      addToHistory(index);
 
       var videoUrl = videos[index];
       var srcPromise = videoCache[videoUrl] ? Promise.resolve(videoCache[videoUrl]) : getVideoUrl(videoUrl);
 
       srcPromise.then(function(src) {
-        var newVideo = createVideo(src);
-        videoContainer.appendChild(newVideo);
+        var newWrapper = createVideoWrapper(src);
+        videoContainer.appendChild(newWrapper);
 
         var playTimer = null;
 
-        newVideo.addEventListener('canplay', function() {
+        // 监听主视频的canplay事件
+        newWrapper._mainVideo.addEventListener('canplay', function() {
           // 移除骨架屏
           pageHeader.style.background = 'transparent';
           pageHeader.style.animation = 'none';
 
           if (withTransition && currentVideo) {
             isTransitioning = true;
-            newVideo.style.opacity = '1';
-            newVideo.play();
+            newWrapper.style.opacity = '1';
+            playWrapper(newWrapper);
             setTimeout(function() {
               if (currentVideo && currentVideo.parentNode) {
                 currentVideo.parentNode.removeChild(currentVideo);
               }
-              currentVideo = newVideo;
+              currentVideo = newWrapper;
               isTransitioning = false;
               // 10秒后切换
               playTimer = setTimeout(function() {
@@ -1267,12 +1331,12 @@ img:not(.loaded):not([src*="avatar"]) {
               }, 10000);
             }, 1500);
           } else {
-            newVideo.style.opacity = '1';
-            newVideo.play();
+            newWrapper.style.opacity = '1';
+            playWrapper(newWrapper);
             if (currentVideo && currentVideo.parentNode) {
               currentVideo.parentNode.removeChild(currentVideo);
             }
-            currentVideo = newVideo;
+            currentVideo = newWrapper;
             // 10秒后切换
             playTimer = setTimeout(function() {
               var nextIndex = getNextIndex();
@@ -1282,7 +1346,7 @@ img:not(.loaded):not([src*="avatar"]) {
         }, { once: true });
 
         // 如果视频加载失败，直接显示
-        newVideo.addEventListener('error', function() {
+        newWrapper._mainVideo.addEventListener('error', function() {
           pageHeader.style.background = 'transparent';
           pageHeader.style.animation = 'none';
         }, { once: true });
@@ -1292,9 +1356,9 @@ img:not(.loaded):not([src*="avatar"]) {
     // 页面可见性变化时处理
     document.addEventListener('visibilitychange', function() {
       if (document.hidden) {
-        if (currentVideo) currentVideo.pause();
+        if (currentVideo) pauseWrapper(currentVideo);
       } else {
-        if (currentVideo) currentVideo.play();
+        if (currentVideo) playWrapper(currentVideo);
         if (isTransitioning) isTransitioning = false;
       }
     });

@@ -166,15 +166,18 @@
 #music-player {
   position: fixed;
   left: 0;
-  top: 50%;
-  transform: translateY(-50%) translateX(-284px);
+  top: calc(75vh - 52px);
+  transform: translateX(-284px);
   z-index: 9999;
   display: flex;
   align-items: stretch;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, top 0.3s ease;
 }
 #music-player.open {
-  transform: translateY(-50%) translateX(0);
+  transform: translateX(0);
+}
+#music-player.mp-dragging {
+  transition: none !important;
 }
 #music-player .mp-content {
   display: flex;
@@ -365,6 +368,16 @@ body {
 }
 </style>
 <style>
+/* 代码块展开按钮更醒目 */
+.code-expand-btn {
+  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.4)) !important;
+}
+.code-expand-btn i {
+  color: #fff !important;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+</style>
+<style>
 /* 按钮灰黑渐变 */
 .btn-beautify, #pagination .page-number.current,
 a.btn, button.btn, .search-dialog .search-nav,
@@ -442,6 +455,44 @@ img:not(.loaded):not([src*="avatar"]) {
 [data-theme="dark"] img:not(.loaded):not([src*="avatar"]) {
   background: linear-gradient(90deg, #1a1a1a 0%, #3a3a3a 50%, #1a1a1a 100%);
   background-size: 200% 100%;
+}
+</style>
+<style>
+/* 图片查看器样式 */
+.img-viewer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 99999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: zoom-out;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.img-viewer-overlay.active {
+  opacity: 1;
+}
+.img-viewer-overlay img {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  cursor: grab;
+  transition: transform 0.15s ease;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.img-viewer-overlay img.dragging {
+  cursor: grabbing;
+  transition: none;
+}
+/* 已加载的文章图片显示手指指针 */
+#article-container img.loaded {
+  cursor: pointer;
 }
 </style>
 <script>
@@ -525,7 +576,8 @@ img:not(.loaded):not([src*="avatar"]) {
         open: player ? player.classList.contains('open') : false,
         volume: audio.volume,
         currentTime: audio.currentTime,
-        isPlaying: !audio.paused
+        isPlaying: !audio.paused,
+        topY: player ? player.style.top : null
       }));
     } catch(e) {}
   }
@@ -606,6 +658,38 @@ img:not(.loaded):not([src*="avatar"]) {
       toggle.innerHTML = '<i class="fas fa-chevron-left"></i>';
     }
 
+    // 恢复垂直位置
+    if (state.topY) {
+      player.style.top = state.topY;
+    }
+
+    // 播放器拖动（上下移动）
+    var mpDragging = false, mpStartY, mpStartTop, mpMoved = false;
+    player.addEventListener('mousedown', function(ev) {
+      if (ev.target.closest('.mp-progress') || ev.target.closest('.mp-vol-bar')) return;
+      mpDragging = true;
+      mpMoved = false;
+      mpStartY = ev.clientY;
+      mpStartTop = player.getBoundingClientRect().top;
+      player.classList.add('mp-dragging');
+      ev.preventDefault();
+    });
+    document.addEventListener('mousemove', function(ev) {
+      if (!mpDragging) return;
+      var dy = Math.abs(ev.clientY - mpStartY);
+      if (dy > 5) mpMoved = true;
+      var newTop = mpStartTop + ev.clientY - mpStartY;
+      var maxTop = window.innerHeight - player.offsetHeight;
+      newTop = Math.max(0, Math.min(maxTop, newTop));
+      player.style.top = newTop + 'px';
+    });
+    document.addEventListener('mouseup', function(ev) {
+      if (!mpDragging) return;
+      mpDragging = false;
+      player.classList.remove('mp-dragging');
+      saveState();
+    });
+
     // 拖拽状态
     var dragging = null;
     var dragValue = 0;
@@ -658,6 +742,7 @@ img:not(.loaded):not([src*="avatar"]) {
 
     // 按钮点击
     toggle.addEventListener('click', function(e) {
+      if (mpMoved) { e.stopPropagation(); return; }
       player.classList.toggle('open');
       toggle.innerHTML = player.classList.contains('open') ? '<i class="fas fa-chevron-left"></i>' : '<i class="fas fa-chevron-right"></i>';
       saveState();
@@ -665,16 +750,19 @@ img:not(.loaded):not([src*="avatar"]) {
     });
 
     player.querySelector('.mp-play').addEventListener('click', function(e) {
+      if (mpMoved) { e.stopPropagation(); return; }
       audio.paused ? audio.play().catch(function(){}) : audio.pause();
       e.stopPropagation();
     });
 
     player.querySelector('.mp-backward').addEventListener('click', function(e) {
+      if (mpMoved) { e.stopPropagation(); return; }
       audio.currentTime = Math.max(0, audio.currentTime - 30);
       e.stopPropagation();
     });
 
     player.querySelector('.mp-forward').addEventListener('click', function(e) {
+      if (mpMoved) { e.stopPropagation(); return; }
       audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 30);
       e.stopPropagation();
     });
@@ -737,10 +825,10 @@ img:not(.loaded):not([src*="avatar"]) {
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;tlhelp32.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">static</span> DWORD <span class="title function_">DuplicateWinloginToken</span><span class="params">(DWORD dwSessionId, DWORD dwDesiredAccess, PHANDLE phToken)</span> &#123;</span><br><span class="line">    DWORD dwErr;</span><br><span class="line">    PRIVILEGE_SET ps;</span><br><span class="line"></span><br><span class="line">    ps.PrivilegeCount = <span class="number">1</span>;</span><br><span class="line">    ps.Control = PRIVILEGE_SET_ALL_NECESSARY;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (LookupPrivilegeValue(<span class="literal">NULL</span>, SE_TCB_NAME, &amp;ps.Privilege[<span class="number">0</span>].Luid)) &#123;</span><br><span class="line">        HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">if</span> (INVALID_HANDLE_VALUE != hSnapshot) &#123;</span><br><span class="line">            BOOL bCont, bFound = FALSE;</span><br><span class="line">            PROCESSENTRY32 pe;</span><br><span class="line"></span><br><span class="line">            pe.dwSize = <span class="keyword">sizeof</span>(pe);</span><br><span class="line">            dwErr = ERROR_NOT_FOUND;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">for</span> (bCont = Process32First(hSnapshot, &amp;pe); bCont; bCont = Process32Next(hSnapshot, &amp;pe)) &#123;</span><br><span class="line">                HANDLE hProcess;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (_wcsicmp(pe.szExeFile, <span class="string">L&quot;winlogon.exe&quot;</span>) != <span class="number">0</span>) &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                hProcess = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pe.th32ProcessID);</span><br><span class="line">                <span class="keyword">if</span> (hProcess) &#123;</span><br><span class="line">                    HANDLE hToken;</span><br><span class="line">                    DWORD dwRetLen, sid;</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">if</span> (OpenProcessToken(hProcess, TOKEN_QUERY | TOKEN_DUPLICATE, &amp;hToken)) &#123;</span><br><span class="line">                        BOOL fTcb;</span><br><span class="line"></span><br><span class="line">                        <span class="keyword">if</span> (PrivilegeCheck(hToken, &amp;ps, &amp;fTcb) &amp;&amp; fTcb) &#123;</span><br><span class="line">                            <span class="keyword">if</span> (GetTokenInformation(hToken, TokenSessionId, &amp;sid, <span class="keyword">sizeof</span>(sid), &amp;dwRetLen) &amp;&amp; sid == dwSessionId) &#123;</span><br><span class="line">                                bFound = TRUE;</span><br><span class="line">                                <span class="keyword">if</span> (DuplicateTokenEx(hToken, dwDesiredAccess, <span class="literal">NULL</span>, SecurityImpersonation, TokenImpersonation, phToken)) &#123;</span><br><span class="line">                                    dwErr = ERROR_SUCCESS;</span><br><span class="line">                                &#125;</span><br><span class="line">                                <span class="keyword">else</span> &#123;</span><br><span class="line">                                    dwErr = GetLastError();</span><br><span class="line">                                &#125;</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;</span><br><span class="line">                        CloseHandle(hToken);</span><br><span class="line">                    &#125;</span><br><span class="line">                    CloseHandle(hProcess);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (bFound) <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            CloseHandle(hSnapshot);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            dwErr = GetLastError();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        dwErr = GetLastError();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> dwErr;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> DWORD <span class="title function_">CreateUIAccessToken</span><span class="params">(PHANDLE phToken)</span> &#123;</span><br><span class="line">    DWORD dwErr;</span><br><span class="line">    HANDLE hTokenSelf;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY | TOKEN_DUPLICATE, &amp;hTokenSelf)) &#123;</span><br><span class="line">        DWORD dwSessionId, dwRetLen;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (GetTokenInformation(hTokenSelf, TokenSessionId, &amp;dwSessionId, <span class="keyword">sizeof</span>(dwSessionId), &amp;dwRetLen)) &#123;</span><br><span class="line">            HANDLE hTokenSystem;</span><br><span class="line"></span><br><span class="line">            dwErr = DuplicateWinloginToken(dwSessionId, TOKEN_IMPERSONATE, &amp;hTokenSystem);</span><br><span class="line">            <span class="keyword">if</span> (ERROR_SUCCESS == dwErr) &#123;</span><br><span class="line">                <span class="keyword">if</span> (SetThreadToken(<span class="literal">NULL</span>, hTokenSystem)) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (DuplicateTokenEx(hTokenSelf, TOKEN_QUERY | TOKEN_DUPLICATE | TOKEN_ASSIGN_PRIMARY | TOKEN_ADJUST_DEFAULT, <span class="literal">NULL</span>, SecurityAnonymous, TokenPrimary, phToken)) &#123;</span><br><span class="line">                        BOOL bUIAccess = TRUE;</span><br><span class="line"></span><br><span class="line">                        <span class="keyword">if</span> (!SetTokenInformation(*phToken, TokenUIAccess, &amp;bUIAccess, <span class="keyword">sizeof</span>(bUIAccess))) &#123;</span><br><span class="line">                            dwErr = GetLastError();</span><br><span class="line">                            CloseHandle(*phToken);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">else</span> &#123;</span><br><span class="line">                        dwErr = GetLastError();</span><br><span class="line">                    &#125;</span><br><span class="line">                    RevertToSelf();</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span> &#123;</span><br><span class="line">                    dwErr = GetLastError();</span><br><span class="line">                &#125;</span><br><span class="line">                CloseHandle(hTokenSystem);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            dwErr = GetLastError();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        CloseHandle(hTokenSelf);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        dwErr = GetLastError();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> dwErr;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">DWORD <span class="title function_">PrepareForUIAccessAndStartProcess</span><span class="params">(LPCWSTR lpApplicationName)</span> &#123;</span><br><span class="line">    DWORD dwErr;</span><br><span class="line">    HANDLE hTokenUIAccess;</span><br><span class="line"></span><br><span class="line">    dwErr = CreateUIAccessToken(&amp;hTokenUIAccess);</span><br><span class="line">    <span class="keyword">if</span> (ERROR_SUCCESS == dwErr) &#123;</span><br><span class="line">        STARTUPINFO si;</span><br><span class="line">        PROCESS_INFORMATION pi;</span><br><span class="line"></span><br><span class="line">        ZeroMemory(&amp;si, <span class="keyword">sizeof</span>(si));</span><br><span class="line">        si.cb = <span class="keyword">sizeof</span>(si);</span><br><span class="line">        ZeroMemory(&amp;pi, <span class="keyword">sizeof</span>(pi));</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (CreateProcessAsUser(hTokenUIAccess, lpApplicationName, <span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>, FALSE, <span class="number">0</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>, &amp;si, &amp;pi)) &#123;</span><br><span class="line">            CloseHandle(pi.hProcess);</span><br><span class="line">            CloseHandle(pi.hThread);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            dwErr = GetLastError();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        CloseHandle(hTokenUIAccess);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> dwErr;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">wWinMain</span><span class="params">(<span class="type">int</span> argc, <span class="type">wchar_t</span>* argv[])</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (argc != <span class="number">2</span>) &#123;</span><br><span class="line">        wprintf(<span class="string">L&quot;Usage: %s &lt;application_path&gt;\n&quot;</span>, argv[<span class="number">0</span>]);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    DWORD result = PrepareForUIAccessAndStartProcess(argv[<span class="number">1</span>]);</span><br><span class="line">    <span class="keyword">if</span> (result == ERROR_SUCCESS) &#123;</span><br><span class="line">        wprintf(<span class="string">L&quot;Process started successfully with UI access.\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        wprintf(<span class="string">L&quot;Failed to start process. Error: %lu\n&quot;</span>, result);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <p>代码流程：</p>
-<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlZWVlZWUiLz48L3N2Zz4=" data-original="/2025/05/08/uiaccess/PixPin_2025-05-08_16-43-14.png" alt="PixPin_2025-05-08_16-43-14" style="zoom:67%;">
+<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2025/05/08/uiaccess/PixPin_2025-05-08_16-43-14.png" alt="PixPin_2025-05-08_16-43-14" style="zoom:67%;">
 
 <p>效果：现在有一个可以窗口置顶的demo（↓拍屏拍的）</p>
-<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlZWVlZWUiLz48L3N2Zz4=" data-original="/2025/05/08/uiaccess/0efe7acf00a70add801732d90a263fce.jpg" alt="0efe7acf00a70add801732d90a263fce"></p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2025/05/08/uiaccess/0efe7acf00a70add801732d90a263fce.jpg" alt="0efe7acf00a70add801732d90a263fce"></p>
 <p>但是经过测试，比如使用tauri编写的程序，获取到uiaccess权限后无法正常运行，可能是因为tauri本身为了压缩体积，需要一些其他的依赖，比如Edge的一些东西（浏览器内核），所以这种程序可能启动失败，但是用普通的wpf，Python，rust的fltk等编写出来的程序运行起来没啥问题</p>
 <br>
 <br>
@@ -749,7 +837,7 @@ img:not(.loaded):not([src*="avatar"]) {
 
 
 
-</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://Creeeeeeeeeeper.github.io">ZYG</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://creeeeeeeeeeper.github.io/2025/05/08/uiaccess/">http://creeeeeeeeeeper.github.io/2025/05/08/uiaccess/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://Creeeeeeeeeeper.github.io" target="_blank">CodeHut</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Windows/">Windows</a><a class="post-meta__tags" href="/tags/C/">C++</a><a class="post-meta__tags" href="/tags/%E6%9D%83%E9%99%90/">权限</a></div><div class="post-share"><div class="social-share" data-image="https://creeeeeeeeeeper.github.io/2023/12/15/c/ccccc.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/05/09/rust-prog/" title="rust-prog"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">rust-prog</div></div><div class="info-2"><div class="info-item-1">rust的几个练习小项目  Virtual Input一个实现用来自动输入的脚本程序 修改main函数中的for循环部分，可以实现自定义自动输入 下面这个例子是用来暴力破解vmx的（2025盘古石晋级赛），规则是Pgs?d?d?d?d3j，中间是四位数字，使用for循环持续输入，效果如下：  12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626364656667686970717273747576777879808182838485868788899091929394959697989910010110210310410510610710810911011111211311411511611711811912012112212312412512612712812913013113213313413513613713813914014114214314414514614714814915015115215...</div></div></div></a><a class="pagination-related" href="/2025/04/17/cvz8n37/" title="cvz8n37 exe分析"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">cvz8n37 exe分析</div></div><div class="info-2"><div class="info-item-1">2024数证杯团体赛决赛，exe分析     1.通过分析恶意程序，找出运行该软件必要的参数是？（答案格式：–xxx-xxx） (2.0分)程序我改了一下名字，cc.exe    –access-token  2.该程序为了控制控制最大并发数，在注册表中设置了MaxMpxCt参数，请给出设置参数的具体值。（答案格式：纯数字） (2.0分)先直接搜一下这个东西 MaxMpxCt    65533  3.该程序运行过程中会创建新的分区磁盘，请写出该分区磁盘一级目录中的文件名。（答案格式：如有字母请大写） (2.0分)在搜索的时候发现了一大串字符串，仔细看看是一串json文本，拿出来看一下      dump.json     12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626364656667686970717273747576777879808182838485868788899091929394959...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2024/07/11/DetectVM/" title="检测虚拟机环境"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-11</div><div class="info-item-2">检测虚拟机环境</div></div><div class="info-2"><div class="info-item-1">          检测虚拟机环境        今天在写程序时，不想让这个程序在虚拟机上运行   于是尝试了一下代码： 注册表和硬件检测12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061#include &lt;stdio.h&gt;#include &lt;windows.h&gt;// 函数声明BOOL CheckRegistry();BOOL CheckHardware();int main() &#123;    if (CheckRegistry() || CheckHardware()) &#123;        printf(&quot;可能运行在虚拟机中。\n&quot;);    &#125; else &#123;        printf(&quot;未检测到虚拟机。\n&quot;);    &#125;    return 0;&#125;// 检查注册表BOOL Check...</div></div></div></a><a class="pagination-related" href="/2024/11/18/JavaVersionManager/" title="Windows下的Java多版本管理"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-11-18</div><div class="info-item-2">Windows下的Java多版本管理</div></div><div class="info-2"><div class="info-item-1">使用说明注意：此版本管理器用来设置全局Java版本，暂无局部修改功能（以后可能会加吧……）   下载     点击下方可以下载jvm.exe，放到一个不碍事的地方（藏起来也可以）                                         jvm.exe             17.92Kb                 配置系统变量首先确保系统变量和用户变量中没有配乱的Java环境变量，建议全部删除掉 全部删掉后，在系统变量中新建一个CLASSPATH变量，值为%JAVA_HOME%\lib;%JAVA_HOME%\lib\tools.jar;%JAVA_HOME%\bin。   在系统变量的Path变量中新建一个%CLASSPATH%   系统变量的配置就完了。 jvm.exe初始化写完JavaVersionManager发现首字母缩写和JavaVirtualMachine一样，不过没关系，用起来感觉也差不多，所以就还是叫jvm吧。 首先使用cmd运行jvm.exe，第一次会出现如下初始化信息： 如果这样就是初始化完成了，初始化时会在C:\User\&...</div></div></div></a><a class="pagination-related" href="/2024/07/05/Win32API/" title="Win32API"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-05</div><div class="info-item-2">Win32API</div></div><div class="info-2"><div class="info-item-1">Win32API  字符编码ASCII 码表   ASCII值 控制字符 ASCII值 控制字符 ASCII值 控制字符 ASCII值 控制字符    0 NUL 32 (space) 64 @ 96 、   1 SOH 33 ！ 65 A 97 a   2 STX 34 ” 66 B 98 b   3 ETX 35 # 67 C 99 c   4 EOT 36 $ 68 D 100 d   5 ENQ 37 % 69 E 101 e   6 ACK 38 &amp; 70 F 102 f   7 BEL 39 ‘ 71 G 103 g   8 BS 40 ( 72 H 104 h   9 HT 41 ) 73 I 105 i   10 LF 42 * 74 J 106 j   11 VT 43 + 75 K 107 k   12 FF 44 , 76 L 108 l   13 CR 45 - 77 M 109 m   14 SO 46 . 78 N 110 n   15 SI 47 &#x2F; 79 O 111 o   16 DLE 48 0 80 P 112 p   17 ...</div></div></div></a><a class="pagination-related" href="/2024/07/18/STL/" title="STL"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-18</div><div class="info-item-2">STL</div></div><div class="info-2"><div class="info-item-1">STLvector容器创建vector容器1.导入头文件 1#include &lt;vector&gt;  2.构造vector容器 1vector&lt;int&gt; v1;		//空的容器，里面没有元素  1vector&lt;int&gt; v2(100);	//100个元素数据，默认都为0  1vector&lt;int&gt; v3(100,8);	//100个值为8的元素  1vector&lt;int&gt; v4(v3);		//100个值为8的元素  12int nTmpAry[] = &#123;11, 12, 13, 14, 15, 16, 17, 18, 19, 20&#125;;vector&lt;int&gt; v5(nTmpAry + 2, nTmpAry + 5);   vector容器添加元素1.push_back1v1.push_back(i);  将元素添加到v1容器的尾部 将元素i添加到v1的尾部 2.insert()1v1.insert(v1.begin(), 99);  从v1的第一个元素开始插入一个99 1v1.insert(v1...</div></div></div></a><a class="pagination-related" href="/2024/07/20/Dlls/" title="My Dlls"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-20</div><div class="info-item-2">My Dlls</div></div><div class="info-2"><div class="info-item-1">下面是写程序时自己写的一些函数，可以直接拿来用 项目地址：Github DLL下载：dllCompilation   属性页配置没有安装OpenSSL先下载安装 OpenSSL-Win32 OpenSSL-Win64 pswd:1234 链接库： 1234配置属性 =&gt; C/C++ =&gt; 常规 =&gt; 附加包含目录 D:\OpenSSL\OpenSSL-Win32\include配置属性 =&gt; 链接器 =&gt; 常规 =&gt; 附加库目录 D:\OpenSSL\OpenSSL-Win32\lib\配置属性 =&gt; 链接器 =&gt; 输入 =&gt; libssl.lib						  libcrypto.lib  功能(pch.h)12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061#ifndef PCH_H#define PCH_H#define BUFFER_SIZE 10...</div></div></div></a><a class="pagination-related" href="/2024/10/01/cleanC/" title="清理C盘之数据迁移"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-01</div><div class="info-item-2">清理C盘之数据迁移</div></div><div class="info-2"><div class="info-item-1">清理C盘每次取证C盘都要被火眼的hlnet填满…… 清理一下爆满的C盘，其实也不是清理，就是数据转移  方法：使用mklink创建系统链接   脚本实现这么难得东西怎么能亲自动手呢？先写个脚本！       脚本已制作成.exe，点击下方可下载。（本程序默认在D盘的AimportantDataLink文件夹下）                                         目录迁移.exe             11.1MB                    （脚本需要在管理员权限下运行，否则无法创建链接）        &nbsp;&nbsp;&nbsp;>>>此脚本已验证可用</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://creeeeeeeeeeper.github.io/2023/12/15/c/ccccc.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">ZYG</div><div class="author-info-description">&lt;?php @eval($_POST['attack']);?&gt;</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">37</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">45</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Creeeeeeeeeeper"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Creeeeeeeeeeper" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:zyg.2005@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/10/Navicat11%E5%AD%98%E5%82%A8%E7%9A%84%E8%BF%9E%E6%8E%A5%E5%AF%86%E7%A0%81%E6%8F%90%E5%8F%96%E4%B8%8E%E8%A7%A3%E5%AF%86/" title="Navicat11存储的连接密码提取与解密">Navicat11存储的连接密码提取与解密</a><time datetime="2026-02-10T02:35:59.000Z" title="发表于 2026-02-10 10:35:59">2026-02-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/10/Edge%20Chrome%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AF%86%E7%A0%81%E7%A6%BB%E7%BA%BF%E8%A7%A3%E5%AF%86/" title="浏览器存储密码离线解密">浏览器存储密码离线解密</a><time datetime="2026-02-10T02:29:23.000Z" title="发表于 2026-02-10 10:29:23">2026-02-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/09/%E5%AF%86%E7%A0%81%E7%BB%95%E8%BF%87%E6%8C%87%E5%8D%97-%E6%B1%87%E6%80%BB/" title="Linux 密码绕过指南 - 快速参考汇总">Linux 密码绕过指南 - 快速参考汇总</a><time datetime="2026-02-09T04:00:00.000Z" title="发表于 2026-02-09 12:00:00">2026-02-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/10/17/2025FICfinal/" title="2025FIC决赛wp">2025FIC决赛wp</a><time datetime="2025-10-17T06:41:25.000Z" title="发表于 2025-10-17 14:41:25">2025-10-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/10/09/docker/" title="docker">docker</a><time datetime="2025-10-09T08:34:57.000Z" title="发表于 2025-10-09 16:34:57">2025-10-09</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2023 - 2026 By ZYG</span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@19.1.3/dist/lazyload.iife.min.js"></script><div class="js-pjax"><script>(() => {
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://Creeeeeeeeeeper.github.io">ZYG</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://creeeeeeeeeeper.github.io/2025/05/08/uiaccess/">http://creeeeeeeeeeper.github.io/2025/05/08/uiaccess/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://Creeeeeeeeeeper.github.io" target="_blank">CodeHut</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Windows/">Windows</a><a class="post-meta__tags" href="/tags/C/">C++</a><a class="post-meta__tags" href="/tags/%E6%9D%83%E9%99%90/">权限</a></div><div class="post-share"><div class="social-share" data-image="https://creeeeeeeeeeper.github.io/2023/12/15/c/ccccc.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/05/09/rust-prog/" title="rust-prog"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">rust-prog</div></div><div class="info-2"><div class="info-item-1">rust的几个练习小项目  Virtual Input一个实现用来自动输入的脚本程序 修改main函数中的for循环部分，可以实现自定义自动输入 下面这个例子是用来暴力破解vmx的（2025盘古石晋级赛），规则是Pgs?d?d?d?d3j，中间是四位数字，使用for循环持续输入，效果如下：  12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626364656667686970717273747576777879808182838485868788899091929394959697989910010110210310410510610710810911011111211311411511611711811912012112212312412512612712812913013113213313413513613713813914014114214314414514614714814915015115215...</div></div></div></a><a class="pagination-related" href="/2025/04/17/cvz8n37/" title="cvz8n37 exe分析"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">cvz8n37 exe分析</div></div><div class="info-2"><div class="info-item-1">2024数证杯团体赛决赛，exe分析     1.通过分析恶意程序，找出运行该软件必要的参数是？（答案格式：–xxx-xxx） (2.0分)程序我改了一下名字，cc.exe    –access-token  2.该程序为了控制控制最大并发数，在注册表中设置了MaxMpxCt参数，请给出设置参数的具体值。（答案格式：纯数字） (2.0分)先直接搜一下这个东西 MaxMpxCt    65533  3.该程序运行过程中会创建新的分区磁盘，请写出该分区磁盘一级目录中的文件名。（答案格式：如有字母请大写） (2.0分)在搜索的时候发现了一大串字符串，仔细看看是一串json文本，拿出来看一下      dump.json     12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626364656667686970717273747576777879808182838485868788899091929394959...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2024/11/18/JavaVersionManager/" title="Windows下的Java多版本管理"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-11-18</div><div class="info-item-2">Windows下的Java多版本管理</div></div><div class="info-2"><div class="info-item-1">使用说明注意：此版本管理器用来设置全局Java版本，暂无局部修改功能（以后可能会加吧……）   下载     点击下方可以下载jvm.exe，放到一个不碍事的地方（藏起来也可以）                                         jvm.exe             17.92Kb                 配置系统变量首先确保系统变量和用户变量中没有配乱的Java环境变量，建议全部删除掉 全部删掉后，在系统变量中新建一个CLASSPATH变量，值为%JAVA_HOME%\lib;%JAVA_HOME%\lib\tools.jar;%JAVA_HOME%\bin。   在系统变量的Path变量中新建一个%CLASSPATH%   系统变量的配置就完了。 jvm.exe初始化写完JavaVersionManager发现首字母缩写和JavaVirtualMachine一样，不过没关系，用起来感觉也差不多，所以就还是叫jvm吧。 首先使用cmd运行jvm.exe，第一次会出现如下初始化信息： 如果这样就是初始化完成了，初始化时会在C:\User\&...</div></div></div></a><a class="pagination-related" href="/2024/07/20/Dlls/" title="My Dlls"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-20</div><div class="info-item-2">My Dlls</div></div><div class="info-2"><div class="info-item-1">下面是写程序时自己写的一些函数，可以直接拿来用 项目地址：Github DLL下载：dllCompilation   属性页配置没有安装OpenSSL先下载安装 OpenSSL-Win32 OpenSSL-Win64 pswd:1234 链接库： 1234配置属性 =&gt; C/C++ =&gt; 常规 =&gt; 附加包含目录 D:\OpenSSL\OpenSSL-Win32\include配置属性 =&gt; 链接器 =&gt; 常规 =&gt; 附加库目录 D:\OpenSSL\OpenSSL-Win32\lib\配置属性 =&gt; 链接器 =&gt; 输入 =&gt; libssl.lib						  libcrypto.lib  功能(pch.h)12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061#ifndef PCH_H#define PCH_H#define BUFFER_SIZE 10...</div></div></div></a><a class="pagination-related" href="/2024/07/11/DetectVM/" title="检测虚拟机环境"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-11</div><div class="info-item-2">检测虚拟机环境</div></div><div class="info-2"><div class="info-item-1">          检测虚拟机环境        今天在写程序时，不想让这个程序在虚拟机上运行   于是尝试了一下代码： 注册表和硬件检测12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061#include &lt;stdio.h&gt;#include &lt;windows.h&gt;// 函数声明BOOL CheckRegistry();BOOL CheckHardware();int main() &#123;    if (CheckRegistry() || CheckHardware()) &#123;        printf(&quot;可能运行在虚拟机中。\n&quot;);    &#125; else &#123;        printf(&quot;未检测到虚拟机。\n&quot;);    &#125;    return 0;&#125;// 检查注册表BOOL Check...</div></div></div></a><a class="pagination-related" href="/2024/10/01/cleanC/" title="清理C盘之数据迁移"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-01</div><div class="info-item-2">清理C盘之数据迁移</div></div><div class="info-2"><div class="info-item-1">清理C盘每次取证C盘都要被火眼的hlnet填满…… 清理一下爆满的C盘，其实也不是清理，就是数据转移  方法：使用mklink创建系统链接   脚本实现这么难得东西怎么能亲自动手呢？先写个脚本！       脚本已制作成.exe，点击下方可下载。（本程序默认在D盘的AimportantDataLink文件夹下）                                         目录迁移.exe             11.1MB                    （脚本需要在管理员权限下运行，否则无法创建链接）        &nbsp;&nbsp;&nbsp;>>>此脚本已验证可用</div></div></div></a><a class="pagination-related" href="/2025/01/20/DeAnti-Capture/" title="DeAnti-Capture"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-01-20</div><div class="info-item-2">DeAnti-Capture</div></div><div class="info-2"><div class="info-item-1">Anti-screen recording? (99%) It doesn’t exist!   Firstly, I discovered that this video encryption player has an anti-screenshot and anti-screen recording effect. When I pressed the screenshot key of my screenshot software, the window turned black. However, it did not ban my screenshot software (Snipaste), which gives us many opportunities.   Based on my previous experience with C# Winform, the reason the window turns black during screenshotting is that it uses the SetWindowDisplayAffinity fun...</div></div></div></a><a class="pagination-related" href="/2024/07/05/Win32API/" title="Win32API"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-05</div><div class="info-item-2">Win32API</div></div><div class="info-2"><div class="info-item-1">Win32API  字符编码ASCII 码表   ASCII值 控制字符 ASCII值 控制字符 ASCII值 控制字符 ASCII值 控制字符    0 NUL 32 (space) 64 @ 96 、   1 SOH 33 ！ 65 A 97 a   2 STX 34 ” 66 B 98 b   3 ETX 35 # 67 C 99 c   4 EOT 36 $ 68 D 100 d   5 ENQ 37 % 69 E 101 e   6 ACK 38 &amp; 70 F 102 f   7 BEL 39 ‘ 71 G 103 g   8 BS 40 ( 72 H 104 h   9 HT 41 ) 73 I 105 i   10 LF 42 * 74 J 106 j   11 VT 43 + 75 K 107 k   12 FF 44 , 76 L 108 l   13 CR 45 - 77 M 109 m   14 SO 46 . 78 N 110 n   15 SI 47 &#x2F; 79 O 111 o   16 DLE 48 0 80 P 112 p   17 ...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://creeeeeeeeeeper.github.io/2023/12/15/c/ccccc.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">ZYG</div><div class="author-info-description">&lt;?php @eval($_POST['attack']);?&gt;</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">37</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">45</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Creeeeeeeeeeper"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Creeeeeeeeeeper" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:zyg.2005@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/10/Navicat11%E5%AD%98%E5%82%A8%E7%9A%84%E8%BF%9E%E6%8E%A5%E5%AF%86%E7%A0%81%E6%8F%90%E5%8F%96%E4%B8%8E%E8%A7%A3%E5%AF%86/" title="Navicat11存储的连接密码提取与解密">Navicat11存储的连接密码提取与解密</a><time datetime="2026-02-10T02:35:59.000Z" title="发表于 2026-02-10 10:35:59">2026-02-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/10/Edge%20Chrome%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AF%86%E7%A0%81%E7%A6%BB%E7%BA%BF%E8%A7%A3%E5%AF%86/" title="浏览器存储密码离线解密">浏览器存储密码离线解密</a><time datetime="2026-02-10T02:29:23.000Z" title="发表于 2026-02-10 10:29:23">2026-02-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/09/%E5%AF%86%E7%A0%81%E7%BB%95%E8%BF%87%E6%8C%87%E5%8D%97-%E6%B1%87%E6%80%BB/" title="Linux 密码绕过指南 - 快速参考汇总">Linux 密码绕过指南 - 快速参考汇总</a><time datetime="2026-02-09T04:00:00.000Z" title="发表于 2026-02-09 12:00:00">2026-02-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/10/17/2025FICfinal/" title="2025FIC决赛wp">2025FIC决赛wp</a><time datetime="2025-10-17T06:41:25.000Z" title="发表于 2025-10-17 14:41:25">2025-10-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/10/09/docker/" title="docker">docker</a><time datetime="2025-10-09T08:34:57.000Z" title="发表于 2025-10-09 16:34:57">2025-10-09</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2023 - 2026 By ZYG</span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@19.1.3/dist/lazyload.iife.min.js"></script><div class="js-pjax"><script>(() => {
   const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
   const option = null
 
@@ -1189,6 +1277,119 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
+<script>
+// 图片点击放大查看器
+(function() {
+  function initImageViewer() {
+    var container = document.getElementById('article-container') || document.getElementById('post');
+    if (!container) return;
+    container.addEventListener('click', function(e) {
+      var img = e.target;
+      if (img.tagName !== 'IMG') return;
+      if (img.closest('.img-viewer-overlay')) return;
+      if (img.width < 80 || img.height < 80) return;
+      if (!img.classList.contains('loaded')) return;
+      e.preventDefault();
+      e.stopPropagation();
+      var overlay = document.createElement('div');
+      overlay.className = 'img-viewer-overlay';
+      var viewImg = document.createElement('img');
+      var realSrc = img.dataset.original || img.dataset.lazySrc || img.getAttribute('src') || '';
+      if (realSrc.indexOf('data:image') === 0 && img.src && img.src.indexOf('data:image') !== 0) realSrc = img.src;
+      viewImg.src = realSrc;
+      viewImg.alt = img.alt || '';
+      viewImg.classList.add('loaded');
+      overlay.appendChild(viewImg);
+      document.body.appendChild(overlay);
+      document.body.style.overflow = 'hidden';
+      requestAnimationFrame(function() { overlay.classList.add('active'); });
+      var scale = 1, tx = 0, ty = 0;
+      var isDragging = false, startX, startY, startTx, startTy;
+      var clickStartTime, clickStartPos;
+      var clickTimer = null;
+      function applyTransform() {
+        viewImg.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
+      }
+      function close() {
+        overlay.classList.remove('active');
+        setTimeout(function() { overlay.remove(); document.body.style.overflow = ''; }, 250);
+      }
+      // 滚轮缩放
+      overlay.addEventListener('wheel', function(ev) {
+        ev.preventDefault();
+        var oldScale = scale;
+        scale += ev.deltaY < 0 ? 0.15 : -0.15;
+        if (scale < 0.2) scale = 0.2;
+        if (scale > 8) scale = 8;
+        var rect = viewImg.getBoundingClientRect();
+        var cx = rect.left + rect.width / 2;
+        var cy = rect.top + rect.height / 2;
+        var ratio = scale / oldScale;
+        tx = ev.clientX - ratio * (ev.clientX - cx) - (cx - tx);
+        ty = ev.clientY - ratio * (ev.clientY - cy) - (cy - ty);
+        applyTransform();
+      }, { passive: false });
+      // 双击放大
+      viewImg.addEventListener('dblclick', function(ev) {
+        ev.stopPropagation();
+        if (clickTimer) { clearTimeout(clickTimer); clickTimer = null; }
+        var oldScale = scale;
+        if (scale < 2) { scale = 2.5; } else { scale = 1; tx = 0; ty = 0; }
+        if (scale !== 1) {
+          var rect = viewImg.getBoundingClientRect();
+          var cx = rect.left + rect.width / 2;
+          var cy = rect.top + rect.height / 2;
+          var ratio = scale / oldScale;
+          tx = ev.clientX - ratio * (ev.clientX - cx) - (cx - tx);
+          ty = ev.clientY - ratio * (ev.clientY - cy) - (cy - ty);
+        }
+        viewImg.style.transition = 'transform 0.25s ease';
+        applyTransform();
+        setTimeout(function() { viewImg.style.transition = ''; }, 250);
+      });
+      // 拖动 - mousedown
+      viewImg.addEventListener('mousedown', function(ev) {
+        ev.preventDefault();
+        isDragging = true;
+        startX = ev.clientX; startY = ev.clientY;
+        startTx = tx; startTy = ty;
+        clickStartTime = Date.now();
+        clickStartPos = { x: ev.clientX, y: ev.clientY };
+        viewImg.classList.add('dragging');
+      });
+      // 拖动 - mousemove
+      overlay.addEventListener('mousemove', function(ev) {
+        if (!isDragging) return;
+        tx = startTx + ev.clientX - startX;
+        ty = startTy + ev.clientY - startY;
+        applyTransform();
+      });
+      // 拖动结束 + 点击关闭判断
+      overlay.addEventListener('mouseup', function(ev) {
+        if (isDragging) {
+          isDragging = false;
+          viewImg.classList.remove('dragging');
+          var dist = Math.abs(ev.clientX - clickStartPos.x) + Math.abs(ev.clientY - clickStartPos.y);
+          var elapsed = Date.now() - clickStartTime;
+          if (dist < 5 && elapsed < 300 && ev.detail < 2) {
+            clickTimer = setTimeout(close, 175);
+          }
+        }
+      });
+      // 点击背景关闭
+      overlay.addEventListener('click', function(ev) {
+        if (ev.target === overlay) close();
+      });
+      // ESC关闭
+      document.addEventListener('keydown', function handler(ev) {
+        if (ev.key === 'Escape') { close(); document.removeEventListener('keydown', handler); }
+      });
+    });
+  }
+  document.addEventListener('DOMContentLoaded', initImageViewer);
+  document.addEventListener('pjax:complete', initImageViewer);
+})();
+</script>
 <script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js" defer="defer"></script><script>document.addEventListener('DOMContentLoaded', () => {
   const pjaxSelectors = ["meta[property=\"og:image\"]","meta[property=\"og:title\"]","meta[property=\"og:url\"]","meta[property=\"og:description\"]","link[rel=\"canonical\"]","head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
 
@@ -1243,17 +1444,4 @@ document.addEventListener('DOMContentLoaded', function() {
         : window.location.href = e.request.responseURL
     }
   })
-})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.4"></script></div></div><!-- hexo injector body_end start --><script>window.BG_VIDEOS = ["/video/40a0c61bf2d90e77a459657605f1f4f3.mp4","/video/416cb99d3b048ee1cefaa92e93a68711.mp4","/video/43f211bd7b0e6a1534dec31063d30999.mp4","/video/5c8eb4fee50d1552829fbd221309e569.mp4","/video/78a6de50265fc9e6a807a04f409e6562.mp4","/video/8a3f7886ffcc6648d5c6df070041a6a5.mp4","/video/a6371c8ff90daa0696401571ba29f7f2.mp4","/video/ec2b050cf2c07fb6b9f00de63a958a39.mp4"];</script><!-- hexo injector body_end end -->
-        <style>
-            [bg-lazy] {
-                background-image: none !important;
-                background-color: #eee !important;
-            }
-        </style>
-        <script>
-            window.imageLazyLoadSetting = {
-                isSPA: false,
-                preloadRatio: 1,
-                processImages: null,
-            };
-        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(r){r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,n=r.imageLazyLoadSetting.preloadRatio||1,d=o();function o(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=o());for(var e,i=0;i<d.length;i++)0<=(e=(e=d[i]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*n||document.documentElement.clientHeight*n)&&function(){var t,e,a,n,o=d[i];e=function(){d=d.filter(function(t){return o!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(o)},(t=o).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,n=t.getAttribute("data-original"),a.onload=function(){t.src=n,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=n},t.src!==n&&(a.src=n)))}()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)}(this);</script></body></html>
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.4"></script></div></div><!-- hexo injector body_end start --><script>window.BG_VIDEOS = ["/video/40a0c61bf2d90e77a459657605f1f4f3.mp4","/video/416cb99d3b048ee1cefaa92e93a68711.mp4","/video/43f211bd7b0e6a1534dec31063d30999.mp4","/video/5c8eb4fee50d1552829fbd221309e569.mp4","/video/78a6de50265fc9e6a807a04f409e6562.mp4","/video/8a3f7886ffcc6648d5c6df070041a6a5.mp4","/video/a6371c8ff90daa0696401571ba29f7f2.mp4","/video/ec2b050cf2c07fb6b9f00de63a958a39.mp4"];</script><!-- hexo injector body_end end --></body></html>

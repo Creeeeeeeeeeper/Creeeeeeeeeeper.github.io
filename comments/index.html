@@ -148,15 +148,18 @@
 #music-player {
   position: fixed;
   left: 0;
-  top: 50%;
-  transform: translateY(-50%) translateX(-284px);
+  top: calc(75vh - 52px);
+  transform: translateX(-284px);
   z-index: 9999;
   display: flex;
   align-items: stretch;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, top 0.3s ease;
 }
 #music-player.open {
-  transform: translateY(-50%) translateX(0);
+  transform: translateX(0);
+}
+#music-player.mp-dragging {
+  transition: none !important;
 }
 #music-player .mp-content {
   display: flex;
@@ -347,6 +350,16 @@ body {
 }
 </style>
 <style>
+/* 代码块展开按钮更醒目 */
+.code-expand-btn {
+  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.4)) !important;
+}
+.code-expand-btn i {
+  color: #fff !important;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+</style>
+<style>
 /* 按钮灰黑渐变 */
 .btn-beautify, #pagination .page-number.current,
 a.btn, button.btn, .search-dialog .search-nav,
@@ -424,6 +437,44 @@ img:not(.loaded):not([src*="avatar"]) {
 [data-theme="dark"] img:not(.loaded):not([src*="avatar"]) {
   background: linear-gradient(90deg, #1a1a1a 0%, #3a3a3a 50%, #1a1a1a 100%);
   background-size: 200% 100%;
+}
+</style>
+<style>
+/* 图片查看器样式 */
+.img-viewer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 99999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: zoom-out;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.img-viewer-overlay.active {
+  opacity: 1;
+}
+.img-viewer-overlay img {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  cursor: grab;
+  transition: transform 0.15s ease;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.img-viewer-overlay img.dragging {
+  cursor: grabbing;
+  transition: none;
+}
+/* 已加载的文章图片显示手指指针 */
+#article-container img.loaded {
+  cursor: pointer;
 }
 </style>
 <script>
@@ -507,7 +558,8 @@ img:not(.loaded):not([src*="avatar"]) {
         open: player ? player.classList.contains('open') : false,
         volume: audio.volume,
         currentTime: audio.currentTime,
-        isPlaying: !audio.paused
+        isPlaying: !audio.paused,
+        topY: player ? player.style.top : null
       }));
     } catch(e) {}
   }
@@ -588,6 +640,38 @@ img:not(.loaded):not([src*="avatar"]) {
       toggle.innerHTML = '<i class="fas fa-chevron-left"></i>';
     }
 
+    // 恢复垂直位置
+    if (state.topY) {
+      player.style.top = state.topY;
+    }
+
+    // 播放器拖动（上下移动）
+    var mpDragging = false, mpStartY, mpStartTop, mpMoved = false;
+    player.addEventListener('mousedown', function(ev) {
+      if (ev.target.closest('.mp-progress') || ev.target.closest('.mp-vol-bar')) return;
+      mpDragging = true;
+      mpMoved = false;
+      mpStartY = ev.clientY;
+      mpStartTop = player.getBoundingClientRect().top;
+      player.classList.add('mp-dragging');
+      ev.preventDefault();
+    });
+    document.addEventListener('mousemove', function(ev) {
+      if (!mpDragging) return;
+      var dy = Math.abs(ev.clientY - mpStartY);
+      if (dy > 5) mpMoved = true;
+      var newTop = mpStartTop + ev.clientY - mpStartY;
+      var maxTop = window.innerHeight - player.offsetHeight;
+      newTop = Math.max(0, Math.min(maxTop, newTop));
+      player.style.top = newTop + 'px';
+    });
+    document.addEventListener('mouseup', function(ev) {
+      if (!mpDragging) return;
+      mpDragging = false;
+      player.classList.remove('mp-dragging');
+      saveState();
+    });
+
     // 拖拽状态
     var dragging = null;
     var dragValue = 0;
@@ -640,6 +724,7 @@ img:not(.loaded):not([src*="avatar"]) {
 
     // 按钮点击
     toggle.addEventListener('click', function(e) {
+      if (mpMoved) { e.stopPropagation(); return; }
       player.classList.toggle('open');
       toggle.innerHTML = player.classList.contains('open') ? '<i class="fas fa-chevron-left"></i>' : '<i class="fas fa-chevron-right"></i>';
       saveState();
@@ -647,16 +732,19 @@ img:not(.loaded):not([src*="avatar"]) {
     });
 
     player.querySelector('.mp-play').addEventListener('click', function(e) {
+      if (mpMoved) { e.stopPropagation(); return; }
       audio.paused ? audio.play().catch(function(){}) : audio.pause();
       e.stopPropagation();
     });
 
     player.querySelector('.mp-backward').addEventListener('click', function(e) {
+      if (mpMoved) { e.stopPropagation(); return; }
       audio.currentTime = Math.max(0, audio.currentTime - 30);
       e.stopPropagation();
     });
 
     player.querySelector('.mp-forward').addEventListener('click', function(e) {
+      if (mpMoved) { e.stopPropagation(); return; }
       audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 30);
       e.stopPropagation();
     });
@@ -720,7 +808,7 @@ img:not(.loaded):not([src*="avatar"]) {
           </div>
           <ul class="card-category-list" id="aside-cat-list">
             <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/C-C/"><span class="card-category-list-name">C/C++</span><span class="card-category-list-count">6</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/PE/"><span class="card-category-list-name">PE</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Study-Essay/"><span class="card-category-list-name">Study Essay</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Study-Essay/"><span class="card-category-list-name">Study-Essay</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E5%BC%80%E5%8F%91%E7%AC%94%E8%AE%B0/"><span class="card-category-list-name">开发笔记</span><span class="card-category-list-count">15</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E6%B1%87%E7%BC%96/"><span class="card-category-list-name">汇编</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E7%94%B5%E5%AD%90%E5%8F%96%E8%AF%81/"><span class="card-category-list-name">电子取证</span><span class="card-category-list-count">5</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/"><span class="card-category-list-name">编程语言</span><span class="card-category-list-count">1</span></a></li>
-          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/" style="font-size: 1.38em; color: rgb(155, 127, 50);">逆向工程</a><a href="/tags/Windows/" style="font-size: 1.38em; color: rgb(199, 50, 193);">Windows</a><a href="/tags/Hook/" style="font-size: 1.15em; color: rgb(165, 75, 191);">Hook</a><a href="/tags/Virtual-Environment/" style="font-size: 1.15em; color: rgb(109, 50, 102);">Virtual Environment</a><a href="/tags/C/" style="font-size: 1.45em; color: rgb(195, 84, 50);">C++</a><a href="/tags/C/" style="font-size: 1.22em; color: rgb(50, 149, 59);">C</a><a href="/tags/Cpp/" style="font-size: 1.22em; color: rgb(50, 162, 70);">Cpp</a><a href="/tags/Internet-Programming/" style="font-size: 1.15em; color: rgb(76, 70, 50);">Internet Programming</a><a href="/tags/%E7%94%B5%E5%AD%90%E5%8F%96%E8%AF%81/" style="font-size: 1.45em; color: rgb(169, 50, 50);">电子取证</a><a href="/tags/%E5%AF%86%E7%A0%81%E8%A7%A3%E5%AF%86/" style="font-size: 1.22em; color: rgb(154, 68, 91);">密码解密</a><a href="/tags/Tools/" style="font-size: 1.15em; color: rgb(175, 78, 134);">Tools</a><a href="/tags/Java/" style="font-size: 1.22em; color: rgb(135, 50, 180);">Java</a><a href="/tags/%E5%B7%A5%E5%85%B7/" style="font-size: 1.3em; color: rgb(50, 50, 87);">工具</a><a href="/tags/CTF/" style="font-size: 1.22em; color: rgb(50, 133, 146);">CTF</a><a href="/tags/Electron/" style="font-size: 1.15em; color: rgb(50, 50, 128);">Electron</a><a href="/tags/JavaScript/" style="font-size: 1.3em; color: rgb(85, 178, 121);">JavaScript</a><a href="/tags/%E6%A1%8C%E9%9D%A2%E5%BC%80%E5%8F%91/" style="font-size: 1.22em; color: rgb(176, 50, 90);">桌面开发</a><a href="/tags/Tauri/" style="font-size: 1.3em; color: rgb(61, 50, 50);">Tauri</a><a href="/tags/PE/" style="font-size: 1.15em; color: rgb(74, 86, 196);">PE</a><a href="/tags/%E6%B1%87%E7%BC%96/" style="font-size: 1.3em; color: rgb(50, 50, 84);">汇编</a></div></div><div class="card-widget card-archives">
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/" style="font-size: 1.38em; color: rgb(50, 177, 95);">逆向工程</a><a href="/tags/Windows/" style="font-size: 1.38em; color: rgb(94, 192, 50);">Windows</a><a href="/tags/Hook/" style="font-size: 1.15em; color: rgb(50, 181, 194);">Hook</a><a href="/tags/Virtual-Environment/" style="font-size: 1.15em; color: rgb(154, 91, 78);">Virtual Environment</a><a href="/tags/C/" style="font-size: 1.45em; color: rgb(122, 180, 96);">C++</a><a href="/tags/%E7%94%B5%E5%AD%90%E5%8F%96%E8%AF%81/" style="font-size: 1.45em; color: rgb(102, 184, 169);">电子取证</a><a href="/tags/CTF/" style="font-size: 1.22em; color: rgb(169, 50, 50);">CTF</a><a href="/tags/C/" style="font-size: 1.22em; color: rgb(98, 158, 131);">C</a><a href="/tags/Cpp/" style="font-size: 1.22em; color: rgb(107, 60, 178);">Cpp</a><a href="/tags/Internet-Programming/" style="font-size: 1.15em; color: rgb(157, 121, 187);">Internet Programming</a><a href="/tags/Tools/" style="font-size: 1.15em; color: rgb(87, 112, 50);">Tools</a><a href="/tags/Java/" style="font-size: 1.22em; color: rgb(177, 129, 50);">Java</a><a href="/tags/%E5%B7%A5%E5%85%B7/" style="font-size: 1.3em; color: rgb(176, 110, 94);">工具</a><a href="/tags/%E5%AF%86%E7%A0%81%E8%A7%A3%E5%AF%86/" style="font-size: 1.22em; color: rgb(184, 73, 79);">密码解密</a><a href="/tags/Electron/" style="font-size: 1.15em; color: rgb(170, 58, 50);">Electron</a><a href="/tags/JavaScript/" style="font-size: 1.3em; color: rgb(90, 50, 123);">JavaScript</a><a href="/tags/%E6%A1%8C%E9%9D%A2%E5%BC%80%E5%8F%91/" style="font-size: 1.22em; color: rgb(50, 147, 59);">桌面开发</a><a href="/tags/PE/" style="font-size: 1.15em; color: rgb(86, 50, 112);">PE</a><a href="/tags/%E6%B1%87%E7%BC%96/" style="font-size: 1.3em; color: rgb(139, 166, 66);">汇编</a><a href="/tags/STL/" style="font-size: 1.15em; color: rgb(128, 50, 179);">STL</a></div></div><div class="card-widget card-archives">
     <div class="item-headline">
       <i class="fas fa-archive"></i>
       <span>归档</span>
@@ -805,7 +893,7 @@ img:not(.loaded):not([src*="avatar"]) {
         </li>
       
     </ul>
-  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">37</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-02-15T13:47:17.888Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2023 - 2026 By ZYG</span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@19.1.3/dist/lazyload.iife.min.js"></script><div class="js-pjax"><script>(() => {
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">37</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-02-15T15:46:23.424Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2023 - 2026 By ZYG</span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@19.1.3/dist/lazyload.iife.min.js"></script><div class="js-pjax"><script>(() => {
   const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
   const option = null
 
@@ -1245,6 +1333,119 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
+<script>
+// 图片点击放大查看器
+(function() {
+  function initImageViewer() {
+    var container = document.getElementById('article-container') || document.getElementById('post');
+    if (!container) return;
+    container.addEventListener('click', function(e) {
+      var img = e.target;
+      if (img.tagName !== 'IMG') return;
+      if (img.closest('.img-viewer-overlay')) return;
+      if (img.width < 80 || img.height < 80) return;
+      if (!img.classList.contains('loaded')) return;
+      e.preventDefault();
+      e.stopPropagation();
+      var overlay = document.createElement('div');
+      overlay.className = 'img-viewer-overlay';
+      var viewImg = document.createElement('img');
+      var realSrc = img.dataset.original || img.dataset.lazySrc || img.getAttribute('src') || '';
+      if (realSrc.indexOf('data:image') === 0 && img.src && img.src.indexOf('data:image') !== 0) realSrc = img.src;
+      viewImg.src = realSrc;
+      viewImg.alt = img.alt || '';
+      viewImg.classList.add('loaded');
+      overlay.appendChild(viewImg);
+      document.body.appendChild(overlay);
+      document.body.style.overflow = 'hidden';
+      requestAnimationFrame(function() { overlay.classList.add('active'); });
+      var scale = 1, tx = 0, ty = 0;
+      var isDragging = false, startX, startY, startTx, startTy;
+      var clickStartTime, clickStartPos;
+      var clickTimer = null;
+      function applyTransform() {
+        viewImg.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
+      }
+      function close() {
+        overlay.classList.remove('active');
+        setTimeout(function() { overlay.remove(); document.body.style.overflow = ''; }, 250);
+      }
+      // 滚轮缩放
+      overlay.addEventListener('wheel', function(ev) {
+        ev.preventDefault();
+        var oldScale = scale;
+        scale += ev.deltaY < 0 ? 0.15 : -0.15;
+        if (scale < 0.2) scale = 0.2;
+        if (scale > 8) scale = 8;
+        var rect = viewImg.getBoundingClientRect();
+        var cx = rect.left + rect.width / 2;
+        var cy = rect.top + rect.height / 2;
+        var ratio = scale / oldScale;
+        tx = ev.clientX - ratio * (ev.clientX - cx) - (cx - tx);
+        ty = ev.clientY - ratio * (ev.clientY - cy) - (cy - ty);
+        applyTransform();
+      }, { passive: false });
+      // 双击放大
+      viewImg.addEventListener('dblclick', function(ev) {
+        ev.stopPropagation();
+        if (clickTimer) { clearTimeout(clickTimer); clickTimer = null; }
+        var oldScale = scale;
+        if (scale < 2) { scale = 2.5; } else { scale = 1; tx = 0; ty = 0; }
+        if (scale !== 1) {
+          var rect = viewImg.getBoundingClientRect();
+          var cx = rect.left + rect.width / 2;
+          var cy = rect.top + rect.height / 2;
+          var ratio = scale / oldScale;
+          tx = ev.clientX - ratio * (ev.clientX - cx) - (cx - tx);
+          ty = ev.clientY - ratio * (ev.clientY - cy) - (cy - ty);
+        }
+        viewImg.style.transition = 'transform 0.25s ease';
+        applyTransform();
+        setTimeout(function() { viewImg.style.transition = ''; }, 250);
+      });
+      // 拖动 - mousedown
+      viewImg.addEventListener('mousedown', function(ev) {
+        ev.preventDefault();
+        isDragging = true;
+        startX = ev.clientX; startY = ev.clientY;
+        startTx = tx; startTy = ty;
+        clickStartTime = Date.now();
+        clickStartPos = { x: ev.clientX, y: ev.clientY };
+        viewImg.classList.add('dragging');
+      });
+      // 拖动 - mousemove
+      overlay.addEventListener('mousemove', function(ev) {
+        if (!isDragging) return;
+        tx = startTx + ev.clientX - startX;
+        ty = startTy + ev.clientY - startY;
+        applyTransform();
+      });
+      // 拖动结束 + 点击关闭判断
+      overlay.addEventListener('mouseup', function(ev) {
+        if (isDragging) {
+          isDragging = false;
+          viewImg.classList.remove('dragging');
+          var dist = Math.abs(ev.clientX - clickStartPos.x) + Math.abs(ev.clientY - clickStartPos.y);
+          var elapsed = Date.now() - clickStartTime;
+          if (dist < 5 && elapsed < 300 && ev.detail < 2) {
+            clickTimer = setTimeout(close, 175);
+          }
+        }
+      });
+      // 点击背景关闭
+      overlay.addEventListener('click', function(ev) {
+        if (ev.target === overlay) close();
+      });
+      // ESC关闭
+      document.addEventListener('keydown', function handler(ev) {
+        if (ev.key === 'Escape') { close(); document.removeEventListener('keydown', handler); }
+      });
+    });
+  }
+  document.addEventListener('DOMContentLoaded', initImageViewer);
+  document.addEventListener('pjax:complete', initImageViewer);
+})();
+</script>
 <script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js" defer="defer"></script><script>document.addEventListener('DOMContentLoaded', () => {
   const pjaxSelectors = ["meta[property=\"og:image\"]","meta[property=\"og:title\"]","meta[property=\"og:url\"]","meta[property=\"og:description\"]","link[rel=\"canonical\"]","head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
 
@@ -1299,17 +1500,4 @@ document.addEventListener('DOMContentLoaded', function() {
         : window.location.href = e.request.responseURL
     }
   })
-})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.4"></script></div></div><!-- hexo injector body_end start --><script>window.BG_VIDEOS = ["/video/40a0c61bf2d90e77a459657605f1f4f3.mp4","/video/416cb99d3b048ee1cefaa92e93a68711.mp4","/video/43f211bd7b0e6a1534dec31063d30999.mp4","/video/5c8eb4fee50d1552829fbd221309e569.mp4","/video/78a6de50265fc9e6a807a04f409e6562.mp4","/video/8a3f7886ffcc6648d5c6df070041a6a5.mp4","/video/a6371c8ff90daa0696401571ba29f7f2.mp4","/video/ec2b050cf2c07fb6b9f00de63a958a39.mp4"];</script><!-- hexo injector body_end end -->
-        <style>
-            [bg-lazy] {
-                background-image: none !important;
-                background-color: #eee !important;
-            }
-        </style>
-        <script>
-            window.imageLazyLoadSetting = {
-                isSPA: false,
-                preloadRatio: 1,
-                processImages: null,
-            };
-        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(r){r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,n=r.imageLazyLoadSetting.preloadRatio||1,d=o();function o(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=o());for(var e,i=0;i<d.length;i++)0<=(e=(e=d[i]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*n||document.documentElement.clientHeight*n)&&function(){var t,e,a,n,o=d[i];e=function(){d=d.filter(function(t){return o!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(o)},(t=o).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,n=t.getAttribute("data-original"),a.onload=function(){t.src=n,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=n},t.src!==n&&(a.src=n)))}()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)}(this);</script></body></html>
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.4"></script></div></div><!-- hexo injector body_end start --><script>window.BG_VIDEOS = ["/video/40a0c61bf2d90e77a459657605f1f4f3.mp4","/video/416cb99d3b048ee1cefaa92e93a68711.mp4","/video/43f211bd7b0e6a1534dec31063d30999.mp4","/video/5c8eb4fee50d1552829fbd221309e569.mp4","/video/78a6de50265fc9e6a807a04f409e6562.mp4","/video/8a3f7886ffcc6648d5c6df070041a6a5.mp4","/video/a6371c8ff90daa0696401571ba29f7f2.mp4","/video/ec2b050cf2c07fb6b9f00de63a958a39.mp4"];</script><!-- hexo injector body_end end --></body></html>

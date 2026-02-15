@@ -165,15 +165,18 @@
 #music-player {
   position: fixed;
   left: 0;
-  top: 50%;
-  transform: translateY(-50%) translateX(-284px);
+  top: calc(75vh - 52px);
+  transform: translateX(-284px);
   z-index: 9999;
   display: flex;
   align-items: stretch;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, top 0.3s ease;
 }
 #music-player.open {
-  transform: translateY(-50%) translateX(0);
+  transform: translateX(0);
+}
+#music-player.mp-dragging {
+  transition: none !important;
 }
 #music-player .mp-content {
   display: flex;
@@ -364,6 +367,16 @@ body {
 }
 </style>
 <style>
+/* 代码块展开按钮更醒目 */
+.code-expand-btn {
+  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.4)) !important;
+}
+.code-expand-btn i {
+  color: #fff !important;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+</style>
+<style>
 /* 按钮灰黑渐变 */
 .btn-beautify, #pagination .page-number.current,
 a.btn, button.btn, .search-dialog .search-nav,
@@ -441,6 +454,44 @@ img:not(.loaded):not([src*="avatar"]) {
 [data-theme="dark"] img:not(.loaded):not([src*="avatar"]) {
   background: linear-gradient(90deg, #1a1a1a 0%, #3a3a3a 50%, #1a1a1a 100%);
   background-size: 200% 100%;
+}
+</style>
+<style>
+/* 图片查看器样式 */
+.img-viewer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 99999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: zoom-out;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.img-viewer-overlay.active {
+  opacity: 1;
+}
+.img-viewer-overlay img {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  cursor: grab;
+  transition: transform 0.15s ease;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.img-viewer-overlay img.dragging {
+  cursor: grabbing;
+  transition: none;
+}
+/* 已加载的文章图片显示手指指针 */
+#article-container img.loaded {
+  cursor: pointer;
 }
 </style>
 <script>
@@ -524,7 +575,8 @@ img:not(.loaded):not([src*="avatar"]) {
         open: player ? player.classList.contains('open') : false,
         volume: audio.volume,
         currentTime: audio.currentTime,
-        isPlaying: !audio.paused
+        isPlaying: !audio.paused,
+        topY: player ? player.style.top : null
       }));
     } catch(e) {}
   }
@@ -605,6 +657,38 @@ img:not(.loaded):not([src*="avatar"]) {
       toggle.innerHTML = '<i class="fas fa-chevron-left"></i>';
     }
 
+    // 恢复垂直位置
+    if (state.topY) {
+      player.style.top = state.topY;
+    }
+
+    // 播放器拖动（上下移动）
+    var mpDragging = false, mpStartY, mpStartTop, mpMoved = false;
+    player.addEventListener('mousedown', function(ev) {
+      if (ev.target.closest('.mp-progress') || ev.target.closest('.mp-vol-bar')) return;
+      mpDragging = true;
+      mpMoved = false;
+      mpStartY = ev.clientY;
+      mpStartTop = player.getBoundingClientRect().top;
+      player.classList.add('mp-dragging');
+      ev.preventDefault();
+    });
+    document.addEventListener('mousemove', function(ev) {
+      if (!mpDragging) return;
+      var dy = Math.abs(ev.clientY - mpStartY);
+      if (dy > 5) mpMoved = true;
+      var newTop = mpStartTop + ev.clientY - mpStartY;
+      var maxTop = window.innerHeight - player.offsetHeight;
+      newTop = Math.max(0, Math.min(maxTop, newTop));
+      player.style.top = newTop + 'px';
+    });
+    document.addEventListener('mouseup', function(ev) {
+      if (!mpDragging) return;
+      mpDragging = false;
+      player.classList.remove('mp-dragging');
+      saveState();
+    });
+
     // 拖拽状态
     var dragging = null;
     var dragValue = 0;
@@ -657,6 +741,7 @@ img:not(.loaded):not([src*="avatar"]) {
 
     // 按钮点击
     toggle.addEventListener('click', function(e) {
+      if (mpMoved) { e.stopPropagation(); return; }
       player.classList.toggle('open');
       toggle.innerHTML = player.classList.contains('open') ? '<i class="fas fa-chevron-left"></i>' : '<i class="fas fa-chevron-right"></i>';
       saveState();
@@ -664,16 +749,19 @@ img:not(.loaded):not([src*="avatar"]) {
     });
 
     player.querySelector('.mp-play').addEventListener('click', function(e) {
+      if (mpMoved) { e.stopPropagation(); return; }
       audio.paused ? audio.play().catch(function(){}) : audio.pause();
       e.stopPropagation();
     });
 
     player.querySelector('.mp-backward').addEventListener('click', function(e) {
+      if (mpMoved) { e.stopPropagation(); return; }
       audio.currentTime = Math.max(0, audio.currentTime - 30);
       e.stopPropagation();
     });
 
     player.querySelector('.mp-forward').addEventListener('click', function(e) {
+      if (mpMoved) { e.stopPropagation(); return; }
       audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 30);
       e.stopPropagation();
     });
@@ -752,15 +840,15 @@ img:not(.loaded):not([src*="avatar"]) {
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql -h localhost -u root -p</span><br></pre></td></tr></table></figure>
 
 <p>登录也可以直接打开MySQL Command Line Client</p>
-<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlZWVlZWUiLz48L3N2Zz4=" data-original="/2024/07/19/database/image-20240719221312406.png" alt="image-20240719221312406"></p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2024/07/19/database/image-20240719221312406.png" alt="image-20240719221312406"></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; help</span><br><span class="line"></span><br><span class="line">For information about MySQL products and services, visit:</span><br><span class="line">   http://www.mysql.com/</span><br><span class="line">For developer information, including the MySQL Reference Manual, visit:</span><br><span class="line">   http://dev.mysql.com/</span><br><span class="line">To buy MySQL Enterprise support, training, or other products, visit:</span><br><span class="line">   https://shop.mysql.com/</span><br><span class="line"></span><br><span class="line">List of all MySQL commands:</span><br><span class="line">Note that all text commands must be first on line and end with &#x27;;&#x27;</span><br><span class="line">?         (\?) Synonym for `help&#x27;.</span><br><span class="line">clear     (\c) Clear the current input statement.</span><br><span class="line">connect   (\r) Reconnect to the server. Optional arguments are db and host.</span><br><span class="line">delimiter (\d) Set statement delimiter.</span><br><span class="line">ego       (\G) Send command to mysql server, display result vertically.</span><br><span class="line">exit      (\q) Exit mysql. Same as quit.</span><br><span class="line">go        (\g) Send command to mysql server.</span><br><span class="line">help      (\h) Display this help.</span><br><span class="line">notee     (\t) Don&#x27;t write into outfile.</span><br><span class="line">print     (\p) Print current command.</span><br><span class="line">prompt    (\R) Change your mysql prompt.</span><br><span class="line">quit      (\q) Quit mysql.</span><br><span class="line">rehash    (\#) Rebuild completion hash.</span><br><span class="line">source    (\.) Execute an SQL script file. Takes a file name as an argument.</span><br><span class="line">status    (\s) Get status information from the server.</span><br><span class="line">tee       (\T) Set outfile [to_outfile]. Append everything into given outfile.</span><br><span class="line">use       (\u) Use another database. Takes database name as argument.</span><br><span class="line">charset   (\C) Switch to another charset. Might be needed for processing binlog with multi-byte charsets.</span><br><span class="line">warnings  (\W) Show warnings after every statement.</span><br><span class="line">nowarning (\w) Don&#x27;t show warnings after every statement.</span><br><span class="line"></span><br><span class="line">For server side help, type &#x27;help contents&#x27;</span><br></pre></td></tr></table></figure>
 
 <p>查询当前有哪些数据库：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">show databases;</span><br></pre></td></tr></table></figure>
 
-<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlZWVlZWUiLz48L3N2Zz4=" data-original="/2024/07/19/database/image-20241217170658744.png" alt="image-20241217170658744"></p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2024/07/19/database/image-20241217170658744.png" alt="image-20241217170658744"></p>
 <h2 id="数据库和表操作"><a href="#数据库和表操作" class="headerlink" title="数据库和表操作"></a>数据库和表操作</h2><p>通过 <code>show databases;</code> 可以查看到所有有的数据库，一个数据库对应的就是一个文件夹</p>
-<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlZWVlZWUiLz48L3N2Zz4=" data-original="/2024/07/19/database/image-20241217171020105.png" alt="image-20241217171020105"></p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2024/07/19/database/image-20241217171020105.png" alt="image-20241217171020105"></p>
 <p>选择一个数据库：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">use mysql;</span><br></pre></td></tr></table></figure>
 
@@ -920,27 +1008,27 @@ img:not(.loaded):not([src*="avatar"]) {
 
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">desc 表名;</span><br></pre></td></tr></table></figure>
 
-<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlZWVlZWUiLz48L3N2Zz4=" data-original="/2024/07/19/database/image-20241217173806616.png" alt="image-20241217173806616"></p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2024/07/19/database/image-20241217173806616.png" alt="image-20241217173806616"></p>
 <p>4.修改表</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 修改表名</span><br><span class="line">alter table 旧表名 rename 新表名;</span><br></pre></td></tr></table></figure>
 
-<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlZWVlZWUiLz48L3N2Zz4=" data-original="/2024/07/19/database/image-20241217174209933.png" alt="image-20241217174209933"></p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2024/07/19/database/image-20241217174209933.png" alt="image-20241217174209933"></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 修改字段名的属性</span><br><span class="line">alter table 表名 modify 字段名 数据类型;</span><br></pre></td></tr></table></figure>
 
-<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlZWVlZWUiLz48L3N2Zz4=" data-original="/2024/07/19/database/image-20241217174408895.png" alt="image-20241217174408895"></p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2024/07/19/database/image-20241217174408895.png" alt="image-20241217174408895"></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 修改字段名</span><br><span class="line">alter table userinfo change id userid int(6);</span><br></pre></td></tr></table></figure>
 
-<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlZWVlZWUiLz48L3N2Zz4=" data-original="/2024/07/19/database/image-20241217174607451.png" alt="image-20241217174607451"></p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2024/07/19/database/image-20241217174607451.png" alt="image-20241217174607451"></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 新增字段</span><br><span class="line">alter table userinfo add newinfo int(8);</span><br></pre></td></tr></table></figure>
 
-<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlZWVlZWUiLz48L3N2Zz4=" data-original="/2024/07/19/database/image-20241217174731199.png" alt="image-20241217174731199"></p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2024/07/19/database/image-20241217174731199.png" alt="image-20241217174731199"></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 删除字段</span><br><span class="line">alter table userinfo drop newinfo;</span><br></pre></td></tr></table></figure>
 
-<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlZWVlZWUiLz48L3N2Zz4=" data-original="/2024/07/19/database/image-20241217174823026.png" alt="image-20241217174823026"></p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2024/07/19/database/image-20241217174823026.png" alt="image-20241217174823026"></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 删除表</span><br><span class="line">drop table 表名;</span><br></pre></td></tr></table></figure>
 
 <h2 id="添加、更新和删除数据"><a href="#添加、更新和删除数据" class="headerlink" title="添加、更新和删除数据"></a>添加、更新和删除数据</h2><p>对于int类型数据，数据类型有zerofill属性和没有zerofill属性的区别：</p>
-<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlZWVlZWUiLz48L3N2Zz4=" data-original="/2024/07/19/database/image-20241217195621319.png" alt="image-20241217195621319"></p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2024/07/19/database/image-20241217195621319.png" alt="image-20241217195621319"></p>
 <h3 id="查询"><a href="#查询" class="headerlink" title="查询"></a>查询</h3><p>查看表中的数据：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from 表名</span><br></pre></td></tr></table></figure>
 
@@ -952,7 +1040,7 @@ img:not(.loaded):not([src*="avatar"]) {
 <p><strong>向表中添加数据（使用不全字段名）：</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">insert into 表名 (id, StudentNumber) values(1, 20233033);</span><br></pre></td></tr></table></figure>
 
-<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlZWVlZWUiLz48L3N2Zz4=" data-original="/2024/07/19/database/image-20241217200408971.png" alt="image-20241217200408971"></p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2024/07/19/database/image-20241217200408971.png" alt="image-20241217200408971"></p>
 <p>没有给值的name字段因为本来是varchar类型，所以会显示NULL</p>
 <p><strong>向表中添加数据（不使用字段）：</strong></p>
 <p>只写values的时候需要与字段顺序和类型完全对应：</p>
@@ -961,7 +1049,7 @@ img:not(.loaded):not([src*="avatar"]) {
 <p><strong>添加多行数据：</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">insert into userinfo values(4, &quot;444&quot;, 44444444), (5, &quot;555&quot;, 55555555);</span><br></pre></td></tr></table></figure>
 
-<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlZWVlZWUiLz48L3N2Zz4=" data-original="/2024/07/19/database/image-20241217203148102.png" alt="image-20241217203148102"></p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2024/07/19/database/image-20241217203148102.png" alt="image-20241217203148102"></p>
 <p>前面在id&#x3D;1和3之间删了一条2，现在插入多条时，第一条会插入到之前删掉的那一条的位置</p>
 <h3 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">update 表名 set 字段名 = 值</span><br></pre></td></tr></table></figure>
 
@@ -969,10 +1057,10 @@ img:not(.loaded):not([src*="avatar"]) {
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">update 表名 set 字段名 = 值 where 条件</span><br></pre></td></tr></table></figure>
 
 <p>上面这个语句会将所有匹配where条件的数据的 <code>字段名</code> 改为 <code>值</code>。</p>
-<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlZWVlZWUiLz48L3N2Zz4=" data-original="/2024/07/19/database/image-20241217201512953.png" alt="image-20241217201512953"></p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2024/07/19/database/image-20241217201512953.png" alt="image-20241217201512953"></p>
 <h3 id="删除数据"><a href="#删除数据" class="headerlink" title="删除数据"></a>删除数据</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">delete from 表名 where 条件;</span><br></pre></td></tr></table></figure>
 
-<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlZWVlZWUiLz48L3N2Zz4=" data-original="/2024/07/19/database/image-20241217202748820.png" alt="image-20241217202748820"></p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2024/07/19/database/image-20241217202748820.png" alt="image-20241217202748820"></p>
 <h2 id="单表查询"><a href="#单表查询" class="headerlink" title="单表查询"></a>单表查询</h2><p>查看表的数据：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from 表名;</span><br></pre></td></tr></table></figure>
 
@@ -980,7 +1068,7 @@ img:not(.loaded):not([src*="avatar"]) {
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from 表名 where 条件表达式</span><br></pre></td></tr></table></figure>
 
 <p>where联合</p>
-<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlZWVlZWUiLz48L3N2Zz4=" data-original="/2024/07/19/database/image-20241217204306484.png" alt="image-20241217204306484"></p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2024/07/19/database/image-20241217204306484.png" alt="image-20241217204306484"></p>
 <p>聚合查询：</p>
 <p>Count() sun() avg()</p>
 </article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://Creeeeeeeeeeper.github.io">ZYG</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://creeeeeeeeeeper.github.io/2024/07/19/database/">http://creeeeeeeeeeper.github.io/2024/07/19/database/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://Creeeeeeeeeeper.github.io" target="_blank">CodeHut</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><a class="post-meta__tags" href="/tags/MySQL/">MySQL</a></div><div class="post-share"><div class="social-share" data-image="https://creeeeeeeeeeper.github.io/2023/12/15/c/ccccc.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2024/07/20/Dlls/" title="My Dlls"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">My Dlls</div></div><div class="info-2"><div class="info-item-1">下面是写程序时自己写的一些函数，可以直接拿来用 项目地址：Github DLL下载：dllCompilation   属性页配置没有安装OpenSSL先下载安装 OpenSSL-Win32 OpenSSL-Win64 pswd:1234 链接库： 1234配置属性 =&gt; C/C++ =&gt; 常规 =&gt; 附加包含目录 D:\OpenSSL\OpenSSL-Win32\include配置属性 =&gt; 链接器 =&gt; 常规 =&gt; 附加库目录 D:\OpenSSL\OpenSSL-Win32\lib\配置属性 =&gt; 链接器 =&gt; 输入 =&gt; libssl.lib						  libcrypto.lib  功能(pch.h)12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061#ifndef PCH_H#define PCH_H#define BUFFER_SIZE 10...</div></div></div></a><a class="pagination-related" href="/2024/07/18/STL/" title="STL"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">STL</div></div><div class="info-2"><div class="info-item-1">STLvector容器创建vector容器1.导入头文件 1#include &lt;vector&gt;  2.构造vector容器 1vector&lt;int&gt; v1;		//空的容器，里面没有元素  1vector&lt;int&gt; v2(100);	//100个元素数据，默认都为0  1vector&lt;int&gt; v3(100,8);	//100个值为8的元素  1vector&lt;int&gt; v4(v3);		//100个值为8的元素  12int nTmpAry[] = &#123;11, 12, 13, 14, 15, 16, 17, 18, 19, 20&#125;;vector&lt;int&gt; v5(nTmpAry + 2, nTmpAry + 5);   vector容器添加元素1.push_back1v1.push_back(i);  将元素添加到v1容器的尾部 将元素i添加到v1的尾部 2.insert()1v1.insert(v1.begin(), 99);  从v1的第一个元素开始插入一个99 1v1.insert(v1...</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://creeeeeeeeeeper.github.io/2023/12/15/c/ccccc.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">ZYG</div><div class="author-info-description">&lt;?php @eval($_POST['attack']);?&gt;</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">37</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">45</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Creeeeeeeeeeper"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Creeeeeeeeeeper" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:zyg.2005@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-number">1.</span> <span class="toc-text">数据库</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80"><span class="toc-number">1.1.</span> <span class="toc-text">数据库基础</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80"><span class="toc-number">1.1.1.</span> <span class="toc-text">基础</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MYSQL"><span class="toc-number">1.1.2.</span> <span class="toc-text">MYSQL</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8"><span class="toc-number">1.1.3.</span> <span class="toc-text">使用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E8%A1%A8%E6%93%8D%E4%BD%9C"><span class="toc-number">1.2.</span> <span class="toc-text">数据库和表操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E6%93%8D%E4%BD%9C"><span class="toc-number">1.2.1.</span> <span class="toc-text">数据库操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.2.2.</span> <span class="toc-text">数据类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8%E7%9A%84%E6%93%8D%E4%BD%9C"><span class="toc-number">1.2.3.</span> <span class="toc-text">数据库表的操作</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0%E3%80%81%E6%9B%B4%E6%96%B0%E5%92%8C%E5%88%A0%E9%99%A4%E6%95%B0%E6%8D%AE"><span class="toc-number">1.3.</span> <span class="toc-text">添加、更新和删除数据</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E8%AF%A2"><span class="toc-number">1.3.1.</span> <span class="toc-text">查询</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0"><span class="toc-number">1.3.2.</span> <span class="toc-text">添加</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9B%B4%E6%96%B0"><span class="toc-number">1.3.3.</span> <span class="toc-text">更新</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E6%95%B0%E6%8D%AE"><span class="toc-number">1.3.4.</span> <span class="toc-text">删除数据</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%95%E8%A1%A8%E6%9F%A5%E8%AF%A2"><span class="toc-number">1.4.</span> <span class="toc-text">单表查询</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/10/Navicat11%E5%AD%98%E5%82%A8%E7%9A%84%E8%BF%9E%E6%8E%A5%E5%AF%86%E7%A0%81%E6%8F%90%E5%8F%96%E4%B8%8E%E8%A7%A3%E5%AF%86/" title="Navicat11存储的连接密码提取与解密">Navicat11存储的连接密码提取与解密</a><time datetime="2026-02-10T02:35:59.000Z" title="发表于 2026-02-10 10:35:59">2026-02-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/10/Edge%20Chrome%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AF%86%E7%A0%81%E7%A6%BB%E7%BA%BF%E8%A7%A3%E5%AF%86/" title="浏览器存储密码离线解密">浏览器存储密码离线解密</a><time datetime="2026-02-10T02:29:23.000Z" title="发表于 2026-02-10 10:29:23">2026-02-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/09/%E5%AF%86%E7%A0%81%E7%BB%95%E8%BF%87%E6%8C%87%E5%8D%97-%E6%B1%87%E6%80%BB/" title="Linux 密码绕过指南 - 快速参考汇总">Linux 密码绕过指南 - 快速参考汇总</a><time datetime="2026-02-09T04:00:00.000Z" title="发表于 2026-02-09 12:00:00">2026-02-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/10/17/2025FICfinal/" title="2025FIC决赛wp">2025FIC决赛wp</a><time datetime="2025-10-17T06:41:25.000Z" title="发表于 2025-10-17 14:41:25">2025-10-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/10/09/docker/" title="docker">docker</a><time datetime="2025-10-09T08:34:57.000Z" title="发表于 2025-10-09 16:34:57">2025-10-09</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2023 - 2026 By ZYG</span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@19.1.3/dist/lazyload.iife.min.js"></script><div class="js-pjax"><script>(() => {
@@ -1423,6 +1511,119 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
+<script>
+// 图片点击放大查看器
+(function() {
+  function initImageViewer() {
+    var container = document.getElementById('article-container') || document.getElementById('post');
+    if (!container) return;
+    container.addEventListener('click', function(e) {
+      var img = e.target;
+      if (img.tagName !== 'IMG') return;
+      if (img.closest('.img-viewer-overlay')) return;
+      if (img.width < 80 || img.height < 80) return;
+      if (!img.classList.contains('loaded')) return;
+      e.preventDefault();
+      e.stopPropagation();
+      var overlay = document.createElement('div');
+      overlay.className = 'img-viewer-overlay';
+      var viewImg = document.createElement('img');
+      var realSrc = img.dataset.original || img.dataset.lazySrc || img.getAttribute('src') || '';
+      if (realSrc.indexOf('data:image') === 0 && img.src && img.src.indexOf('data:image') !== 0) realSrc = img.src;
+      viewImg.src = realSrc;
+      viewImg.alt = img.alt || '';
+      viewImg.classList.add('loaded');
+      overlay.appendChild(viewImg);
+      document.body.appendChild(overlay);
+      document.body.style.overflow = 'hidden';
+      requestAnimationFrame(function() { overlay.classList.add('active'); });
+      var scale = 1, tx = 0, ty = 0;
+      var isDragging = false, startX, startY, startTx, startTy;
+      var clickStartTime, clickStartPos;
+      var clickTimer = null;
+      function applyTransform() {
+        viewImg.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
+      }
+      function close() {
+        overlay.classList.remove('active');
+        setTimeout(function() { overlay.remove(); document.body.style.overflow = ''; }, 250);
+      }
+      // 滚轮缩放
+      overlay.addEventListener('wheel', function(ev) {
+        ev.preventDefault();
+        var oldScale = scale;
+        scale += ev.deltaY < 0 ? 0.15 : -0.15;
+        if (scale < 0.2) scale = 0.2;
+        if (scale > 8) scale = 8;
+        var rect = viewImg.getBoundingClientRect();
+        var cx = rect.left + rect.width / 2;
+        var cy = rect.top + rect.height / 2;
+        var ratio = scale / oldScale;
+        tx = ev.clientX - ratio * (ev.clientX - cx) - (cx - tx);
+        ty = ev.clientY - ratio * (ev.clientY - cy) - (cy - ty);
+        applyTransform();
+      }, { passive: false });
+      // 双击放大
+      viewImg.addEventListener('dblclick', function(ev) {
+        ev.stopPropagation();
+        if (clickTimer) { clearTimeout(clickTimer); clickTimer = null; }
+        var oldScale = scale;
+        if (scale < 2) { scale = 2.5; } else { scale = 1; tx = 0; ty = 0; }
+        if (scale !== 1) {
+          var rect = viewImg.getBoundingClientRect();
+          var cx = rect.left + rect.width / 2;
+          var cy = rect.top + rect.height / 2;
+          var ratio = scale / oldScale;
+          tx = ev.clientX - ratio * (ev.clientX - cx) - (cx - tx);
+          ty = ev.clientY - ratio * (ev.clientY - cy) - (cy - ty);
+        }
+        viewImg.style.transition = 'transform 0.25s ease';
+        applyTransform();
+        setTimeout(function() { viewImg.style.transition = ''; }, 250);
+      });
+      // 拖动 - mousedown
+      viewImg.addEventListener('mousedown', function(ev) {
+        ev.preventDefault();
+        isDragging = true;
+        startX = ev.clientX; startY = ev.clientY;
+        startTx = tx; startTy = ty;
+        clickStartTime = Date.now();
+        clickStartPos = { x: ev.clientX, y: ev.clientY };
+        viewImg.classList.add('dragging');
+      });
+      // 拖动 - mousemove
+      overlay.addEventListener('mousemove', function(ev) {
+        if (!isDragging) return;
+        tx = startTx + ev.clientX - startX;
+        ty = startTy + ev.clientY - startY;
+        applyTransform();
+      });
+      // 拖动结束 + 点击关闭判断
+      overlay.addEventListener('mouseup', function(ev) {
+        if (isDragging) {
+          isDragging = false;
+          viewImg.classList.remove('dragging');
+          var dist = Math.abs(ev.clientX - clickStartPos.x) + Math.abs(ev.clientY - clickStartPos.y);
+          var elapsed = Date.now() - clickStartTime;
+          if (dist < 5 && elapsed < 300 && ev.detail < 2) {
+            clickTimer = setTimeout(close, 175);
+          }
+        }
+      });
+      // 点击背景关闭
+      overlay.addEventListener('click', function(ev) {
+        if (ev.target === overlay) close();
+      });
+      // ESC关闭
+      document.addEventListener('keydown', function handler(ev) {
+        if (ev.key === 'Escape') { close(); document.removeEventListener('keydown', handler); }
+      });
+    });
+  }
+  document.addEventListener('DOMContentLoaded', initImageViewer);
+  document.addEventListener('pjax:complete', initImageViewer);
+})();
+</script>
 <script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js" defer="defer"></script><script>document.addEventListener('DOMContentLoaded', () => {
   const pjaxSelectors = ["meta[property=\"og:image\"]","meta[property=\"og:title\"]","meta[property=\"og:url\"]","meta[property=\"og:description\"]","link[rel=\"canonical\"]","head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
 
@@ -1477,17 +1678,4 @@ document.addEventListener('DOMContentLoaded', function() {
         : window.location.href = e.request.responseURL
     }
   })
-})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.4"></script></div></div><!-- hexo injector body_end start --><script>window.BG_VIDEOS = ["/video/40a0c61bf2d90e77a459657605f1f4f3.mp4","/video/416cb99d3b048ee1cefaa92e93a68711.mp4","/video/43f211bd7b0e6a1534dec31063d30999.mp4","/video/5c8eb4fee50d1552829fbd221309e569.mp4","/video/78a6de50265fc9e6a807a04f409e6562.mp4","/video/8a3f7886ffcc6648d5c6df070041a6a5.mp4","/video/a6371c8ff90daa0696401571ba29f7f2.mp4","/video/ec2b050cf2c07fb6b9f00de63a958a39.mp4"];</script><!-- hexo injector body_end end -->
-        <style>
-            [bg-lazy] {
-                background-image: none !important;
-                background-color: #eee !important;
-            }
-        </style>
-        <script>
-            window.imageLazyLoadSetting = {
-                isSPA: false,
-                preloadRatio: 1,
-                processImages: null,
-            };
-        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(r){r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,n=r.imageLazyLoadSetting.preloadRatio||1,d=o();function o(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=o());for(var e,i=0;i<d.length;i++)0<=(e=(e=d[i]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*n||document.documentElement.clientHeight*n)&&function(){var t,e,a,n,o=d[i];e=function(){d=d.filter(function(t){return o!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(o)},(t=o).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,n=t.getAttribute("data-original"),a.onload=function(){t.src=n,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=n},t.src!==n&&(a.src=n)))}()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)}(this);</script></body></html>
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.4"></script></div></div><!-- hexo injector body_end start --><script>window.BG_VIDEOS = ["/video/40a0c61bf2d90e77a459657605f1f4f3.mp4","/video/416cb99d3b048ee1cefaa92e93a68711.mp4","/video/43f211bd7b0e6a1534dec31063d30999.mp4","/video/5c8eb4fee50d1552829fbd221309e569.mp4","/video/78a6de50265fc9e6a807a04f409e6562.mp4","/video/8a3f7886ffcc6648d5c6df070041a6a5.mp4","/video/a6371c8ff90daa0696401571ba29f7f2.mp4","/video/ec2b050cf2c07fb6b9f00de63a958a39.mp4"];</script><!-- hexo injector body_end end --></body></html>

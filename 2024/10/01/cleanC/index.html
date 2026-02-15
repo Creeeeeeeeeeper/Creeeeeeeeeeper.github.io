@@ -165,15 +165,18 @@
 #music-player {
   position: fixed;
   left: 0;
-  top: 50%;
-  transform: translateY(-50%) translateX(-284px);
+  top: calc(75vh - 52px);
+  transform: translateX(-284px);
   z-index: 9999;
   display: flex;
   align-items: stretch;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, top 0.3s ease;
 }
 #music-player.open {
-  transform: translateY(-50%) translateX(0);
+  transform: translateX(0);
+}
+#music-player.mp-dragging {
+  transition: none !important;
 }
 #music-player .mp-content {
   display: flex;
@@ -364,6 +367,16 @@ body {
 }
 </style>
 <style>
+/* 代码块展开按钮更醒目 */
+.code-expand-btn {
+  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.4)) !important;
+}
+.code-expand-btn i {
+  color: #fff !important;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+</style>
+<style>
 /* 按钮灰黑渐变 */
 .btn-beautify, #pagination .page-number.current,
 a.btn, button.btn, .search-dialog .search-nav,
@@ -441,6 +454,44 @@ img:not(.loaded):not([src*="avatar"]) {
 [data-theme="dark"] img:not(.loaded):not([src*="avatar"]) {
   background: linear-gradient(90deg, #1a1a1a 0%, #3a3a3a 50%, #1a1a1a 100%);
   background-size: 200% 100%;
+}
+</style>
+<style>
+/* 图片查看器样式 */
+.img-viewer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 99999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: zoom-out;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.img-viewer-overlay.active {
+  opacity: 1;
+}
+.img-viewer-overlay img {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  cursor: grab;
+  transition: transform 0.15s ease;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.img-viewer-overlay img.dragging {
+  cursor: grabbing;
+  transition: none;
+}
+/* 已加载的文章图片显示手指指针 */
+#article-container img.loaded {
+  cursor: pointer;
 }
 </style>
 <script>
@@ -524,7 +575,8 @@ img:not(.loaded):not([src*="avatar"]) {
         open: player ? player.classList.contains('open') : false,
         volume: audio.volume,
         currentTime: audio.currentTime,
-        isPlaying: !audio.paused
+        isPlaying: !audio.paused,
+        topY: player ? player.style.top : null
       }));
     } catch(e) {}
   }
@@ -605,6 +657,38 @@ img:not(.loaded):not([src*="avatar"]) {
       toggle.innerHTML = '<i class="fas fa-chevron-left"></i>';
     }
 
+    // 恢复垂直位置
+    if (state.topY) {
+      player.style.top = state.topY;
+    }
+
+    // 播放器拖动（上下移动）
+    var mpDragging = false, mpStartY, mpStartTop, mpMoved = false;
+    player.addEventListener('mousedown', function(ev) {
+      if (ev.target.closest('.mp-progress') || ev.target.closest('.mp-vol-bar')) return;
+      mpDragging = true;
+      mpMoved = false;
+      mpStartY = ev.clientY;
+      mpStartTop = player.getBoundingClientRect().top;
+      player.classList.add('mp-dragging');
+      ev.preventDefault();
+    });
+    document.addEventListener('mousemove', function(ev) {
+      if (!mpDragging) return;
+      var dy = Math.abs(ev.clientY - mpStartY);
+      if (dy > 5) mpMoved = true;
+      var newTop = mpStartTop + ev.clientY - mpStartY;
+      var maxTop = window.innerHeight - player.offsetHeight;
+      newTop = Math.max(0, Math.min(maxTop, newTop));
+      player.style.top = newTop + 'px';
+    });
+    document.addEventListener('mouseup', function(ev) {
+      if (!mpDragging) return;
+      mpDragging = false;
+      player.classList.remove('mp-dragging');
+      saveState();
+    });
+
     // 拖拽状态
     var dragging = null;
     var dragValue = 0;
@@ -657,6 +741,7 @@ img:not(.loaded):not([src*="avatar"]) {
 
     // 按钮点击
     toggle.addEventListener('click', function(e) {
+      if (mpMoved) { e.stopPropagation(); return; }
       player.classList.toggle('open');
       toggle.innerHTML = player.classList.contains('open') ? '<i class="fas fa-chevron-left"></i>' : '<i class="fas fa-chevron-right"></i>';
       saveState();
@@ -664,16 +749,19 @@ img:not(.loaded):not([src*="avatar"]) {
     });
 
     player.querySelector('.mp-play').addEventListener('click', function(e) {
+      if (mpMoved) { e.stopPropagation(); return; }
       audio.paused ? audio.play().catch(function(){}) : audio.pause();
       e.stopPropagation();
     });
 
     player.querySelector('.mp-backward').addEventListener('click', function(e) {
+      if (mpMoved) { e.stopPropagation(); return; }
       audio.currentTime = Math.max(0, audio.currentTime - 30);
       e.stopPropagation();
     });
 
     player.querySelector('.mp-forward').addEventListener('click', function(e) {
+      if (mpMoved) { e.stopPropagation(); return; }
       audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 30);
       e.stopPropagation();
     });
@@ -731,7 +819,7 @@ img:not(.loaded):not([src*="avatar"]) {
 </script>
 <meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://creeeeeeeeeeper.github.io/2023/12/15/c/ccccc.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">37</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">45</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fas fa-comment-dots"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background: transparent;"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">CodeHut</span></a><a class="nav-page-title" href="/"><span class="site-name">清理C盘之数据迁移</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fas fa-comment-dots"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">清理C盘之数据迁移</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-10-01T06:24:07.000Z" title="发表于 2024-10-01 14:24:07">2024-10-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-02-12T17:57:51.073Z" title="更新于 2026-02-13 01:57:51">2026-02-13</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%BC%80%E5%8F%91%E7%AC%94%E8%AE%B0/">开发笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="清理C盘"><a href="#清理C盘" class="headerlink" title="清理C盘"></a>清理C盘</h2><p>每次取证C盘都要被火眼的hlnet填满……</p>
 <p>清理一下爆满的C盘，其实也不是清理，就是数据转移</p>
-<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlZWVlZWUiLz48L3N2Zz4=" data-original="/2024/10/01/cleanC/image-20241001142630593.png" alt="image-20241001142630593"></p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2024/10/01/cleanC/image-20241001142630593.png" alt="image-20241001142630593"></p>
 <p>方法：使用mklink创建系统链接</p>
 <span id="more"></span>
 
@@ -764,34 +852,34 @@ img:not(.loaded):not([src*="avatar"]) {
 
 <p>脚本中的<code>D:\\AimportantDataLink</code>为转移数据的存放路径，脚本看不懂继续往下看，看完就懂了</p>
 <h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>拿Edge浏览器开刀 &#x3D;&gt; <code>C:\Users\ &lt;your_user_name&gt; \AppData\Local\Microsoft\Edge</code></p>
-<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlZWVlZWUiLz48L3N2Zz4=" data-original="/2024/10/01/cleanC/image-20241001142958389.png" alt="image-20241001142958389" style="zoom:50%;">
+<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2024/10/01/cleanC/image-20241001142958389.png" alt="image-20241001142958389" style="zoom:50%;">
 
 <p>Edge浏览器占了大概3.5G，给他移到D盘去</p>
-<h3 id="关掉Edge所有进程"><a href="#关掉Edge所有进程" class="headerlink" title="关掉Edge所有进程"></a>关掉Edge所有进程</h3><h3 id="找到需要移动的数据"><a href="#找到需要移动的数据" class="headerlink" title="找到需要移动的数据"></a>找到需要移动的数据</h3><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlZWVlZWUiLz48L3N2Zz4=" data-original="/2024/10/01/cleanC/image-20241001143148530.png" alt="image-20241001143148530" style="zoom:50%;">
+<h3 id="关掉Edge所有进程"><a href="#关掉Edge所有进程" class="headerlink" title="关掉Edge所有进程"></a>关掉Edge所有进程</h3><h3 id="找到需要移动的数据"><a href="#找到需要移动的数据" class="headerlink" title="找到需要移动的数据"></a>找到需要移动的数据</h3><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2024/10/01/cleanC/image-20241001143148530.png" alt="image-20241001143148530" style="zoom:50%;">
 
 <p>结束进程后改成Edge_old，做个备份</p>
-<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlZWVlZWUiLz48L3N2Zz4=" data-original="/2024/10/01/cleanC/image-20241001143247110.png" alt="image-20241001143247110" style="zoom:50%;">
+<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2024/10/01/cleanC/image-20241001143247110.png" alt="image-20241001143247110" style="zoom:50%;">
 
-<h3 id="在D盘创建存放数据的文件夹"><a href="#在D盘创建存放数据的文件夹" class="headerlink" title="在D盘创建存放数据的文件夹"></a>在D盘创建存放数据的文件夹</h3><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlZWVlZWUiLz48L3N2Zz4=" data-original="/2024/10/01/cleanC/image-20241001143402251.png" alt="image-20241001143402251"></p>
+<h3 id="在D盘创建存放数据的文件夹"><a href="#在D盘创建存放数据的文件夹" class="headerlink" title="在D盘创建存放数据的文件夹"></a>在D盘创建存放数据的文件夹</h3><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2024/10/01/cleanC/image-20241001143402251.png" alt="image-20241001143402251"></p>
 <p>我创建了一个<code>D:\AimportantDataLink\EdgeDataLink</code>的文件夹来存放Edge的数据</p>
 <h3 id="数据迁移"><a href="#数据迁移" class="headerlink" title="数据迁移"></a>数据迁移</h3><p>进入Edge中把User Data复制到EdgeDataLink中</p>
-<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlZWVlZWUiLz48L3N2Zz4=" data-original="/2024/10/01/cleanC/image-20241001143531046.png" alt="image-20241001143531046"></p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2024/10/01/cleanC/image-20241001143531046.png" alt="image-20241001143531046"></p>
 <h3 id="创建链接-出现的问题及解决方法"><a href="#创建链接-出现的问题及解决方法" class="headerlink" title="创建链接 &amp; 出现的问题及解决方法"></a>创建链接 &amp; 出现的问题及解决方法</h3><p>使用管理员打开cmd</p>
 <p>输入<code>mklink C:\Users\ &lt;your_user_name&gt; \AppData\Local\Microsoft\Edge D:\AimportantDataLink\EdgeDataLink</code></p>
 <p>输出：</p>
-<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlZWVlZWUiLz48L3N2Zz4=" data-original="/2024/10/01/cleanC/image-20241001143904591.png" alt="image-20241001143904591"></p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2024/10/01/cleanC/image-20241001143904591.png" alt="image-20241001143904591"></p>
 <p>创建链接时如果出现 “当文件已存在时，无法创建该链接”</p>
-<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlZWVlZWUiLz48L3N2Zz4=" data-original="/2024/10/01/cleanC/image-20241001143832466.png" alt="image-20241001143832466"></p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2024/10/01/cleanC/image-20241001143832466.png" alt="image-20241001143832466"></p>
 <p>说明你可能在将Edge文件夹命名成Edge_old之后又打开了Edge，Edge自动创建了一个Edge文件夹，这时候直接结束Edge进程，然后把C盘中的Edge文件夹删掉就可以了，保证自己备份的Edge_old的数据有就行。</p>
 <p>创建链接成功之后，Microsoft文件夹下出现了一个<code>.symlink</code>的文件：</p>
-<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlZWVlZWUiLz48L3N2Zz4=" data-original="/2024/10/01/cleanC/image-20241001144335144.png" alt="image-20241001144335144"></p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2024/10/01/cleanC/image-20241001144335144.png" alt="image-20241001144335144"></p>
 <p>确保这个Edge链接跟最开始的Edge文件夹在同一目录(Mirosoft)下，并与原来的Edge文件夹名称相同，迁移其他数据时也是这样</p>
 <p>此时检查一下Microsoft目录下没有Edge文件夹这时候就可以打开Edge了</p>
 <p>打开后看到自己的东西还在就放心了</p>
-<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlZWVlZWUiLz48L3N2Zz4=" data-original="/2024/10/01/cleanC/image-20241001144556123.png" alt="image-20241001144556123"></p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2024/10/01/cleanC/image-20241001144556123.png" alt="image-20241001144556123"></p>
 <h3 id="移除Edge-old"><a href="#移除Edge-old" class="headerlink" title="移除Edge_old"></a>移除Edge_old</h3><p>不放心的话，先把C盘Edge_old目录剪切到D盘，再次打开Edge，如果正常运行，并且自己的东西还在的话，就可以直接把所有Edge_old删除了。</p>
 <p style="display: flex; justify-content: center; flex-direction: row; align-items: center">
-<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlZWVlZWUiLz48L3N2Zz4=" data-original="/2024/10/01/cleanC/image-20241001144908565.png" alt="image-20241001144908565" style="zoom:50%;"> <text> => </text>  <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlZWVlZWUiLz48L3N2Zz4=" data-original="/2024/10/01/cleanC/image-20241001152447425.png" alt="image-20241001152447425" style="zoom:50%;">
+<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2024/10/01/cleanC/image-20241001144908565.png" alt="image-20241001144908565" style="zoom:50%;"> <text> => </text>  <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2024/10/01/cleanC/image-20241001152447425.png" alt="image-20241001152447425" style="zoom:50%;">
 </p>
 （因为又清空了一下回收站，所以空间又多了好多）
 
@@ -1247,6 +1335,119 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
+<script>
+// 图片点击放大查看器
+(function() {
+  function initImageViewer() {
+    var container = document.getElementById('article-container') || document.getElementById('post');
+    if (!container) return;
+    container.addEventListener('click', function(e) {
+      var img = e.target;
+      if (img.tagName !== 'IMG') return;
+      if (img.closest('.img-viewer-overlay')) return;
+      if (img.width < 80 || img.height < 80) return;
+      if (!img.classList.contains('loaded')) return;
+      e.preventDefault();
+      e.stopPropagation();
+      var overlay = document.createElement('div');
+      overlay.className = 'img-viewer-overlay';
+      var viewImg = document.createElement('img');
+      var realSrc = img.dataset.original || img.dataset.lazySrc || img.getAttribute('src') || '';
+      if (realSrc.indexOf('data:image') === 0 && img.src && img.src.indexOf('data:image') !== 0) realSrc = img.src;
+      viewImg.src = realSrc;
+      viewImg.alt = img.alt || '';
+      viewImg.classList.add('loaded');
+      overlay.appendChild(viewImg);
+      document.body.appendChild(overlay);
+      document.body.style.overflow = 'hidden';
+      requestAnimationFrame(function() { overlay.classList.add('active'); });
+      var scale = 1, tx = 0, ty = 0;
+      var isDragging = false, startX, startY, startTx, startTy;
+      var clickStartTime, clickStartPos;
+      var clickTimer = null;
+      function applyTransform() {
+        viewImg.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
+      }
+      function close() {
+        overlay.classList.remove('active');
+        setTimeout(function() { overlay.remove(); document.body.style.overflow = ''; }, 250);
+      }
+      // 滚轮缩放
+      overlay.addEventListener('wheel', function(ev) {
+        ev.preventDefault();
+        var oldScale = scale;
+        scale += ev.deltaY < 0 ? 0.15 : -0.15;
+        if (scale < 0.2) scale = 0.2;
+        if (scale > 8) scale = 8;
+        var rect = viewImg.getBoundingClientRect();
+        var cx = rect.left + rect.width / 2;
+        var cy = rect.top + rect.height / 2;
+        var ratio = scale / oldScale;
+        tx = ev.clientX - ratio * (ev.clientX - cx) - (cx - tx);
+        ty = ev.clientY - ratio * (ev.clientY - cy) - (cy - ty);
+        applyTransform();
+      }, { passive: false });
+      // 双击放大
+      viewImg.addEventListener('dblclick', function(ev) {
+        ev.stopPropagation();
+        if (clickTimer) { clearTimeout(clickTimer); clickTimer = null; }
+        var oldScale = scale;
+        if (scale < 2) { scale = 2.5; } else { scale = 1; tx = 0; ty = 0; }
+        if (scale !== 1) {
+          var rect = viewImg.getBoundingClientRect();
+          var cx = rect.left + rect.width / 2;
+          var cy = rect.top + rect.height / 2;
+          var ratio = scale / oldScale;
+          tx = ev.clientX - ratio * (ev.clientX - cx) - (cx - tx);
+          ty = ev.clientY - ratio * (ev.clientY - cy) - (cy - ty);
+        }
+        viewImg.style.transition = 'transform 0.25s ease';
+        applyTransform();
+        setTimeout(function() { viewImg.style.transition = ''; }, 250);
+      });
+      // 拖动 - mousedown
+      viewImg.addEventListener('mousedown', function(ev) {
+        ev.preventDefault();
+        isDragging = true;
+        startX = ev.clientX; startY = ev.clientY;
+        startTx = tx; startTy = ty;
+        clickStartTime = Date.now();
+        clickStartPos = { x: ev.clientX, y: ev.clientY };
+        viewImg.classList.add('dragging');
+      });
+      // 拖动 - mousemove
+      overlay.addEventListener('mousemove', function(ev) {
+        if (!isDragging) return;
+        tx = startTx + ev.clientX - startX;
+        ty = startTy + ev.clientY - startY;
+        applyTransform();
+      });
+      // 拖动结束 + 点击关闭判断
+      overlay.addEventListener('mouseup', function(ev) {
+        if (isDragging) {
+          isDragging = false;
+          viewImg.classList.remove('dragging');
+          var dist = Math.abs(ev.clientX - clickStartPos.x) + Math.abs(ev.clientY - clickStartPos.y);
+          var elapsed = Date.now() - clickStartTime;
+          if (dist < 5 && elapsed < 300 && ev.detail < 2) {
+            clickTimer = setTimeout(close, 175);
+          }
+        }
+      });
+      // 点击背景关闭
+      overlay.addEventListener('click', function(ev) {
+        if (ev.target === overlay) close();
+      });
+      // ESC关闭
+      document.addEventListener('keydown', function handler(ev) {
+        if (ev.key === 'Escape') { close(); document.removeEventListener('keydown', handler); }
+      });
+    });
+  }
+  document.addEventListener('DOMContentLoaded', initImageViewer);
+  document.addEventListener('pjax:complete', initImageViewer);
+})();
+</script>
 <script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js" defer="defer"></script><script>document.addEventListener('DOMContentLoaded', () => {
   const pjaxSelectors = ["meta[property=\"og:image\"]","meta[property=\"og:title\"]","meta[property=\"og:url\"]","meta[property=\"og:description\"]","link[rel=\"canonical\"]","head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
 
@@ -1301,17 +1502,4 @@ document.addEventListener('DOMContentLoaded', function() {
         : window.location.href = e.request.responseURL
     }
   })
-})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.4"></script></div></div><!-- hexo injector body_end start --><script>window.BG_VIDEOS = ["/video/40a0c61bf2d90e77a459657605f1f4f3.mp4","/video/416cb99d3b048ee1cefaa92e93a68711.mp4","/video/43f211bd7b0e6a1534dec31063d30999.mp4","/video/5c8eb4fee50d1552829fbd221309e569.mp4","/video/78a6de50265fc9e6a807a04f409e6562.mp4","/video/8a3f7886ffcc6648d5c6df070041a6a5.mp4","/video/a6371c8ff90daa0696401571ba29f7f2.mp4","/video/ec2b050cf2c07fb6b9f00de63a958a39.mp4"];</script><!-- hexo injector body_end end -->
-        <style>
-            [bg-lazy] {
-                background-image: none !important;
-                background-color: #eee !important;
-            }
-        </style>
-        <script>
-            window.imageLazyLoadSetting = {
-                isSPA: false,
-                preloadRatio: 1,
-                processImages: null,
-            };
-        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(r){r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,n=r.imageLazyLoadSetting.preloadRatio||1,d=o();function o(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=o());for(var e,i=0;i<d.length;i++)0<=(e=(e=d[i]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*n||document.documentElement.clientHeight*n)&&function(){var t,e,a,n,o=d[i];e=function(){d=d.filter(function(t){return o!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(o)},(t=o).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,n=t.getAttribute("data-original"),a.onload=function(){t.src=n,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=n},t.src!==n&&(a.src=n)))}()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)}(this);</script></body></html>
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.4"></script></div></div><!-- hexo injector body_end start --><script>window.BG_VIDEOS = ["/video/40a0c61bf2d90e77a459657605f1f4f3.mp4","/video/416cb99d3b048ee1cefaa92e93a68711.mp4","/video/43f211bd7b0e6a1534dec31063d30999.mp4","/video/5c8eb4fee50d1552829fbd221309e569.mp4","/video/78a6de50265fc9e6a807a04f409e6562.mp4","/video/8a3f7886ffcc6648d5c6df070041a6a5.mp4","/video/a6371c8ff90daa0696401571ba29f7f2.mp4","/video/ec2b050cf2c07fb6b9f00de63a958a39.mp4"];</script><!-- hexo injector body_end end --></body></html>

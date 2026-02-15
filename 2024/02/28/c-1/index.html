@@ -164,15 +164,18 @@
 #music-player {
   position: fixed;
   left: 0;
-  top: 50%;
-  transform: translateY(-50%) translateX(-284px);
+  top: calc(75vh - 52px);
+  transform: translateX(-284px);
   z-index: 9999;
   display: flex;
   align-items: stretch;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, top 0.3s ease;
 }
 #music-player.open {
-  transform: translateY(-50%) translateX(0);
+  transform: translateX(0);
+}
+#music-player.mp-dragging {
+  transition: none !important;
 }
 #music-player .mp-content {
   display: flex;
@@ -363,6 +366,16 @@ body {
 }
 </style>
 <style>
+/* 代码块展开按钮更醒目 */
+.code-expand-btn {
+  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.4)) !important;
+}
+.code-expand-btn i {
+  color: #fff !important;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+</style>
+<style>
 /* 按钮灰黑渐变 */
 .btn-beautify, #pagination .page-number.current,
 a.btn, button.btn, .search-dialog .search-nav,
@@ -440,6 +453,44 @@ img:not(.loaded):not([src*="avatar"]) {
 [data-theme="dark"] img:not(.loaded):not([src*="avatar"]) {
   background: linear-gradient(90deg, #1a1a1a 0%, #3a3a3a 50%, #1a1a1a 100%);
   background-size: 200% 100%;
+}
+</style>
+<style>
+/* 图片查看器样式 */
+.img-viewer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 99999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: zoom-out;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.img-viewer-overlay.active {
+  opacity: 1;
+}
+.img-viewer-overlay img {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  cursor: grab;
+  transition: transform 0.15s ease;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.img-viewer-overlay img.dragging {
+  cursor: grabbing;
+  transition: none;
+}
+/* 已加载的文章图片显示手指指针 */
+#article-container img.loaded {
+  cursor: pointer;
 }
 </style>
 <script>
@@ -523,7 +574,8 @@ img:not(.loaded):not([src*="avatar"]) {
         open: player ? player.classList.contains('open') : false,
         volume: audio.volume,
         currentTime: audio.currentTime,
-        isPlaying: !audio.paused
+        isPlaying: !audio.paused,
+        topY: player ? player.style.top : null
       }));
     } catch(e) {}
   }
@@ -604,6 +656,38 @@ img:not(.loaded):not([src*="avatar"]) {
       toggle.innerHTML = '<i class="fas fa-chevron-left"></i>';
     }
 
+    // 恢复垂直位置
+    if (state.topY) {
+      player.style.top = state.topY;
+    }
+
+    // 播放器拖动（上下移动）
+    var mpDragging = false, mpStartY, mpStartTop, mpMoved = false;
+    player.addEventListener('mousedown', function(ev) {
+      if (ev.target.closest('.mp-progress') || ev.target.closest('.mp-vol-bar')) return;
+      mpDragging = true;
+      mpMoved = false;
+      mpStartY = ev.clientY;
+      mpStartTop = player.getBoundingClientRect().top;
+      player.classList.add('mp-dragging');
+      ev.preventDefault();
+    });
+    document.addEventListener('mousemove', function(ev) {
+      if (!mpDragging) return;
+      var dy = Math.abs(ev.clientY - mpStartY);
+      if (dy > 5) mpMoved = true;
+      var newTop = mpStartTop + ev.clientY - mpStartY;
+      var maxTop = window.innerHeight - player.offsetHeight;
+      newTop = Math.max(0, Math.min(maxTop, newTop));
+      player.style.top = newTop + 'px';
+    });
+    document.addEventListener('mouseup', function(ev) {
+      if (!mpDragging) return;
+      mpDragging = false;
+      player.classList.remove('mp-dragging');
+      saveState();
+    });
+
     // 拖拽状态
     var dragging = null;
     var dragValue = 0;
@@ -656,6 +740,7 @@ img:not(.loaded):not([src*="avatar"]) {
 
     // 按钮点击
     toggle.addEventListener('click', function(e) {
+      if (mpMoved) { e.stopPropagation(); return; }
       player.classList.toggle('open');
       toggle.innerHTML = player.classList.contains('open') ? '<i class="fas fa-chevron-left"></i>' : '<i class="fas fa-chevron-right"></i>';
       saveState();
@@ -663,16 +748,19 @@ img:not(.loaded):not([src*="avatar"]) {
     });
 
     player.querySelector('.mp-play').addEventListener('click', function(e) {
+      if (mpMoved) { e.stopPropagation(); return; }
       audio.paused ? audio.play().catch(function(){}) : audio.pause();
       e.stopPropagation();
     });
 
     player.querySelector('.mp-backward').addEventListener('click', function(e) {
+      if (mpMoved) { e.stopPropagation(); return; }
       audio.currentTime = Math.max(0, audio.currentTime - 30);
       e.stopPropagation();
     });
 
     player.querySelector('.mp-forward').addEventListener('click', function(e) {
+      if (mpMoved) { e.stopPropagation(); return; }
       audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 30);
       e.stopPropagation();
     });
@@ -801,7 +889,7 @@ img:not(.loaded):not([src*="avatar"]) {
 <h2 id="多态"><a href="#多态" class="headerlink" title="多态"></a>多态</h2><h3 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Square</span>		//这是一个抽象类，抽象类不能创建对象</span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">public:</span><br><span class="line">    virtual <span class="type">float</span> <span class="title function_">CalcSq</span><span class="params">()</span> = <span class="number">0</span>;		<span class="comment">//因为不同的图形有不同的求面积方式，所以这里仅定义一个纯虚函数，然后由子类中重写这个函数</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Circle</span> :</span> public Square		<span class="comment">//继承抽象类</span></span><br><span class="line">&#123;</span><br><span class="line">private:</span><br><span class="line">    <span class="type">float</span> r;</span><br><span class="line">public:</span><br><span class="line">    Circle(<span class="type">float</span> r)</span><br><span class="line">    &#123;</span><br><span class="line">        this-&gt;r = r;</span><br><span class="line">    &#125;</span><br><span class="line">    virtual <span class="type">float</span> <span class="title function_">CalcSq</span><span class="params">()</span>			<span class="comment">//重写，这一行必须要和父类中的一样</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">3.14</span> * r * r;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Rectangle</span> :</span> public Square</span><br><span class="line">&#123;</span><br><span class="line">private:</span><br><span class="line">    <span class="type">float</span> x, y;</span><br><span class="line">public:</span><br><span class="line">    Rectangle(<span class="type">float</span> x, <span class="type">float</span> y)</span><br><span class="line">    &#123;</span><br><span class="line">        this-&gt;x = x;</span><br><span class="line">        this-&gt;y = y;</span><br><span class="line">    &#125;</span><br><span class="line">    virtual <span class="type">float</span> <span class="title function_">CalcSq</span><span class="params">()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> x * y;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">float</span> <span class="title function_">CalcSq</span><span class="params">(Square* S)</span>			<span class="comment">//这里传递父类指针</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> S-&gt;CalcSq();			<span class="comment">//父类指针可指向子类		////这里体现了多态性</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    Circle <span class="title function_">C</span><span class="params">(<span class="number">2.5</span>)</span>;				<span class="comment">//创建一个对象，参数传递r=2.5</span></span><br><span class="line">    Rectangle <span class="title function_">R</span><span class="params">(<span class="number">4.5</span>, <span class="number">10</span>)</span>;·		<span class="comment">//创建一个对象,参数传递x=4.5,y=10</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Circle:\t\t%f\n&quot;</span>, CalcSq(&amp;C));<span class="comment">//调用函数求面积，函数中传递子类的指针，因为float CalcSq(Square* S)，其中传递的父类指针可以指向子类地址</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Rectangle:\t%f\n&quot;</span>, CalcSq(&amp;R));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h3 id="虚函数"><a href="#虚函数" class="headerlink" title="虚函数"></a>虚函数</h3><p><code>&lt;1&gt;</code>虚函数目的是提供一个统一的接口，被继承的子类重载，以多态的形式被调用。<br><code>&lt;2&gt;</code>如果基类中的函数没有任何实现的意义，那么可以定义成纯虚函数：virtual返回类型函数名（参数列表）&#x3D;0；<br><code>&lt;3&gt;</code>含有纯虚函数的类被称为抽象类(abstract class),不能创建对象。<br><code>&lt;4&gt;</code>虚函数可以被直接使用，也可以被子类(sub class)重载以后以多态的形式调用，而纯虚函数必须在子类(sub class)中实现该函数才可以使用。</p>
-<h2 id="运算符重载"><a href="#运算符重载" class="headerlink" title="运算符重载"></a>运算符重载</h2><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlZWVlZWUiLz48L3N2Zz4=" data-original="/2024/02/28/c-1/image-20240228230826536.png" alt="image-20240228230826536"></p>
+<h2 id="运算符重载"><a href="#运算符重载" class="headerlink" title="运算符重载"></a>运算符重载</h2><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2024/02/28/c-1/image-20240228230826536.png" alt="image-20240228230826536"></p>
 <p>运算符重载也就是给之前的运算符重新起个名字，比如重载一个<code>++</code>，使它被使用时一次+5</p>
 <p>当然，这个重载仅在这个类中有用，原本的<code>++</code>还是自增1</p>
 <h2 id="模板"><a href="#模板" class="headerlink" title="模板"></a>模板</h2><p>使用<code>template &lt;class T&gt;</code></p>
@@ -830,10 +918,10 @@ img:not(.loaded):not([src*="avatar"]) {
 <p>在这个案例中，银行都继承了CBank这个抽象类，这个抽象类中的纯虚函数定义了子类应该如何获取年利率，因此子类需要重写这个函数。</p>
 <p>而它存在的意义就是，当我们需要获取所有的银行的年利率时，有一个这样统一的规范可以将所有银行的年利率统一起来，使用<code>void ShowAnnualRate(CBank* pBank[], DWORD nLength)</code>来让父类指向子类。</p>
 <p>这都是站在使用的角度来说。</p>
-<h2 id="对象拷贝-拷贝构造函数"><a href="#对象拷贝-拷贝构造函数" class="headerlink" title="对象拷贝-拷贝构造函数"></a>对象拷贝-拷贝构造函数</h2><h3 id="拷贝构造函数"><a href="#拷贝构造函数" class="headerlink" title="拷贝构造函数"></a>拷贝构造函数</h3><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlZWVlZWUiLz48L3N2Zz4=" data-original="/2024/02/28/c-1/image-20240229083940206.png" alt="image-20240229083940206" style="zoom: 67%;">
+<h2 id="对象拷贝-拷贝构造函数"><a href="#对象拷贝-拷贝构造函数" class="headerlink" title="对象拷贝-拷贝构造函数"></a>对象拷贝-拷贝构造函数</h2><h3 id="拷贝构造函数"><a href="#拷贝构造函数" class="headerlink" title="拷贝构造函数"></a>拷贝构造函数</h3><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2024/02/28/c-1/image-20240229083940206.png" alt="image-20240229083940206" style="zoom: 67%;">
 
 <p>拷贝构造函数时，如果子类有继承的父类对象，父类也会被继承过来</p>
-<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlZWVlZWUiLz48L3N2Zz4=" data-original="/2024/02/28/c-1/image-20240229085147294.png" alt="image-20240229085147294" style="zoom:67%;">
+<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2024/02/28/c-1/image-20240229085147294.png" alt="image-20240229085147294" style="zoom:67%;">
 
 <h3 id="浅拷贝"><a href="#浅拷贝" class="headerlink" title="浅拷贝"></a>浅拷贝</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Object</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">private:</span><br><span class="line">	<span class="type">int</span> m_nLength;</span><br><span class="line">	<span class="type">char</span>* m_strBuffer;</span><br><span class="line">public:</span><br><span class="line">	Object() &#123;&#125;</span><br><span class="line">	Object(<span class="type">const</span> <span class="type">char</span>* str)</span><br><span class="line">	&#123;</span><br><span class="line">		m_nLength = <span class="built_in">strlen</span>(str) + <span class="number">1</span>;</span><br><span class="line">		m_strBuffer = new <span class="type">char</span>[m_nLength];</span><br><span class="line">		<span class="built_in">memset</span>(m_strBuffer, <span class="number">0</span>, m_nLength);</span><br><span class="line">		<span class="built_in">strcpy</span>(m_strBuffer, str);</span><br><span class="line">	&#125; </span><br><span class="line">	~Object()</span><br><span class="line">	&#123;</span><br><span class="line">		delete[] m_strBuffer;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">	Object <span class="title function_">Obj</span><span class="params">(<span class="string">&quot;Hello World&quot;</span>)</span>;</span><br><span class="line">	Object <span class="title function_">newObj</span><span class="params">(Obj)</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -1313,6 +1401,119 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
+<script>
+// 图片点击放大查看器
+(function() {
+  function initImageViewer() {
+    var container = document.getElementById('article-container') || document.getElementById('post');
+    if (!container) return;
+    container.addEventListener('click', function(e) {
+      var img = e.target;
+      if (img.tagName !== 'IMG') return;
+      if (img.closest('.img-viewer-overlay')) return;
+      if (img.width < 80 || img.height < 80) return;
+      if (!img.classList.contains('loaded')) return;
+      e.preventDefault();
+      e.stopPropagation();
+      var overlay = document.createElement('div');
+      overlay.className = 'img-viewer-overlay';
+      var viewImg = document.createElement('img');
+      var realSrc = img.dataset.original || img.dataset.lazySrc || img.getAttribute('src') || '';
+      if (realSrc.indexOf('data:image') === 0 && img.src && img.src.indexOf('data:image') !== 0) realSrc = img.src;
+      viewImg.src = realSrc;
+      viewImg.alt = img.alt || '';
+      viewImg.classList.add('loaded');
+      overlay.appendChild(viewImg);
+      document.body.appendChild(overlay);
+      document.body.style.overflow = 'hidden';
+      requestAnimationFrame(function() { overlay.classList.add('active'); });
+      var scale = 1, tx = 0, ty = 0;
+      var isDragging = false, startX, startY, startTx, startTy;
+      var clickStartTime, clickStartPos;
+      var clickTimer = null;
+      function applyTransform() {
+        viewImg.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
+      }
+      function close() {
+        overlay.classList.remove('active');
+        setTimeout(function() { overlay.remove(); document.body.style.overflow = ''; }, 250);
+      }
+      // 滚轮缩放
+      overlay.addEventListener('wheel', function(ev) {
+        ev.preventDefault();
+        var oldScale = scale;
+        scale += ev.deltaY < 0 ? 0.15 : -0.15;
+        if (scale < 0.2) scale = 0.2;
+        if (scale > 8) scale = 8;
+        var rect = viewImg.getBoundingClientRect();
+        var cx = rect.left + rect.width / 2;
+        var cy = rect.top + rect.height / 2;
+        var ratio = scale / oldScale;
+        tx = ev.clientX - ratio * (ev.clientX - cx) - (cx - tx);
+        ty = ev.clientY - ratio * (ev.clientY - cy) - (cy - ty);
+        applyTransform();
+      }, { passive: false });
+      // 双击放大
+      viewImg.addEventListener('dblclick', function(ev) {
+        ev.stopPropagation();
+        if (clickTimer) { clearTimeout(clickTimer); clickTimer = null; }
+        var oldScale = scale;
+        if (scale < 2) { scale = 2.5; } else { scale = 1; tx = 0; ty = 0; }
+        if (scale !== 1) {
+          var rect = viewImg.getBoundingClientRect();
+          var cx = rect.left + rect.width / 2;
+          var cy = rect.top + rect.height / 2;
+          var ratio = scale / oldScale;
+          tx = ev.clientX - ratio * (ev.clientX - cx) - (cx - tx);
+          ty = ev.clientY - ratio * (ev.clientY - cy) - (cy - ty);
+        }
+        viewImg.style.transition = 'transform 0.25s ease';
+        applyTransform();
+        setTimeout(function() { viewImg.style.transition = ''; }, 250);
+      });
+      // 拖动 - mousedown
+      viewImg.addEventListener('mousedown', function(ev) {
+        ev.preventDefault();
+        isDragging = true;
+        startX = ev.clientX; startY = ev.clientY;
+        startTx = tx; startTy = ty;
+        clickStartTime = Date.now();
+        clickStartPos = { x: ev.clientX, y: ev.clientY };
+        viewImg.classList.add('dragging');
+      });
+      // 拖动 - mousemove
+      overlay.addEventListener('mousemove', function(ev) {
+        if (!isDragging) return;
+        tx = startTx + ev.clientX - startX;
+        ty = startTy + ev.clientY - startY;
+        applyTransform();
+      });
+      // 拖动结束 + 点击关闭判断
+      overlay.addEventListener('mouseup', function(ev) {
+        if (isDragging) {
+          isDragging = false;
+          viewImg.classList.remove('dragging');
+          var dist = Math.abs(ev.clientX - clickStartPos.x) + Math.abs(ev.clientY - clickStartPos.y);
+          var elapsed = Date.now() - clickStartTime;
+          if (dist < 5 && elapsed < 300 && ev.detail < 2) {
+            clickTimer = setTimeout(close, 175);
+          }
+        }
+      });
+      // 点击背景关闭
+      overlay.addEventListener('click', function(ev) {
+        if (ev.target === overlay) close();
+      });
+      // ESC关闭
+      document.addEventListener('keydown', function handler(ev) {
+        if (ev.key === 'Escape') { close(); document.removeEventListener('keydown', handler); }
+      });
+    });
+  }
+  document.addEventListener('DOMContentLoaded', initImageViewer);
+  document.addEventListener('pjax:complete', initImageViewer);
+})();
+</script>
 <script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js" defer="defer"></script><script>document.addEventListener('DOMContentLoaded', () => {
   const pjaxSelectors = ["meta[property=\"og:image\"]","meta[property=\"og:title\"]","meta[property=\"og:url\"]","meta[property=\"og:description\"]","link[rel=\"canonical\"]","head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
 
@@ -1367,17 +1568,4 @@ document.addEventListener('DOMContentLoaded', function() {
         : window.location.href = e.request.responseURL
     }
   })
-})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.4"></script></div></div><!-- hexo injector body_end start --><script>window.BG_VIDEOS = ["/video/40a0c61bf2d90e77a459657605f1f4f3.mp4","/video/416cb99d3b048ee1cefaa92e93a68711.mp4","/video/43f211bd7b0e6a1534dec31063d30999.mp4","/video/5c8eb4fee50d1552829fbd221309e569.mp4","/video/78a6de50265fc9e6a807a04f409e6562.mp4","/video/8a3f7886ffcc6648d5c6df070041a6a5.mp4","/video/a6371c8ff90daa0696401571ba29f7f2.mp4","/video/ec2b050cf2c07fb6b9f00de63a958a39.mp4"];</script><!-- hexo injector body_end end -->
-        <style>
-            [bg-lazy] {
-                background-image: none !important;
-                background-color: #eee !important;
-            }
-        </style>
-        <script>
-            window.imageLazyLoadSetting = {
-                isSPA: false,
-                preloadRatio: 1,
-                processImages: null,
-            };
-        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(r){r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,n=r.imageLazyLoadSetting.preloadRatio||1,d=o();function o(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=o());for(var e,i=0;i<d.length;i++)0<=(e=(e=d[i]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*n||document.documentElement.clientHeight*n)&&function(){var t,e,a,n,o=d[i];e=function(){d=d.filter(function(t){return o!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(o)},(t=o).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,n=t.getAttribute("data-original"),a.onload=function(){t.src=n,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=n},t.src!==n&&(a.src=n)))}()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)}(this);</script></body></html>
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.4"></script></div></div><!-- hexo injector body_end start --><script>window.BG_VIDEOS = ["/video/40a0c61bf2d90e77a459657605f1f4f3.mp4","/video/416cb99d3b048ee1cefaa92e93a68711.mp4","/video/43f211bd7b0e6a1534dec31063d30999.mp4","/video/5c8eb4fee50d1552829fbd221309e569.mp4","/video/78a6de50265fc9e6a807a04f409e6562.mp4","/video/8a3f7886ffcc6648d5c6df070041a6a5.mp4","/video/a6371c8ff90daa0696401571ba29f7f2.mp4","/video/ec2b050cf2c07fb6b9f00de63a958a39.mp4"];</script><!-- hexo injector body_end end --></body></html>

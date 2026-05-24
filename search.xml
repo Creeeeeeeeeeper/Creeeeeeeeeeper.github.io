@@ -1,6 +1,286 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>搜狗输入法幽灵广告</title>
+    <url>/2026/05/24/SougouPopad/</url>
+    <content><![CDATA[<h1 id="搜狗输入法的幽灵广告"><a href="#搜狗输入法的幽灵广告" class="headerlink" title="搜狗输入法的幽灵广告"></a>搜狗输入法的幽灵广告</h1><blockquote>
+<p>电脑上明明已经把搜狗输入法卸载了，但桌面右下角还是时不时蹦出来一个写着”搜狗输入法”的弹窗，推什么”3Q导航  CC.CC”。一开始以为是没卸干净，后来怀疑是正在用的微信输入法在搞鬼，结果都不是。我抓了一份dump、又拿到了它的”皮肤包”，一路逆向下来发现这是<strong>搜狗故意留的一个第三方广告外挂</strong>——下面是我的全过程记录。</p>
+</blockquote>
+<hr>
+<h2 id="1-弹窗"><a href="#1-弹窗" class="headerlink" title="1. 弹窗"></a>1. 弹窗</h2><img src="/2026/05/24/SougouPopad/PixPin_2026-05-23_22-42-44.png" alt="PixPin_2026-05-23_22-42-44" style="zoom:50%;">
+
+<p>很有迷惑性：标题栏写着”搜狗输入法”，但我早就把搜狗卸了，按理说不该有这玩意儿。而且点击这个叉号，就会弹出来一个选择浏览器打开，并不是关掉，说明这只是个图片，点击会跳转到某个网页。</p>
+<hr>
+<h2 id="2-一些文件"><a href="#2-一些文件" class="headerlink" title="2. 一些文件"></a>2. 一些文件</h2><p>先把需要用的文件整理一下：</p>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>PopAD.DMP</code></td>
+<td>内存转储文件</td>
+</tr>
+<tr>
+<td><code>skin.dat</code></td>
+<td>内容是广告物料包</td>
+</tr>
+<tr>
+<td><code>PixPin_2026-05-23_22-42-44.png</code></td>
+<td>截图</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="3-DMP"><a href="#3-DMP" class="headerlink" title="3. DMP"></a>3. DMP</h2><p>抽里面的字符串，立刻就锁定了崩溃进程是谁：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">&quot;C:\Windows\system32\config\systemprofile\AppData\Roaming\PopAD.exe&quot;</span><br><span class="line">C:\Windows\SysWOW64\config\systemprofile\AppData\Roaming\PopAD.exe</span><br><span class="line">d:\DuiEditor\Demos\Test\Win32\xsUnicodeRelease\PopAD.pdb        ← 开发者 PDB 路径</span><br><span class="line">User-Agent: PopAD/1.0</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>路径不对劲</strong>：<code>systemprofile\AppData\Roaming\</code> 是 SYSTEM 账户的目录，不是我用户的。意味着这玩意儿当年是用<strong>管理员权限</strong>装进去的，普通用户态的卸载程序不会去碰这里。</li>
+<li><strong>PDB 路径泄露</strong>：<code>d:\DuiEditor\Demos\Test\Win32\xsUnicodeRelease\PopAD.pdb</code>——用的是 DuiEditor 这个 C++ UI 库，目录名居然还叫 <code>Demos\Test</code>，开发者连项目名都没改。</li>
+<li><strong>自定义 UA</strong>：<code>PopAD/1.0</code>，方便服务端在日志里识别”这是我自家客户端”。</li>
+</ul>
+<hr>
+<h2 id="4-PopAD-exe"><a href="#4-PopAD-exe" class="headerlink" title="4. PopAD.exe"></a>4. PopAD.exe</h2><p>进一步看文件本身：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">路径:   C:\Windows\SysWOW64\config\systemprofile\AppData\Roaming\PopAD.exe</span><br><span class="line">大小:   2,925,800 字节</span><br><span class="line">签名:   Valid</span><br><span class="line">签发者: CN=深圳市聚点互动文化传媒有限公司, O=深圳市聚点互动文化传媒有限公司, L=深圳, S=广东, C=CN</span><br><span class="line">版本信息: 全部空白（CompanyName / ProductName / FileVersion 都被清空）</span><br></pre></td></tr></table></figure>
+
+<p>明白了：</p>
+<ul>
+<li>签名是<strong>有效</strong>的，但签的不是搜狗、也不是腾讯，是 <strong>深圳市聚点互动文化传媒有限公司</strong>——一家专门做客户端广告分发的第三方公司。</li>
+<li>版本信息全空，正经软件不会这么干，明显是为了在任务管理器里不被认出来。</li>
+<li>文件 <code>LastWriteTime</code> 一直在变（最近一次居然就是几分钟前），说明它会<strong>自我重写&#x2F;升级</strong>。</li>
+</ul>
+<p>据我判断，这是搜狗当年捆绑进来的广告外挂模块，开发外包给了聚点互动，搜狗把它独立成一个第三方 exe 是为了<strong>主程序卸载时合法地不动它</strong>——这甩锅手法在国内厂商真常见啊。</p>
+<hr>
+<h2 id="5-通讯"><a href="#5-通讯" class="headerlink" title="5. 通讯"></a>5. 通讯</h2><p>从 dump 里抓 HTTP 通讯指纹：</p>
+<figure class="highlight http"><table><tr><td class="code"><pre><span class="line"><span class="keyword">POST</span> <span class="string">/api/device/report</span> <span class="meta">HTTP/1.1</span></span><br><span class="line"><span class="attribute">Host</span><span class="punctuation">: </span>01670.xyz</span><br><span class="line"><span class="attribute">User-Agent</span><span class="punctuation">: </span>PopAD/1.0</span><br></pre></td></tr></table></figure>
+
+<p>我把所有可疑域名都列出来：</p>
+<table>
+<thead>
+<tr>
+<th>URL</th>
+<th>角色</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>https://01670.xyz/api/device/report</code></td>
+<td>设备上报 + 配置下发（什么时候弹、跳哪、频次）</td>
+</tr>
+<tr>
+<td><code>https://0430905818941789.s3.ap-east-1.amazonaws.com/skin.dat</code></td>
+<td>广告素材 CDN（用了 AWS 香港 S3）</td>
+</tr>
+<tr>
+<td><code>https://iii3.net/</code></td>
+<td>备用域名</td>
+</tr>
+<tr>
+<td><code>https://vyuvl9768rsd3.com/file/sindata</code></td>
+<td>备用素材分发</td>
+</tr>
+</tbody></table>
+<p><code>01670.xyz</code> 和 <code>vyuvl9768rsd3.com</code> 一看就是<strong>程序生成的随机短域名</strong>——灰产为了便于批量换、防封禁标配。用海外 S3 桶（账号名 <code>0430905818941789</code> 这种纯数字，没任何品牌）做 CDN，也是为了不被国内搜到。</p>
+<p>dump 里还能挖到他们和服务端 API 协议的字段：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">configuid     设备唯一 ID</span><br><span class="line">skinurl       皮肤包 URL</span><br><span class="line">skinpwd       皮肤包解压密码  ← hello</span><br><span class="line">adurl         广告点击跳转目标 URL</span><br><span class="line">isfade        弹窗是否淡入淡出</span><br><span class="line">once          是否一次性</span><br><span class="line">frequency     弹窗频率</span><br></pre></td></tr></table></figure>
+
+<p>意思就是：PopAD 启动 → 找 <code>01670.xyz</code> 报到 → 服务端告诉它”该弹了，皮肤包在那个 S3 桶里，密码 hello，点了跳这里”。</p>
+<hr>
+<h2 id="6-skin-dat"><a href="#6-skin-dat" class="headerlink" title="6. skin.dat"></a>6. skin.dat</h2><p>skin.dat 文件头：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">$ xxd skin.dat | head -1</span><br><span class="line">00000000: 504b 0304 1400 0000 0000 d376 475c 0000  PK..........vG\</span><br><span class="line">        ^^^^^^^^^^</span><br><span class="line">        PK\x03\x04 = ZIP local file header</span><br></pre></td></tr></table></figure>
+
+<p>伪装成 .dat 后缀的 <strong>ZIP 包</strong>。直接列：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">$ unzip -l skin.dat</span><br><span class="line">   49230  2026-01-23  images/hello.jpg</span><br><span class="line">    1273  2020-08-25  images/ico.jpg</span><br><span class="line">  111538  2026-02-07  images/sogou.png</span><br><span class="line">    4380  2017-05-26  images/sys_dlg_close.png</span><br><span class="line">    ...</span><br><span class="line">    2140  2026-02-07  PopAd.xml</span><br></pre></td></tr></table></figure>
+
+<p>直接解压会被拒：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">$ unzip skin.dat</span><br><span class="line">   skipping: images/hello.jpg        unable to get password</span><br></pre></td></tr></table></figure>
+
+<p>—— ZIP 加密了（ZipCrypto + Deflate）。回到 dump 找密码，搜 <code>skinpwd</code> 的上下文：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">configuid</span><br><span class="line">skinpwd</span><br><span class="line">hello     ← 紧跟着，太可疑</span><br><span class="line">skinurl</span><br><span class="line">adurl</span><br></pre></td></tr></table></figure>
+
+<p>试了一下：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">$ unzip -P hello skin.dat</span><br><span class="line">  inflating: images/sogou.png</span><br><span class="line">  inflating: images/hello.jpg</span><br><span class="line">  ...</span><br><span class="line">  inflating: PopAd.xml</span><br></pre></td></tr></table></figure>
+
+<p>密码就是 hello。一个广告分发系统的”加密”，密码是 hello，开发者怕是周末赶的工</p>
+<p><code>PopAd.xml</code> 长这样：</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">Window</span> <span class="attr">size</span>=<span class="string">&quot;300,420&quot;</span> <span class="attr">caption</span>=<span class="string">&quot;0,0,0,20&quot;</span> <span class="attr">showshadow</span>=<span class="string">&quot;true&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">VerticalLayout</span> <span class="attr">bkcolor</span>=<span class="string">&quot;0xFFD1E8F5&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">HorizontalLayout</span> <span class="attr">height</span>=<span class="string">&quot;20&quot;</span> <span class="attr">visible</span>=<span class="string">&quot;false&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">FadeButton</span> <span class="attr">name</span>=<span class="string">&quot;windowclosebtn&quot;</span> <span class="attr">width</span>=<span class="string">&quot;45&quot;</span> <span class="attr">height</span>=<span class="string">&quot;17&quot;</span></span></span><br><span class="line"><span class="tag">                  <span class="attr">normalimage</span>=<span class="string">&quot;...&quot;</span> <span class="attr">pushedimage</span>=<span class="string">&quot;...&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">HorizontalLayout</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">Picture</span> <span class="attr">name</span>=<span class="string">&quot;ctlImage&quot;</span> <span class="attr">bkimage</span>=<span class="string">&quot;images\sogou.png&quot;</span> /&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">VerticalLayout</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Window</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>很简单：300×420 的窗口，整个内容就是平铺一张 <code>images\sogou.png</code>。<strong>XML 里没有任何 URL</strong>——点击跳转的目标 (<code>adurl</code>) 是运行时从 <code>01670.xyz</code> 拉的，所以广告主想换跳转地址不用改 exe。</p>
+<hr>
+<h2 id="7-素材对比"><a href="#7-素材对比" class="headerlink" title="7. 素材对比"></a>7. 素材对比</h2><p>左侧是我截图的弹窗，右侧是我解压出来的：</p>
+<table>
+<thead>
+<tr>
+<th>截图</th>
+<th>解出的</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><img src="/2026/05/24/SougouPopad/PixPin_2026-05-23_22-42-44-1779603679861-1.png" alt="PixPin_2026-05-23_22-42-44" style="zoom:50%;"></td>
+<td><img src="/2026/05/24/SougouPopad/sogou.png" alt="sogou" style="zoom:80%;"></td>
+</tr>
+</tbody></table>
+<p>ZIP 里还有多余的图：</p>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>实际作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>images/ico.jpg</code></td>
+<td>小图标——PopAd.xml 里被注释掉了，没用上</td>
+</tr>
+<tr>
+<td><code>images/hello.jpg</code></td>
+<td>一只 Hello Kitty？？？</td>
+</tr>
+</tbody></table>
+<p><img src="/2026/05/24/SougouPopad/image-20260524142221272.png" alt="image-20260524142221272"></p>
+<p><code>hello.jpg</code> 是开发者偷懒留下的测试图。再结合 ZIP 密码也是 <code>hello</code>——开发者拿”hello”当万能占位符，打包时也没清理。</p>
+<p>这张图永远不会出现在弹窗里——是个隐藏的开发期遗物。</p>
+<hr>
+<h2 id="8-再看popad"><a href="#8-再看popad" class="headerlink" title="8.再看popad"></a>8.再看popad</h2><p>我边分析边查实时进程，刚好抓到 PopAD 又起来了一次：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">$ Get-CimInstance Win32_Process | Where &#123; $_.ExecutablePath -match &#x27;PopAD&#x27; &#125;</span><br><span class="line"></span><br><span class="line">Name      ProcessId  ParentProcessId  Path                                                              CreationDate</span><br><span class="line">PopAD.exe 18380      16444            C:\Windows\SysWOW64\config\systemprofile\AppData\Roaming\PopAD.exe 2026/5/24 12:56:58</span><br></pre></td></tr></table></figure>
+
+<p>文件时间戳：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">CreationTime   = 2026/4/26 21:23:20   (4 月底落盘)</span><br><span class="line">LastWriteTime  = 2026/5/24 12:56:58   (几分钟前才被重写——它每次启动会自我升级)</span><br><span class="line">LastAccessTime = 2026/5/24 12:57:08</span><br></pre></td></tr></table></figure>
+
+<p>我把 SogouPy 日志目录翻了一遍，看历史启动频率：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">2026/5/12 17:36  PID 12688</span><br><span class="line">2026/5/13 06:53  PID 23688</span><br><span class="line">2026/5/13 22:15  PID 8504</span><br><span class="line">2026/5/14 21:28  PID 14576</span><br><span class="line">2026/5/15 21:45  PID 3040</span><br><span class="line">2026/5/21 21:57  PID 7772     ← 这次生成了我手里的 PopAD.DMP</span><br><span class="line">2026/5/22 10:42  ...</span><br><span class="line">2026/5/24 12:56  PID 18380    ← 现在这次</span><br></pre></td></tr></table></figure>
+
+<p>基本上我开一次电脑就定时开始弹。。。</p>
+<hr>
+<h2 id="9-找不到启动器？"><a href="#9-找不到启动器？" class="headerlink" title="9. 找不到启动器？"></a>9. 找不到启动器？</h2><p>进程链是这样：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">services.exe (SYSTEM, PID 1252)</span><br><span class="line">  └─ PerceptionSimulationService.exe (PID 14400)</span><br><span class="line">       └─ backgroundTaskHost.exe (PID 16444)</span><br><span class="line">            └─ PopAD.exe (PID 18380)</span><br></pre></td></tr></table></figure>
+
+<p><code>backgroundTaskHost.exe</code> 是 Windows 后台任务的通用宿主——本身<strong>是无辜的系统组件</strong>，但它会被注册的 COM 后台任务驱动，去拉起任意进程。</p>
+<p>我把所有常规自启动机制都查了一遍：</p>
+<table>
+<thead>
+<tr>
+<th>检查项</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Run &#x2F; RunOnce 注册表</td>
+<td>无</td>
+</tr>
+<tr>
+<td>Win32_Service</td>
+<td>无</td>
+</tr>
+<tr>
+<td>计划任务（按名字 + 按 Action.Execute）</td>
+<td>无</td>
+</tr>
+<tr>
+<td>计划任务全量 XML 搜 <code>Sogou|PopAD|搜狗|SGTool</code></td>
+<td>无</td>
+</tr>
+<tr>
+<td>AppInit_DLLs</td>
+<td>空</td>
+</tr>
+<tr>
+<td>Winlogon Shell&#x2F;Userinit</td>
+<td>标准值</td>
+</tr>
+<tr>
+<td>IFEO 调试器劫持</td>
+<td>无</td>
+</tr>
+<tr>
+<td>WMI 永久事件订阅</td>
+<td>只有 Windows 默认的</td>
+</tr>
+<tr>
+<td>已注册 IME (HKLM\SOFTWARE\Microsoft\CTF\TIP)</td>
+<td>无 Sogou</td>
+</tr>
+<tr>
+<td>搜狗的注册表卸载条目</td>
+<td>无</td>
+</tr>
+<tr>
+<td>backgroundTaskHost 当前加载的 Sogou DLL</td>
+<td>无</td>
+</tr>
+</tbody></table>
+<p><strong>所有常规位置都没 Sogou 痕迹，但 PopAD 还是被拉起来了</strong>。再加上我注意到：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">Microsoft-Windows-TaskScheduler/Operational : IsEnabled = False</span><br></pre></td></tr></table></figure>
+
+<p>任务计划的 Operational 日志居然是关掉的——这本身就很可疑，要么是 Windows 默认，要么是搜狗安装时故意关来遮掩。</p>
+<p>我的<strong>推测</strong>（没法 100% 验证）：</p>
+<blockquote>
+<p>搜狗当年装的时候注册了一个 <strong>COM 后台任务</strong>（通过 Windows.ApplicationModel.Background API 注册的 IBackgroundTask 类型），这种东西用 <code>Get-ScheduledTask</code> 列不出来。即使搜狗主程序被卸载，这个 COM 任务的注册没清，所以 Windows 还在调度它，backgroundTaskHost 加载对应的 DLL 后调用 CreateProcess 拉起 PopAD。</p>
+</blockquote>
+<p>继续深挖需要装 Sysmon 或 ETW 长期监控，没啥必要——直接绕开这个问题就行，<strong>让 PopAD.exe 即使被拉起也跑不起来</strong>。</p>
+<hr>
+<h2 id="10-清理"><a href="#10-清理" class="headerlink" title="10. 清理"></a>10. 清理</h2><p>下面这套脚本需要管理员 PowerShell，五步叠加防复活：</p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Step 1：杀掉当前 PopAD 进程</span></span><br><span class="line"><span class="built_in">Stop-Process</span> <span class="literal">-Name</span> PopAD <span class="literal">-Force</span> <span class="literal">-ErrorAction</span> SilentlyContinue</span><br><span class="line"></span><br><span class="line"><span class="comment"># Step 2：删 PopAD.exe（两个路径都试，看系统是 32/64 位）</span></span><br><span class="line"><span class="built_in">Remove-Item</span> <span class="string">&#x27;C:\Windows\System32\config\systemprofile\AppData\Roaming\PopAD.exe&#x27;</span> <span class="literal">-Force</span> <span class="literal">-EA</span> SilentlyContinue</span><br><span class="line"><span class="built_in">Remove-Item</span> <span class="string">&#x27;C:\Windows\SysWOW64\config\systemprofile\AppData\Roaming\PopAD.exe&#x27;</span> <span class="literal">-Force</span> <span class="literal">-EA</span> SilentlyContinue</span><br><span class="line"></span><br><span class="line"><span class="comment"># Step 3：占位空文件 + Deny ACL —— 防止 PopAD.exe 被重新落盘</span></span><br><span class="line"><span class="variable">$paths</span> = <span class="selector-tag">@</span>(</span><br><span class="line">    <span class="string">&#x27;C:\Windows\System32\config\systemprofile\AppData\Roaming&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;C:\Windows\SysWOW64\config\systemprofile\AppData\Roaming&#x27;</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">foreach</span> (<span class="variable">$p</span> <span class="keyword">in</span> <span class="variable">$paths</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">Test-Path</span> <span class="variable">$p</span>) &#123;</span><br><span class="line">        <span class="variable">$f</span> = <span class="built_in">Join-Path</span> <span class="variable">$p</span> <span class="string">&#x27;PopAD.exe&#x27;</span></span><br><span class="line">        <span class="built_in">New-Item</span> <span class="literal">-ItemType</span> File <span class="literal">-Path</span> <span class="variable">$f</span> <span class="literal">-Force</span> | <span class="built_in">Out-Null</span></span><br><span class="line">        <span class="variable">$acl</span> = <span class="built_in">Get-Acl</span> <span class="variable">$f</span></span><br><span class="line">        <span class="variable">$acl</span>.SetAccessRuleProtection(<span class="variable">$true</span>, <span class="variable">$false</span>)</span><br><span class="line">        <span class="variable">$rule</span> = <span class="built_in">New-Object</span> System.Security.AccessControl.FileSystemAccessRule(</span><br><span class="line">            <span class="string">&#x27;Everyone&#x27;</span>, <span class="string">&#x27;FullControl&#x27;</span>, <span class="string">&#x27;Deny&#x27;</span></span><br><span class="line">        )</span><br><span class="line">        <span class="variable">$acl</span>.AddAccessRule(<span class="variable">$rule</span>)</span><br><span class="line">        <span class="built_in">Set-Acl</span> <span class="literal">-Path</span> <span class="variable">$f</span> <span class="literal">-AclObject</span> <span class="variable">$acl</span></span><br><span class="line">        <span class="built_in">Write-Host</span> <span class="string">&quot;Locked: <span class="variable">$f</span>&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># Step 4：删搜狗配置/日志残留</span></span><br><span class="line"><span class="built_in">Remove-Item</span> <span class="string">&#x27;C:\Windows\SysWOW64\config\systemprofile\AppData\LocalLow\SogouPy&#x27;</span> <span class="literal">-Recurse</span> <span class="literal">-Force</span> <span class="literal">-EA</span> SilentlyContinue</span><br><span class="line"><span class="built_in">Remove-Item</span> <span class="string">&#x27;C:\Windows\System32\config\systemprofile\AppData\LocalLow\SogouPy&#x27;</span> <span class="literal">-Recurse</span> <span class="literal">-Force</span> <span class="literal">-EA</span> SilentlyContinue</span><br><span class="line"></span><br><span class="line"><span class="comment"># Step 5：hosts 屏蔽广告服务器</span></span><br><span class="line"><span class="variable">$hosts</span> = <span class="string">&quot;<span class="variable">$env:SystemRoot</span>\System32\drivers\etc\hosts&quot;</span></span><br><span class="line"><span class="variable">$adDomains</span> = <span class="selector-tag">@</span>(</span><br><span class="line">    <span class="string">&#x27;0.0.0.0 01670.xyz&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;0.0.0.0 iii3.net&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;0.0.0.0 vyuvl9768rsd3.com&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;0.0.0.0 0430905818941789.s3.ap-east-1.amazonaws.com&#x27;</span></span><br><span class="line">)</span><br><span class="line"><span class="built_in">Add-Content</span> <span class="literal">-Path</span> <span class="variable">$hosts</span> <span class="literal">-Value</span> <span class="string">&quot;`r`n# Block Sogou PopAD ad servers (<span class="variable">$</span>(Get-Date -Format yyyy-MM-dd))&quot;</span> <span class="literal">-Force</span></span><br><span class="line"><span class="variable">$adDomains</span> | <span class="built_in">ForEach-Object</span> &#123; <span class="built_in">Add-Content</span> <span class="literal">-Path</span> <span class="variable">$hosts</span> <span class="literal">-Value</span> <span class="variable">$_</span> <span class="literal">-Force</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># Step 6：验证</span></span><br><span class="line"><span class="built_in">Get-Process</span> PopAD <span class="literal">-EA</span> SilentlyContinue</span><br><span class="line"><span class="built_in">Get-Item</span> <span class="string">&#x27;C:\Windows\System32\config\systemprofile\AppData\Roaming\PopAD.exe&#x27;</span>,</span><br><span class="line">         <span class="string">&#x27;C:\Windows\SysWOW64\config\systemprofile\AppData\Roaming\PopAD.exe&#x27;</span> <span class="literal">-EA</span> SilentlyContinue |</span><br><span class="line">  <span class="built_in">Select</span> FullName, Length</span><br><span class="line"><span class="built_in">Get-Content</span> <span class="variable">$hosts</span> | <span class="built_in">Select-String</span> <span class="string">&#x27;sogou|popad|01670|iii3|vyuvl|amazonaws&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>防什么</th>
+<th>原理</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1 杀进程</td>
+<td>当前弹窗</td>
+<td>立即生效</td>
+</tr>
+<tr>
+<td>2 删 exe</td>
+<td>已落盘的恶意文件</td>
+<td></td>
+</tr>
+<tr>
+<td>3 占位 + Deny ACL</td>
+<td>“幽灵宿主”再写一次</td>
+<td>路径被同名文件占用 + Everyone Deny —— 写入失败、删除也失败</td>
+</tr>
+<tr>
+<td>4 删 SogouPy</td>
+<td>配置&#x2F;历史</td>
+<td></td>
+</tr>
+<tr>
+<td>5 hosts 屏蔽</td>
+<td>前面被绕过</td>
+<td>即使 exe 复活，连不上服务器也弹不出</td>
+</tr>
+</tbody></table>
+<p>任何单一步骤都可能被绕开，五步叠加比较稳。</p>
+<hr>
+<h2 id="11-一些技术细节备查"><a href="#11-一些技术细节备查" class="headerlink" title="11. 一些技术细节备查"></a>11. 一些技术细节备查</h2><h3 id="文件签名"><a href="#文件签名" class="headerlink" title="文件签名"></a>文件签名</h3><figure class="highlight text"><table><tr><td class="code"><pre><span class="line">Signer: CN=深圳市聚点互动文化传媒有限公司</span><br><span class="line">        O=深圳市聚点互动文化传媒有限公司</span><br><span class="line">        L=深圳, S=广东, C=CN</span><br><span class="line">Status: Valid</span><br></pre></td></tr></table></figure>
+
+<p>聚点互动是有正规证书的灰产广告分发公司，专门承接客户端”内置广告位”代运营。</p>
+<h3 id="进程链时间"><a href="#进程链时间" class="headerlink" title="进程链时间"></a>进程链时间</h3><figure class="highlight text"><table><tr><td class="code"><pre><span class="line">12:26:18  boot</span><br><span class="line">12:26:41  PerceptionSimulationService.exe (PID 14400)</span><br><span class="line">12:26:44  backgroundTaskHost.exe          (PID 16444)</span><br><span class="line">...</span><br><span class="line">12:56:58  PopAD.exe                       (PID 18380)</span><br></pre></td></tr></table></figure>
+
+<p>PopAD 在开机 30 分钟后才被触发、不是开机自启，是某个事件&#x2F;定时器驱动。</p>
+<h3 id="WeType检查"><a href="#WeType检查" class="headerlink" title="WeType检查"></a>WeType检查</h3><figure class="highlight text"><table><tr><td class="code"><pre><span class="line">路径:   C:\Program Files\Tencent\WeType\2.0.0.27\</span><br><span class="line">公司:   Tencent</span><br><span class="line">产品:   微信输入法服务</span><br><span class="line">签名:   CN=Tencent Technology (Shenzhen) Company Limited</span><br><span class="line">包名:   com.tencent.wetype</span><br><span class="line">官网:   https://z.weixin.qq.com/</span><br><span class="line">技术:   Flutter UI</span><br></pre></td></tr></table></figure>
+
+<p>微信输入法和搜狗输入法虽然都在腾讯旗下，但是两个独立产品线</p>
+<h3 id="dump-里捞到的关键字符串"><a href="#dump-里捞到的关键字符串" class="headerlink" title="dump 里捞到的关键字符串"></a>dump 里捞到的关键字符串</h3><figure class="highlight text"><table><tr><td class="code"><pre><span class="line">configuid                  设备 ID 字段</span><br><span class="line">skinpwd                    皮肤包密码字段</span><br><span class="line">skinurl                    皮肤包 URL 字段</span><br><span class="line">adurl                      广告跳转 URL 字段</span><br><span class="line">isfade / once / frequency  弹窗行为控制</span><br><span class="line">PopAD/1.0                  自定义 User-Agent</span><br><span class="line">hello                      皮肤包密码值（明文存内存）</span><br><span class="line">PopAd.xml                  内嵌 XML 文件名</span><br><span class="line">images\sogou.png           引用素材路径</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>虽然卸载了搜狗输入法，而且用了Revo Uninstaller扫描残留，但搜狗还是故意留了一个<strong>深圳市聚点互动文化传媒有限公司</strong>开发的广告分发模块 <code>PopAD.exe</code> 在 SYSTEM profile 里，通过 Windows COM 后台任务定时复活，从 <code>01670.xyz</code> 和 AWS S3 拉广告素材弹窗。和微信输入法（我现在正在用的）没关系。不得不说，广告这种东西只能让人越来越反感某些产品🤮🤮🤮🤮🤮</p>
+]]></content>
+      <categories>
+        <category>逆向工程</category>
+      </categories>
+      <tags>
+        <tag>逆向工程</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Tauri一把嗦</title>
     <url>/2026/03/22/Tauri%E4%B8%80%E6%8A%8A%E5%97%A6/</url>
     <content><![CDATA[<h1 id="Tauri-一把嗦"><a href="#Tauri-一把嗦" class="headerlink" title="Tauri 一把嗦"></a>Tauri 一把嗦</h1><p>下面代码可以将Tauri所有资源代码全部提取出来，如图：</p>
@@ -3109,8 +3389,8 @@
         <category>电子取证</category>
       </categories>
       <tags>
-        <tag>逆向工程</tag>
         <tag>电子取证</tag>
+        <tag>逆向工程</tag>
         <tag>恶意软件分析</tag>
       </tags>
   </entry>
